@@ -1,0 +1,47 @@
+<div class="left ">
+    <div x-top-navi class="no-desktop mobileNavi"></div>
+    
+    <div class="menuRoom">
+        <div class="searchHead desktop-only">
+            <a href="#/"><i class="material-icons md-1">arrow_back</i> {{'BACK_TO_BUILDINGSEARCH' | translate}}</a>
+        </div>
+
+        <div class="materialList card no-mobile">
+            <div class="buildingDetail" style="background-image:url('https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/thumbnails/bw{{ctrl.buildingCode}}.jpg')">
+                <div class="grandient"> &nbsp;</div>
+                <div class="stackBottom">
+                    <p class="main">{{ctrl.streetName | capitalize:true}}</p>
+                </div>
+            </div>
+            <a class="listElementIcon" href="#/building/bw{{ctrl.buildingCode}}">
+                <i class="listIcon material-icons">place</i>
+                <p class="singleMain" translate="MENU_SHOW_ON_MAP"></p>
+            </a>
+        </div>
+
+
+        <div class="roomSearch materialList card no-mobile" id="roomSearch">
+            <div class="searchHead">
+                <input type="text" placeholder="{{'MENU_SEARCH_ROOM'|translate}}" ng-model="searchRoom" ng-init=" ">
+            </div>
+            <div class="searchBody" id="roomSearchBody">
+                <a class="listElement" ng-repeat="(key, value) in ctrl.rooms | roomFilter: searchRoom" href="#/building/bw{{ctrl.buildingCode}}/map?room={{value.rCode}}" ng-click="mapViaRoom(value.rCode)">
+                    <p class="singleMain">{{value.rName}}</p>
+                </a>
+
+            </div>
+        </div>
+
+        <div class="roomSearch materialList card only-mobile">
+            <a href="#/building/bw{{ctrl.buildingCode}}/map/search">
+                <div class="searchHead">
+                    <input type="text" placeholder="Raum suchen" ng-model="searchRoom" ng-init=" ">
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+<div class="right card">
+    <leaflet class="map" defaults="defaults" marker="marker" layers="layers" lf-center="center" event-broadcast="events"></leaflet>
+</div>

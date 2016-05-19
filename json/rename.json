@@ -1,0 +1,18 @@
+var rename = {
+    'EG Z': 'ZG',
+    'OG 01': 'OG1',
+    'OG 01 Z': 'ZG1',
+    'OG 02': 'OG2',
+    'OG 02 Z': 'ZG2',
+    'OG 03 Z': 'ZG3',
+    'OG 04 Z': 'ZG4',
+    'OG 05 Z': 'ZG5',
+    'OG 03': 'OG3',
+    'OG 04': 'OG4',
+    'OG 05': 'OG5',
+    'OG 06': 'OG6',
+    'OG 07': 'OG7<',
+    'UG 01': 'UG1',
+    'UG 02': 'UG2',
+    'UG 03': 'UG3'
+};

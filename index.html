@@ -1,0 +1,87 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html lang="de" ng-app="myApp" class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1, user-scalable=no" />
+    <title>LMU Raumfinder</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/loading.css">
+    <link rel="stylesheet" href="css/material.css">
+
+    <link rel="stylesheet" media="all and (max-width: 767px)" href="css/structure/mobile.css">
+    <link rel="stylesheet" media="all and (min-width: 767px) and (max-width: 1099px)" href="css/structure/tablet.css">
+    <link rel="stylesheet" media="all and (min-width: 1100px)" href="css/structure/desktop.css">
+
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" sizes="144x144" href="/img/icon144.png">
+
+</head>
+
+<body>
+
+    <div class="top desktop-only" ng-controller="languageCtrl">
+        <div class="container">
+            <a href="#/" id="logo">
+                <div class="box">
+                    <h2 translate='APP_NAME_SHORT'>RAUMFINDER</h2>
+                </div>
+            </a>
+            <p href="#/impressum" class="settings">
+                <a href="" ng-click="changeLang()" translate="TRANSLATE"></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#/impressum" translate="IMPRESSUM"></a>
+            </p>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <div ng-view>
+            <div class="spinner">
+                <div class="rect1"></div>
+                <div class="rect2"></div>
+                <div class="rect3"></div>
+                <div class="rect4"></div>
+                <div class="rect5"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Angular Dependencies -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-route.min.js"></script>
+    <script src="js/angular-leaflet-directive.min.js"></script>
+    <script src="js/angular-translate.min.js"></script>
+
+
+    <script src="json/3_building.json"></script>
+    <script src="json/rename.json"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <script src="js/L.TileLayer.LMUMaps.js"></script>
+
+    <script src="app.js"></script>
+    <script src="controller/languageController.js"></script>
+    <script src="controller/mainController.js"></script>
+    <script src="controller/mapController.js"></script>
+    <script src="controller/buildingController.js"></script>
+    <script src="filter/filter.js"></script>
+    <script src="service/dataService.js"></script>
+    <script src="service/logicService.js"></script>
+    <script src="service/translate.js"></script>
+    <script src="controller/roomSearch.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,132 @@
+.container {
+    margin: 0;
+}
+
+
+/*
+ *
+ * --- Mobile Navi ---
+ *
+*/
+
+.no-mobile {
+    display: none;
+}
+
+.only-mobile {
+    display: block;
+}
+
+.mobileNavi {
+    margin: 0;
+    padding: 0;
+    background-color: #009440;
+    overflow: auto;
+    height: 100px
+}
+
+.mobileNavi h2 {
+    color: white;
+    font-size: 17px;
+    margin: 0;
+    padding: 10px 15px;
+    line-height: 30px;
+}
+
+.mobileNavi a i {
+    color: white;
+    vertical-align: middle;
+    line-height: 8px;
+}
+
+.mobileNavi .headline {
+    float: left;
+}
+
+.mobileNavi .headline i {
+    left: -7px;
+    position: relative;
+}
+
+.mobileNavi .settings {
+    float: right;
+}
+
+.mobileNavi .logo {
+    height: 50px;
+    display: block;
+    background-color: #007633;
+}
+
+.mobileNavi .logo img {
+    padding: 10px 15px;
+}
+
+/*
+ *
+ * --- Structure ---
+ *
+*/
+
+a {
+    text-decoration: none;
+}
+
+.map {
+    height: calc(100vh - 155px);
+    width: 100%;
+}
+
+.noTouch {
+    z-index: 1000;
+    height: calc(100vh - 155px);
+    width: 100%;
+    position: absolute;
+}
+
+.card {
+    background-color: #fafafa;
+    position: relative;
+    overflow: auto;
+}
+
+.roomSearch .searchBody {
+    position: absolute;
+    z-index: 5000;
+    width: 100%;
+    height: calc(90vh - 50px);
+    min-height: 200px;
+}
+
+.searchBody {
+    padding: 0 0px;
+    height: calc(100vh - 140px);
+    overflow-y: scroll;
+    background: white;
+}
+
+.roomSearch .searchBody {
+    display: none;
+}
+
+.roomSearch .searchHead {
+    background-color: #f2f2f2;
+    position: relative;
+    padding: 15px;
+    height: 55px;
+}
+
+.roomSearch .searchBody {
+    height: calc(100vh - 65px - 19px - 55px);
+}
+
+.searchHead {
+    background-color: #009440;
+    margin: 0;
+    padding: 0 15px 10px 15px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    color: white;
+    height: 40px;
+}

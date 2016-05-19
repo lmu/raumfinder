@@ -1,0 +1,18 @@
+<div class="left ">
+    <div x-top-navi class="no-desktop mobileNavi"></div>
+    
+    <div class="menuSearch">
+        <div class="searchHead">
+            <input type="text" id="searchHeadInput" placeholder="{{'MENU_SEARCH_ROOM' | translate}}" ng-model="searchRoom">
+        </div>
+
+        <div class="searchBody materialList" id="roomSearchBody">
+
+            <a class="listElement" ng-repeat="(key, value) in ctrl.rooms | roomFilter: searchRoom" href="#/building/bw{{ctrl.buildingCode}}/map?room={{value.rCode}}" ng-click="mapViaRoom(value.rCode)">
+                <p class="singleMain">{{value.rName}}</p>
+            </a>
+
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,43 @@
+<div class="left ">
+    <div x-top-navi class="no-desktop mobileNavi"></div>
+
+    <div class="menuBuilding">
+        <div class="searchHead desktop-only">
+            <a href="#/"><i class="material-icons md-1">arrow_back</i> {{ 'BACK_TO_BUILDINGSEARCH' | translate }}</a>
+        </div>
+
+        <div class="materialList card">
+
+            <div class="buildingDetail" style="background-image:url('https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/thumbnails/{{ctrl.buildingCode}}.jpg')">
+                <div class="grandient"> &nbsp;</div>
+                <div class="stackBottom">
+                    <p class="main">{{ctrl.building.displayName | capitalize:true}}</p>
+                </div>
+            </div>
+
+            <a class="listElementIcon" href="#/building/{{ctrl.buildingCode}}/map">
+                <i class="listIcon material-icons">location_city</i>
+                <p class="singleMain" translate="MENU_SHOW_BUILDINGMAP"></p>
+            </a>
+
+            <a class="listElementIcon" href="#/building/{{ctrl.buildingCode}}/map">
+                <i class="listIcon material-icons">search</i>
+                <p class="singleMain" translate="MENU_SEARCH_ROOM"></p>
+            </a>
+
+            <a class="listElementIcon" target="_blank" href="https://www.google.com/maps/place/{{ctrl.building.displayName}}/@{{ctrl.building.lat}},{{ctrl.building.lng}}">
+                <i class="listIcon material-icons">place</i>
+                <p class="singleMain" translate="MENU_SHOW_ON_GOOGLEMAPS"></p>
+            </a>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="right card">
+    <a href="#/building/{{ctrl.buildingCode}}/map" class="mobile-only">
+        <div class="noTouch mobile-only"></div>
+    </a>
+    <leaflet class="map" defaults="default" lf-center="cityCenter" tiles="cityLayers" markers="cityMarkers" event-broadcast="events"></leaflet>
+</div>

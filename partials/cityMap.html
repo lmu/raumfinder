@@ -1,0 +1,32 @@
+<div class="left ">
+    <div x-top-navi class="no-desktop mobileNavi"></div>
+    
+    <div class="searchHead">
+        <input type="text" id="searchHeadInput" placeholder="{{'MENU_SEARCH_BUILDING'|translate}}" ng-model="searchBuilding" ng-change="changeSearchInput()">
+    </div>
+
+    <div class="searchBody materialList webkitScrollbar card">
+        <a class="listElementIcon" href="#/building/{{building.code}}" ng-repeat="building in main.buildings  | filter: searchBuilding | orderBy : 'displayName'">
+            <div class="listIcon circular">
+                <img id="buildingSearch" 
+                     ng-src="{{'https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/thumbnails/'+ building.code + '.jpg'}}" 
+                     onerror="this.src='img/houseIcon.png'"
+                     />
+            </div>
+            <p class="doubleMain">{{building.displayName | capitalize:true}}</p>
+            <p class="doubleSub">München</p>
+        </a>
+        
+        <p class="noresults" ng-show="(main.buildings | filter:searchBuilding).length == 0">{{'SEARCH_NO_RESULTS' | translate}}</p>
+    </div>
+
+</div>
+
+<div class="right card no-mobile">
+
+    <leaflet class="map" lf-center="cityCenter" tiles="cityLayers" markers="cityMarkers" bounds="cityBounds" maxbounds="cityMaxBounds" event-broadcast="events">
+    </leaflet>
+
+</div>
+
+

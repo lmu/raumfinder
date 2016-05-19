@@ -1,0 +1,342 @@
+* {
+    font-family: "Roboto", sans-serif;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    background: #dfdfdf;
+}
+
+.only-mobile {
+    display: none;
+}
+
+.desktop-only {
+    display: none;
+}
+
+h2 {
+    text-decoration: none;
+}
+
+.top .settings {
+    float: right;
+}
+
+
+/*
+ *
+ * --- Menu ---
+ *
+*/
+
+::-webkit-input-placeholder {
+    /* WebKit, Blink, Edge */
+    color: #fff;
+}
+
+:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #fff;
+    opacity: 1;
+}
+
+::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #fff;
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #fff;
+}
+
+
+/*
+ *
+ * --- More general styles ---
+ *
+*/
+
+.menuBuilding .searchHead a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    top: 5px;
+    position: relative
+}
+
+.buildingDetail {
+    /*margin-bottom: 20px;*/
+    height: 175px;
+    z-index: 1;
+    position: relative;
+    background-color: #CCC;
+    background-size: cover;
+}
+
+.buildingDetail .main {
+    font-size: 20px;
+    color: white;
+    font-weight: 500;
+    margin: 0 0 5px 0;
+}
+
+.buildingDetail .stackBottom {
+    position: absolute;
+    bottom: 0;
+    margin: 20px;
+}
+
+.buildingDetail .grandient {
+    height: 100%;
+    width: 100%;
+    background: -webkit-linear-gradient(rgba(0,0,0,0.0), rgba(0,0,0,0.6));
+    background: -o-linear-gradient(rgba(0,0,0,0.0), rgba(0,0,0,0.6));
+    background: -moz-linear-gradient(rgba(0,0,0,0.0), rgba(0,0,0,0.6));
+    background: linear-gradient(rgba(0,0,0,0.0), rgba(0,0,0,0.6));
+
+}
+
+.buildingDetail .sub {
+    font-size: 14px;
+    color: white;
+    font-weight: 300;
+    margin: 0;
+}
+
+.leaflet-bar {
+    border-radius: 1px;
+    box-shadow: 0px 0px 0px rgba(0, 0, 0, 0.6);
+    border: 2px solid #d9d9d9;
+}
+
+.leaflet-bar a:first-child {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
+.leaflet-bar a:last-child {
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-bottom: none;
+}
+
+.leaflet-bar a,
+.leaflet-bar a:hover {
+    background-color: rgb(250, 250, 250);
+    border-bottom: 1px solid #d9d9d9;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    line-height: 30px;
+    color: #666;
+    cursor: pointer;
+}
+.leaflet-bar a:last-child:hover{
+    border: none;
+}
+
+.leaflet-bar a:hover {
+    background-color: rgb(245, 245, 245);
+    color: #000;
+}
+
+.leaflet-bar a.active {
+    font-weight: bold;
+    background-color: rgb(240, 240, 240);
+    color: #000;
+}
+
+
+
+/*
+ *
+ * --- Material List ---
+ *
+*/
+
+.listElement,
+.listElementIcon {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.listElementIcon:after {
+    content: " ";
+    display: block;
+    height: 1px;
+    background-color: #e2e2e2;
+    clear: both;
+    margin: 0px 0 0 70px;
+}
+
+.listElementIcon:last-child:after {
+    content: "";
+    height: 0px;
+}
+
+.listElement:after {
+    content: " ";
+    display: block;
+    height: 1px;
+    background-color: #e2e2e2;
+    clear: both;
+}
+
+.listIcon {
+    height: 40px;
+    width: 40px;
+    float: left;
+    margin: 15px 15px 15px 15px;
+    text-align: center;
+    vertical-align: baseline;
+    line-height: 40px;
+    color: black;
+}
+
+.circular {
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.circular img {
+    min-height: 40px;
+    width: 40px;
+    background-image: url('../img/houseIcon.png');
+    background-size: contain;
+}
+
+.noresults {
+    overflow: hidden;
+    text-align: center;
+    line-height: 50px;
+}
+.materialList .doubleMain {
+    font-size: 16px;
+    margin: 15px 0 0 0;
+    color: black;
+}
+
+.materialList .doubleSub {
+    font-size: 14px;
+    margin: 3px 0 15px 0;
+    color: #BBB;
+}
+
+.materialList .singleMain {
+    margin: 25px 0 0 15px;
+    font-size: 16px;
+    text-decoration: none;
+    color: black;
+}
+
+.materialList .listElement .singleMain {
+    margin: 15px 0 15px 15px;
+    cursor: pointer;
+}
+
+.searchHead input {
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+    display: block;
+    font-size: 16px;
+    margin: 0;
+    padding: 0px 0px;
+    width: 100%;
+    background-color: transparent;
+    text-align: left;
+    color: inherit;
+    background-image: url(../img/magnify.png);
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    height: 30px;
+}
+.searchHead input::-ms-clear {
+    display: none;
+}
+
+.roomSearch .searchHead input {
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    color: inherit;
+    background-image: url(../img/magnify-dark.png);
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    padding: 1px 0;
+    background-position: center right;
+    width: 100%;
+    color: #999;
+    font-size: 15px;
+    height: 24px;
+}
+
+.menuRoom .searchHead a,
+.menuRoom .searchHead i,
+.menuSearch .searchHead a,
+.menuSearch .searchHead i{
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    vertical-align: middle;
+}
+
+.roomSearch input::-webkit-input-placeholder {
+    /* WebKit, Blink, Edge */
+    color: #aaa;
+}
+
+.roomSearch input:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #aaa;
+    opacity: 1;
+}
+
+.menuRoom input::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #aaa;
+    opacity: 1;
+}
+
+.roomSearch input:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #aaa;
+}
+
+.menuBuilding .searchHead a,
+.menuBuilding .searchHead i {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    vertical-align: middle;
+}
+
+
+/*
+ *
+ * --- Impressum ---
+ *
+*/
+
+.right h1 {
+    margin: 20px;
+    font-size: 20px
+}
+
+.right h2 {
+    margin: 20px 20px 10px 20px;
+    font-size: 16px;
+    color: #333;
+}
+
+.right p {
+    margin: 0px 20px;
+}
