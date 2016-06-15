@@ -3,7 +3,7 @@
 
     <div class="menuBuilding">
         <div class="searchHead desktop-only">
-            <a href="#/"><i class="material-icons md-1">arrow_back</i> {{ 'BACK_TO_BUILDINGSEARCH' | translate }}</a>
+            <a href="#/"><img src="../img/chev_white_24px.svg" alt="Zurück"> {{ 'BACK_TO_BUILDINGSEARCH' | translate }}</a>
         </div>
 
         <div class="materialList card">
@@ -16,17 +16,17 @@
             </div>
 
             <a class="listElementIcon" href="#/building/{{ctrl.buildingCode}}/map">
-                <i class="listIcon material-icons">location_city</i>
+                <i class="listIcon fi-map"></i>
                 <p class="singleMain" translate="MENU_SHOW_BUILDINGMAP"></p>
             </a>
 
             <a class="listElementIcon" href="#/building/{{ctrl.buildingCode}}/map">
-                <i class="listIcon material-icons">search</i>
+                <i class="listIcon fi-magnifying-glass"></i>
                 <p class="singleMain" translate="MENU_SEARCH_ROOM"></p>
             </a>
 
             <a class="listElementIcon" target="_blank" href="https://www.google.com/maps/place/{{ctrl.building.displayName}}/@{{ctrl.building.lat}},{{ctrl.building.lng}}">
-                <i class="listIcon material-icons">place</i>
+                <i class="listIcon fi-marker"></i>
                 <p class="singleMain" translate="MENU_SHOW_ON_GOOGLEMAPS"></p>
             </a>
 

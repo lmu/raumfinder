@@ -36,27 +36,28 @@ body {
 
 .mobileNavi h2 {
     color: white;
-    font-size: 17px;
+    font-size: 16px;
     margin: 0;
-    padding: 10px 15px;
-    line-height: 30px;
+    padding: 0px 15px;
+    line-height: 50px;
 }
 .mobileNavi a{
     text-decoration: none;
 }
 
-.mobileNavi a i {
-    color: white;
-    vertical-align: middle;
-    line-height: 8px;
+.mobileNavi .settings img {
+    position: relative;
+    top: 13px;
+    right: 10px;
 }
 
 .mobileNavi .headline {
     float: left;
 }
 
-.mobileNavi .headline i {
+.mobileNavi .headline img {
     left: -7px;
+    top: 6px;
     position: relative;
 }
 

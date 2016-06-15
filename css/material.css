@@ -1,5 +1,6 @@
 * {
-    font-family: "Roboto", sans-serif;
+    font-family: "Open Sans", sans-serif;
+    font-weight: normal;
 }
 
 html {
@@ -63,13 +64,6 @@ h2 {
  *
 */
 
-.menuBuilding .searchHead a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    top: 5px;
-    position: relative
-}
 
 .buildingDetail {
     /*margin-bottom: 20px;*/
@@ -96,11 +90,10 @@ h2 {
 .buildingDetail .grandient {
     height: 100%;
     width: 100%;
-    background: -webkit-linear-gradient(rgba(0,0,0,0.0), rgba(0,0,0,0.6));
-    background: -o-linear-gradient(rgba(0,0,0,0.0), rgba(0,0,0,0.6));
-    background: -moz-linear-gradient(rgba(0,0,0,0.0), rgba(0,0,0,0.6));
-    background: linear-gradient(rgba(0,0,0,0.0), rgba(0,0,0,0.6));
-
+    background: -webkit-linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.6));
+    background: -o-linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.6));
+    background: -moz-linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.6));
+    background: linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.6));
 }
 
 .buildingDetail .sub {
@@ -138,7 +131,8 @@ h2 {
     color: #666;
     cursor: pointer;
 }
-.leaflet-bar a:last-child:hover{
+
+.leaflet-bar a:last-child:hover {
     border: none;
 }
 
@@ -154,7 +148,6 @@ h2 {
 }
 
 
-
 /*
  *
  * --- Material List ---
@@ -167,6 +160,8 @@ h2 {
     position: relative;
     overflow: hidden;
     text-decoration: none;
+    font-size: 24px;
+    vertical-align: middle;
 }
 
 .listElementIcon:after {
@@ -201,6 +196,10 @@ h2 {
     line-height: 40px;
     color: black;
 }
+.listIconImg {
+    float: left;
+    margin: 25px;
+}
 
 .circular {
     border-radius: 20px;
@@ -219,21 +218,22 @@ h2 {
     text-align: center;
     line-height: 50px;
 }
+
 .materialList .doubleMain {
-    font-size: 16px;
+    font-size: 15px;
     margin: 15px 0 0 0;
     color: black;
 }
 
 .materialList .doubleSub {
-    font-size: 14px;
+    font-size: 13px;
     margin: 3px 0 15px 0;
     color: #BBB;
 }
 
 .materialList .singleMain {
     margin: 25px 0 0 15px;
-    font-size: 16px;
+    font-size: 15px;
     text-decoration: none;
     color: black;
 }
@@ -247,7 +247,7 @@ h2 {
     border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.8);
     display: block;
-    font-size: 16px;
+    font-size: 15px;
     margin: 0;
     padding: 0px 0px;
     width: 100%;
@@ -260,6 +260,7 @@ h2 {
     background-position: center right;
     height: 30px;
 }
+
 .searchHead input::-ms-clear {
     display: none;
 }
@@ -282,11 +283,15 @@ h2 {
 .menuRoom .searchHead a,
 .menuRoom .searchHead i,
 .menuSearch .searchHead a,
-.menuSearch .searchHead i{
+.menuSearch .searchHead i,
+.menuBuilding .searchHead a,
+.menuBuilding .searchHead i {
     color: white;
     text-decoration: none;
-    font-size: 16px;
-    vertical-align: middle;
+    font-size: 15px;
+    vertical-align: top;
+    top: 4px;
+    position: relative;
 }
 
 .roomSearch input::-webkit-input-placeholder {
@@ -311,13 +316,6 @@ h2 {
     color: #aaa;
 }
 
-.menuBuilding .searchHead a,
-.menuBuilding .searchHead i {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
-    vertical-align: middle;
-}
 
 
 /*
