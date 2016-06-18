@@ -76,5 +76,5 @@ angular.module('myApp').config(function ($translateProvider) {
 
     });
 
-    $translateProvider.determinePreferredLanguage();
+    $translateProvider.determinePreferredLanguage('de_DE');
 });
