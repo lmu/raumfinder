@@ -32,6 +32,7 @@ body {
     background-color: #009440;
     overflow: auto;
     height: 100px
+        
 }
 
 .mobileNavi h2 {
@@ -108,6 +109,7 @@ body {
     padding: 0 0px;
     max-height: calc(100vh - 140px);
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .roomSearch .searchHead {
@@ -143,3 +145,4 @@ body {
 .menuSearch .searchBody{
     height: 100%;
 }
+

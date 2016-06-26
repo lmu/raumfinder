@@ -105,6 +105,7 @@ a {
     height: calc(100vh - 140px);
     overflow-y: scroll;
     background: white;
+    -webkit-overflow-scrolling: touch;
 }
 
 .roomSearch .searchBody {
@@ -131,4 +132,10 @@ a {
     box-sizing: border-box;
     color: white;
     height: 40px;
+}
+
+#popup {
+    position: absolute;
+    top: 60px;
+    right: -30px;
 }

@@ -64,7 +64,6 @@ h2 {
  *
 */
 
-
 .buildingDetail {
     /*margin-bottom: 20px;*/
     height: 175px;
@@ -196,6 +195,7 @@ h2 {
     line-height: 40px;
     color: black;
 }
+
 .listIconImg {
     float: left;
     margin: 25px;
@@ -259,6 +259,7 @@ h2 {
     background-repeat: no-repeat;
     background-position: center right;
     height: 30px;
+    border-radius: 0px;
 }
 
 .searchHead input::-ms-clear {
@@ -317,7 +318,6 @@ h2 {
 }
 
 
-
 /*
  *
  * --- Impressum ---
@@ -337,4 +337,71 @@ h2 {
 
 .right p {
     margin: 0px 20px;
+}
+
+
+/*
+ *
+ * --- PopUp ---
+ *
+*/
+
+.settings {
+    height: 0;
+    width: 0;
+    margin-top: 12px;
+    margin-right: 40px;
+    border: 0;
+}
+
+.settings:after {
+    content: ' ';
+    display: block;
+    height: 20px;
+    width: 30px;
+    background-image: url(./../img/more_white_24px.svg);
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+.settings:checked ~ #popup {
+    display: block;
+}
+
+#popup {
+    display: none;
+}
+
+#popup {
+    position: absolute;
+    top: 60px;
+    left: 35%;
+    background-color: white;
+    border-radius: 2px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 0 2px rgba(0, 0, 0, 0.10);
+    z-index: 2000;
+    padding: 5px 0 5px 0;
+    margin-right: 40px;
+}
+
+#popup .menuItem {
+    display: block;
+    padding: 10px 50px 10px 15px;
+    vertical-align: bottom;
+    color: black;
+    font-size: 14px;
+}
+#popup .menuItem:hover {
+    background-color: rgb(240, 240, 240);
+}
+#popup .close{
+    position: absolute;
+    right: 3px;
+    top: 8px;
+    display: block;
+    color: #ccc;
+    height: 25px;
+    width: 25px;
+    font-size: 12px;
+    text-align: center;
 }
