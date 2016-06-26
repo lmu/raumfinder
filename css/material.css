@@ -346,15 +346,16 @@ h2 {
  *
 */
 
-.settings {
+.mobileSettings {
     height: 0;
     width: 0;
     margin-top: 12px;
     margin-right: 40px;
     border: 0;
+    float: right;
 }
 
-.settings:after {
+.mobileSettings:after {
     content: ' ';
     display: block;
     height: 20px;
@@ -364,7 +365,7 @@ h2 {
     cursor: pointer;
 }
 
-.settings:checked ~ #popup {
+.mobileSettings:checked ~ #popup {
     display: block;
 }
 
@@ -375,7 +376,7 @@ h2 {
 #popup {
     position: absolute;
     top: 60px;
-    left: 35%;
+    left: 30%;
     background-color: white;
     border-radius: 2px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 0 2px rgba(0, 0, 0, 0.10);
