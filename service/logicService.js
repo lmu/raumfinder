@@ -47,10 +47,10 @@ angular.module('myApp').service('logicService', function () {
         };
 
     })
-    .directive('topNavi', function () {
+    .directive('topNavi',['$translate',function ($translate) {
         return {
             restrict: 'AE',
             replace: 'true',
             templateUrl: 'partials/mobileTopMenu.html'
         };
-    });
+    }]);

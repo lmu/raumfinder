@@ -349,20 +349,14 @@ h2 {
 .mobileSettings {
     height: 0;
     width: 0;
-    margin-top: 12px;
-    margin-right: 40px;
     border: 0;
-    float: right;
+    visibility: hidden;
 }
 
-.mobileSettings:after {
-    content: ' ';
-    display: block;
-    height: 20px;
-    width: 30px;
-    background-image: url(./../img/more_white_24px.svg);
-    background-repeat: no-repeat;
-    cursor: pointer;
+.mobileSettingsBtn {
+    float: right;
+    margin-top: 12px;
+    margin-right: 16px;
 }
 
 .mobileSettings:checked ~ #popup {
@@ -392,10 +386,12 @@ h2 {
     color: black;
     font-size: 14px;
 }
+
 #popup .menuItem:hover {
     background-color: rgb(240, 240, 240);
 }
-#popup .close{
+
+#popup .close {
     position: absolute;
     right: 3px;
     top: 8px;

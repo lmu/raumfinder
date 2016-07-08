@@ -6,11 +6,12 @@
         <h2><img src="./img/chev_white_24px.svg" ng-show="naviLink" alt="Zurück"/>{{naviText}}</h2>
     </a>
 
+    <label class="mobileSettingsBtn" for="radio1"><img src="./img/more_white_24px.svg"></label>
     <input id="radio1" name="radio" type="checkbox" class="mobileSettings no-desktop">
     
     
     <div id="popup">  
-        <label class="menuItem" for="radio1" href="" ng-click="changeLang()" translate="TRANSLATE"></label>
+        <label class="menuItem" for="radio1" ng-click="changeLang()" translate="TRANSLATE"></label>
         <a for="radio1" class="menuItem" href="#/impressum" translate="IMPRESSUM"></a>
         <label class="close" for="radio1" ontouchstart="">✖</labels>
     </div>
