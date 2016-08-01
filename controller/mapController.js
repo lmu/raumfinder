@@ -26,6 +26,7 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
         ctrl.rooms;
         ctrl.uniqueBuildParts;
         ctrl.buildingStructure;
+        ctrl.hasImage;
 
         // Map 
         var map;
@@ -83,7 +84,16 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                 console.error("Could not load rooms: ", reason);
             }
         );
-
+        
+        
+         // Find building with id and get relevant info
+            for (var i = 0; i < buildings.length; i++) {
+                if (buildings[i].code === 'bw'+ctrl.buildingCode) {
+                    ctrl.hasImage = buildings[i].hasImage;
+                    break;
+                }
+            }
+      
         // Unique Building Parts
         // Get all unique building parts, extract street name and then init map
         dataService.getBuildingParts(ctrl.buildingCode).then(
