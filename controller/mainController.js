@@ -62,15 +62,15 @@ angular.module('myApp').controller('MainCtrl', function ($scope, $http, $filter)
     $http({
         method: 'GET',
         responseType: "json",
-        url: 'json/3_building.json'
+        url: 'json/buildings.json'
     }).then(function successCallback(response) {
 
         // Create marker on map
         var tempcityMarkers = {};
         for (var i = 0; i < main.buildings.length; i++) {
             tempcityMarkers[main.buildings[i].code] = {
-                lat: main.buildings[i].lat,
-                lng: main.buildings[i].lng,
+                lat: parseFloat(main.buildings[i].lat),
+                lng: parseFloat(main.buildings[i].lng),
                 message: '<p style="text-align: center"><b>' + $filter('capitalize')(main.buildings[i].displayName, true) +
                     '</b></br> <a href="#/building/' + main.buildings[i].code + '/map">Raumplan anzeigen &#62;</a></p>',
             }

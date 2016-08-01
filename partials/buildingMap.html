@@ -7,7 +7,9 @@
         </div>
 
         <div class="materialList card no-mobile">
-            <div class="buildingDetail" style="background-image:url('https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/thumbnails/bw{{ctrl.buildingCode}}.jpg')">
+            <div class="buildingDetail" style="background-image:url(
+                        {{ctrl.hasImage == '1' && 'https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/thumbnails/'+ ctrl.buildingCode + '.jpg' 
+                      || 'img/pattern.jpg'}})">
                 <div class="grandient"> &nbsp;</div>
                 <div class="stackBottom">
                     <p class="main">{{ctrl.streetName | capitalize:true}}</p>

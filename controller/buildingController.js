@@ -15,12 +15,13 @@ angular.module('myApp')
         function init() {
             // Get current building id from uri
             ctrl.buildingCode = $routeParams.id;
-
+   
             // Find building with id and get relevant info
             for (var i = 0; i < buildings.length; i++) {
                 if (buildings[i].code === ctrl.buildingCode) {
                     ctrl.building = buildings[i];
                     ctrl.streetName = buildings[i].displayName;
+                    ctrl.hasImage = buildings[i].hasImage;
                     break;
                 }
                 if(i == buildings.length - 1){
@@ -32,14 +33,14 @@ angular.module('myApp')
             // Set map
             angular.extend($scope, {
                 cityCenter: {
-                    lat: ctrl.building.lat,
-                    lng: ctrl.building.lng,
+                    lat: parseFloat(ctrl.building.lat),
+                    lng: parseFloat(ctrl.building.lng),
                     zoom: 18,
                 },
                 cityMarkers: {
                     cityCenter: {
-                        lat: ctrl.building.lat,
-                        lng: ctrl.building.lng,
+                        lat: parseFloat(ctrl.building.lat),
+                        lng: parseFloat(ctrl.building.lng),
                         focus: true,
                         popupOptions: {
                             closeButton: false
