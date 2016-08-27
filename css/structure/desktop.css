@@ -147,6 +147,11 @@ body::before {
     height: 55px;
 }
 
+.searchHead img {
+    position: relative;
+    top: -1px;
+}
+
 .roomSearch .searchBody {
     height: calc(100vh - 130px - 175px - 20px - 20px - 5px - 40px - 55px - 70px);
 }

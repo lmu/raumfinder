@@ -7,13 +7,15 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                                     'leafletMapEvents',
                                     'dataService',
                                     'logicService',
+                                    'buildingTestDirect',           
     function ($scope,
         $routeParams,
         $location,
         leafletData,
         leafletMapEvents,
         dataService,
-        logicService) {
+        logicService,
+        buildingTestDirect) {
 
         $scope.searchRoom = "";
         $scope.naviText = "";
@@ -21,12 +23,13 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
 
         // Set up all variables
         var ctrl = this;
+        ctrl.building;
         ctrl.buildingCode;
-        ctrl.streetName;
+    //    ctrl.streetName;
         ctrl.rooms;
         ctrl.uniqueBuildParts;
         ctrl.buildingStructure;
-        ctrl.hasImage;
+    //    ctrl.hasImage;
 
         // Map 
         var map;
@@ -61,38 +64,49 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
 
         //--------------------------- Data ---------------------------//
         //------------------------------------------------------------//
-
+        
+        
+        var init = function () {
+            ctrl.buildingCode = $routeParams.id;
+       
+            loadBuilding();
+            loadBuildingParts();
+            loadRooms();
+        };
+        init();  
+        
+        
         // BUILDING CODE
         // Get the building code from URI
-        ctrl.buildingCode = $routeParams.id.split("bw")[1];
-        $scope.naviLink = "building/bw" + ctrl.buildingCode;
-
-        console.log("Building code: " + ctrl.buildingCode);
+        function
+        
+        buildingTestDirect.getBuilding()
+        .then(function (building) {
+            ctrl.building = building;
+            
+            console.log("Building code: " + ctrl.buildingCode);
+            $scope.naviLink = "building/" + building.code;
+            
+        }, function (err) {
+            // Building could not be found 
+            $location.path("/404");
+        });
+           
 
         // ROOMS
         // Get all rooms
-        dataService.getRooms(ctrl.buildingCode).then(
+        dataService.getRooms($routeParams.id).then(
             function (answer) { // OnSuccess function
                 ctrl.rooms = answer;
-                //console.log("Next: rooms");
-                //console.log(ctrl.rooms);
                 // Set map via url params
                 mapViaUrl();
             },
             function (reason) { // OnFailure function
-                 $location.path("/404");
+                $location.path("/404");
                 console.error("Could not load rooms: ", reason);
             }
         );
         
-        
-         // Find building with id and get relevant info
-            for (var i = 0; i < buildings.length; i++) {
-                if (buildings[i].code === 'bw'+ctrl.buildingCode) {
-                    ctrl.hasImage = buildings[i].hasImage;
-                    break;
-                }
-            }
       
         // Unique Building Parts
         // Get all unique building parts, extract street name and then init map
@@ -101,12 +115,6 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
             function (answer) {
                 // Get all building parts
                 ctrl.uniqueBuildParts = answer;
-                //console.log("Next: uniqueBuildParts");
-                //console.log(ctrl.uniqueBuildParts);
-
-                // Extract street name 
-                ctrl.streetName = answer[Object.keys(answer)[0]].address;
-                $scope.naviText = answer[Object.keys(answer)[0]].address;
 
                 // Transform building part list into building structure
                 ctrl.buildingStructure = logicService.composeBuildPartList(answer);
@@ -134,24 +142,22 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
 
         // Get set room / level / building part from url and update map 
         function mapViaUrl() {
-            //Check if everything is loaded
-            // console.log(ctrl.buildingStructure, ctrl.rooms)
+            // Check if everything is loaded
             if (ctrl.buildingStructure !== undefined && ctrl.rooms !== undefined) {
-                // The order of the follwing ifs is from specific to less specific location
-                // If search query contains room -> show it on map
+                // The order of if-clauses decreases in precision (room, level, building part)
+                
+                // If search query contains a room -> show it on map
                 if ($location.search().room) {
-                    // console.log('Show map via url room', $location.search());
                     $scope.mapViaRoom($location.search().room);
-
                 }
 
-                // If search query contains level (aka mapUri) -> show it on map
+                // If search query contains a level (aka mapUri) -> show it on map
                 else if ($location.search().level) {
                     //console.log('Show map via url mapUri', $location.search().level);
                     $scope.mapViaLevel($location.search().level);
                 }
 
-                // If search query contains level (aka mapUri) -> show it on map
+                // If search query contains a level (aka mapUri) -> show it on map
                 else if ($location.search().part) {
                     //console.log('Show map via url part', $location.search().part);
                     $scope.mapViaPart($location.search().part);
@@ -277,7 +283,7 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                 var buildingPart = ctrl.buildingStructure[this.options.buildingPart];
                 var buildingPartArray = Object.keys(buildingPart);
                 buildingPartArray.sort(function (a, b) {
-                    var levels = ["OG 06", "OG 05", "OG 04", "OG 03", "OG 02 Z", "OG 02", "OG 01 Z", "OG 01", "EG Z", "EG", "UG 01", "UG 02"];
+                    var levels = ["OG 08","OG 07","OG 06", "OG 05", "OG 04","OG 03 Z", "OG 03", "OG 02 Z", "OG 02", "OG 01 Z", "OG 01", "EG Z", "EG", "UG 01", "UG 02", "UG 03"];
                     var aPos = levels.indexOf(a);
                     var bPos = levels.indexOf(b);
 
@@ -298,8 +304,11 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                     }
 
                     a.setAttribute('mapUri', mapUri);
-                    a.setAttribute('href', '#/building/bw' + ctrl.buildingCode + '/map?level=' + mapUri)
-                    a.innerHTML = (rename[buildingPartArray[level]] ? rename[buildingPartArray[level]] : buildingPartArray[level]);
+                    a.setAttribute('href', '#/building/' + ctrl.buildingCode + '/map?level=' + mapUri)
+                    
+                    
+                    a.innerHTML = dataService.getCorrectedLevelName(buildingPartArray[level]);
+                        //(rename[buildingPartArray[level]] ? rename[buildingPartArray[level]] : buildingPartArray[level]);
 
 
                     a.onclick = function (e) {
@@ -319,7 +328,6 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                 activePart: ''
             },
             initialize: function (activePart) {
-                // options.mapUri
                 this.options.activePart = activePart;
             },
             onAdd: function (map) {
@@ -333,7 +341,7 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                     }
 
                     a.setAttribute('buildingPart', part);
-                    a.setAttribute('href', '#/building/bw' + ctrl.buildingCode + '/map?part=' + part)
+                    a.setAttribute('href', '#/building/' + ctrl.buildingCode + '/map?part=' + part)
                     a.innerHTML = part;
 
 

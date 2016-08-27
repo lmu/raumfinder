@@ -1,15 +1,38 @@
 angular.module('filter', [])
     .filter('capitalize', function () {
         return function (input, all) {
-            var reg = (all) ? /([^\W_]+[^\s-]*) */g : /([^\W_]+[^\s-]*)/;
-            if(input !== undefined){
+            var reg = /([^\W_]+[^\s-]*) */g;
+            if (input !== undefined) {
                 input = input.replace(/ - /g, "-");
             }
-            
+
             return (!!input) ? input.replace(reg, function (txt) {
                 return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             }) : '';
         }
+    })
+    .filter('filterBuildings', function () {
+        return function (input, str) {
+            var tmp = [];
+
+            if (str == undefined || str == "") {
+                return input;
+            }
+
+            str.toLowerCase();
+
+            angular.forEach(input, function (val, key) {
+                var street = val.displayName.toLocaleLowerCase();
+                var city = val.city.toLocaleLowerCase();
+
+
+                if (street.indexOf(str) !== -1 || city.indexOf(str) !== -1) {
+                    tmp.push(val)
+                }
+            });
+
+            return tmp;
+        };
     })
     .filter('findInObjects', function () {
         return function (input, str) {
@@ -25,6 +48,7 @@ angular.module('filter', [])
             return tmp;
         };
     })
+    //get text in brackets 
     .filter('stringInBrackets', function () {
         return function (input, all) {
 
@@ -37,22 +61,12 @@ angular.module('filter', [])
 
             return matches[1];
         }
-    }).filter('roomFilter', function () {
-        return function (input, query) {
-            if(query === "" || query === " ") return input;
-            
-            var filtered = {};
-            var query_l = query.replace(/ /g,'').toLowerCase();
-            var myKey = "";
-            
-            angular.forEach(input, function (val, key) {
-               // myKey = val.rName.replace(/ /g,'').toLowerCase();
-                if (val.rName.replace(/ /g,'').toLowerCase().indexOf(query_l) > -1) {
-                    filtered[key] = val;
-                }
-            });
-        console.log(filtered);
-            return filtered;
-        
-        };
+    })
+    //remove text in brackets
+    .filter('removeStringInBrackets', function () {
+        return function (input) {
+            return input.replace(/ *\([^)]*\) */g, "");
+        }
+
+
     });

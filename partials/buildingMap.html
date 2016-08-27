@@ -3,19 +3,21 @@
 
     <div class="menuRoom">
         <div class="searchHead desktop-only">
-            <a href="#/"><img src="./img/chev_white_24px.svg" alt="Zurück"> {{'BACK_TO_BUILDINGSEARCH' | translate}}</a>
+            <a href="#/">
+                <img src="./img/chev_white_24px.svg" alt="Zurück"> {{'BACK_TO_BUILDINGSEARCH' | translate}}
+            </a>
         </div>
 
         <div class="materialList card no-mobile">
-            <div class="buildingDetail" style="background-image:url(
-                        {{ctrl.hasImage == '1' && 'https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/thumbnails/bw'+ ctrl.buildingCode + '.jpg' 
-                      || 'img/pattern.jpg'}})">
+            <div class="buildingDetail" 
+                 style="background-image:url({{ctrl.building.getImageUrl(400)}})">
                 <div class="grandient"> &nbsp;</div>
                 <div class="stackBottom">
-                    <p class="main">{{ctrl.streetName | capitalize:true}}</p>
+                    <p class="main">{{ctrl.building.displayName}}</p>
+                    <p class="sub">{{ctrl.building.city}}</p>
                 </div>
             </div>
-            <a class="listElementIcon" href="#/building/bw{{ctrl.buildingCode}}">
+            <a class="listElementIcon" href="#/building/{{ctrl.buildingCode}}">
                 <i class="listIcon fi-marker"></i>
                 <p class="singleMain" translate="MENU_SHOW_ON_MAP"></p>
             </a>
@@ -27,23 +29,31 @@
                 <input type="text" placeholder="{{'MENU_SEARCH_ROOM'|translate}}" ng-model="searchRoom" ng-init=" ">
             </div>
             <div class="searchBody" id="roomSearchBody">
-                <a class="listElement" ng-repeat="(key, value) in ctrl.rooms | roomFilter: searchRoom" href="#/building/bw{{ctrl.buildingCode}}/map?room={{value.rCode}}" ng-click="mapViaRoom(value.rCode)">
-                    <p class="singleMain">{{value.rName}}</p>
+                <a class="listElement" ng-repeat="room in ctrl.filteredRooms"
+                   href="#/building/{{ctrl.buildingCode}}/map?room={{room.rCode}}" 
+                   ng-click="mapViaRoom(room.rCode)">
+                    <p class="singleMain">{{room.rName}}</p>
                 </a>
 
+                <a class="listElement"  
+                   ng-hide = "ctrl.filteredRooms.length < roomLimit"
+                   ng-click="showMoreRooms()">
+                    <p class="singleMain"><i>Weitere Räume laden...</i></p>
+                </a>
             </div>
         </div>
 
         <div class="roomSearch materialList card only-mobile">
-            <a href="#/building/bw{{ctrl.buildingCode}}/map/search">
-                <div class="searchHead">
-                    <input type="text" placeholder="Raum suchen" ng-model="searchRoom" ng-init=" ">
-                </div>
-            </a>
+            <a class="fakeSearch" href="#/building/{{ctrl.buildingCode}}/map/search">Raum suchen</a>
         </div>
 
     </div>
 </div>
 <div class="right card">
-    <leaflet class="map" defaults="defaults" marker="marker" layers="layers" lf-center="center" event-broadcast="events"></leaflet>
+    <leaflet class="map" 
+             defaults="defaults" 
+             marker="marker" 
+             layers="layers" 
+             lf-center="center" 
+             event-broadcast="events"></leaflet>
 </div>

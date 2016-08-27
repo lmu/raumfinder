@@ -23,10 +23,9 @@ angular.module('myApp').config(function ($translateProvider) {
         SEARCH_NO_RESULTS: 'Keine Ergebnisse gefunden.',
 
         IMPRESSUM_LMU_DISCLAIMER: "LMU-Raumfinder wurde von Studenten der LMU erstellt und ist kein offizielles Produkt der Ludwig-Maximilians-Universität München. Die LMU unterstützt die Website bzw. App im Rahmen einer Kooperation, übernimmt jedoch keine Haftung und ist nicht für deren Inhalte verantwortlich.",
-        IMPRESSUM_ADDRESS_HEADLINE: 'Anschrift',
-        IMPRESSUM_ADDRESS: 'Max von Bülow<br/>Osterwaldstr. 59<br/>80805 München<br/>',
+
         IMPRESSUM_CONTACT_HEADLINE: 'Kontakt',
-        IMPRESSUM_CONTACT: 'Bitte nutze das <a href="http://www.maxmediapictures.de/kontakt/index.html">Kontaktformular</a> für Fragen, Anregungen oder Probleme.<br/>Wir freuen uns auf Dein Feedback!',
+        IMPRESSUM_CONTACT: 'Bitte nutze das <a href="http://www.internetdienste.verwaltung.uni-muenchen.de/funktionen/kontakt-raumfinder/index.html">Kontaktformular</a> für Fragen, Anregungen oder Probleme.<br/>Wir freuen uns auf Dein Feedback!',
         IMPRESSUM_HELP_HEADLINE: 'Du willst helfen?',
         IMPRESSUM_HELP: 'Wir versuchen stets die Website und App zu verbessern und Fehler möglichst schnell zu beheben. Melde Dich bei uns, falls Du uns bei der Entwicklung unterstützen willst (Android, iOS, Web)!',
 

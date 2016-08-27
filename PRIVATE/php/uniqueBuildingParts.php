@@ -14,14 +14,17 @@ foreach ($pdo->query($sql) as $row) {
 echo "<br /><b>" . count($allBuildings) . " Gebaeude gefunden</b><br />";
 
 
+if (!is_dir('uniqueBuildingParts')) {
+  mkdir('uniqueBuildingParts');
+}
 
 
 
 foreach($allBuildings as $val) {
    print $val . '<br />';
     
-    $sql2 = 'SELECT building.code as bCode, building.displayName,  '.
-            '        floor.code as fCode, floor.buildingPart, floor.mapUri, '.
+    $sql2 = 'SELECT  floor.code as fCode, building.code as bCode, building.displayName,  '.
+            '        floor.buildingPart, floor.mapUri, '.
             '        floor.level, floor.name as fName, floor.mapSizeX, floor.mapSizeY, building_part.address '.
             '    FROM building '.
             '       LEFT JOIN building_part ON building.code = building_part.buildingCode '.
@@ -34,12 +37,12 @@ foreach($allBuildings as $val) {
     $sth = $pdo->prepare($sql2);
     $sth->execute();
     
-    $result = $sth->fetchAll(PDO::FETCH_ASSOC);
+    $result = $sth->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE|PDO::FETCH_ASSOC);
     $result = utf8ize($result);
     print_r(json_encode($result));
     echo "<br/> <br/>";
 
-    file_put_contents($val . ".json", json_encode($result));
+    file_put_contents("uniqueBuildingParts/" . $val . ".json", json_encode($result));
 
 
 };

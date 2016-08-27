@@ -3,26 +3,29 @@
 
     <div class="menuBuilding">
         <div class="searchHead desktop-only">
-            <a href="#/"><img src="./img/chev_white_24px.svg" alt="Zurück"> {{ 'BACK_TO_BUILDINGSEARCH' | translate }}</a>
+            <a href="#/">
+                <img src="./img/chev_white_24px.svg" alt="Zurück"> 
+                {{ 'BACK_TO_BUILDINGSEARCH' | translate }}
+            </a>
         </div>
 
         <div class="materialList card">
 
-            <div class="buildingDetail" style="background-image:url(
-                        {{ctrl.hasImage == '1' && 'https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/thumbnails/'+ ctrl.buildingCode + '.jpg' 
-                      || 'img/pattern.jpg'}})">
+            <div class="buildingDetail" 
+                 style="background-image:url({{ctrl.building.getImageUrl(400)}})">
                 <div class="grandient"> &nbsp;</div>
                 <div class="stackBottom">
-                    <p class="main">{{ctrl.building.displayName | capitalize:true}}</p>
+                    <p class="main">{{ctrl.building.displayName}}</p>
+                    <p class="sub">{{ctrl.building.city}}</p>
                 </div>
             </div>
 
-            <a class="listElementIcon" href="#/building/{{ctrl.buildingCode}}/map">
+            <a class="listElementIcon" href="#/building/{{ctrl.building.code}}/map">
                 <i class="listIcon fi-map"></i>
                 <p class="singleMain" translate="MENU_SHOW_BUILDINGMAP"></p>
             </a>
 
-            <a class="listElementIcon" href="#/building/{{ctrl.buildingCode}}/map">
+            <a class="listElementIcon" href="#/building/{{ctrl.building.code}}/map">
                 <i class="listIcon fi-magnifying-glass"></i>
                 <p class="singleMain" translate="MENU_SEARCH_ROOM"></p>
             </a>
@@ -38,8 +41,8 @@
 </div>
 
 <div class="right card">
-    <a href="#/building/{{ctrl.buildingCode}}/map" class="mobile-only">
+    <a href="#/building/{{ctrl.building.code}}/map" class="mobile-only">
         <div class="noTouch mobile-only"></div>
     </a>
-    <leaflet class="map" defaults="default" lf-center="cityCenter" tiles="cityLayers" markers="cityMarkers" event-broadcast="events"></leaflet>
+    <leaflet class="map" lf-center="center" tiles="tiles" markers="marker" ></leaflet>
 </div>

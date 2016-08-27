@@ -9,7 +9,7 @@ angular.module('myApp', [
     ]).config(['$routeProvider',
     function ($routeProvider) {
             $routeProvider
-                .when('/impressum', {
+                .when('/kontakt', {
                     controller: 'impressumCtrl',
                     templateUrl: 'partials/impressum.html'
                 })
@@ -20,7 +20,7 @@ angular.module('myApp', [
                     reloadOnSearch: false
                 })
                 .when('/building/:id/map', {
-                    controller: 'mapCtrl',
+                    controller: 'mapCtrl2',
                     controllerAs: 'ctrl',
                     reloadOnSearch: false,
                     templateUrl: 'partials/buildingMap.html',

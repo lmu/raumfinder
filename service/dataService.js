@@ -1,6 +1,7 @@
 angular.module('myApp')
     .service('dataService', ['$http', '$q', '$filter', 'logicService', function ($http, $q, $filter, logicService) {
         var deferObject;
+        var buildings = false;
 
         var myMethods = {
 
@@ -86,8 +87,76 @@ angular.module('myApp')
                     });
 
                 return deferObject.promise;
+
+
+            },
+
+
+            getCorrectedLevelName: function (level) {
+                var temp = level;
+                //Remove everything in brackets
+                level = $filter('removeStringInBrackets')(level);
+                //If entry in rename.json exists, use it
+                level = (rename[level] ? rename[level] : level);
+                return level;
+
+            },
+
+            getAllBuildings: function () {
+
+                if (buildings) {
+                    return buildings;
+                }
+
+                var promise = $http({
+                    method: 'GET',
+                    responseType: "json",
+                    url: 'json/buildingsNeu.json'
+                });
+
+                var deferObject = deferObject || $q.defer();
+
+                promise.then(
+
+                    function (answer) {
+
+                        var temp = {};
+                        for (building in answer.data) {
+                            temp[answer.data[building].code] = answer.data[building];
+                        }
+
+                        buildings = temp;
+                        deferObject.resolve(buildings);
+                    },
+
+                    // OnFailure function
+                    function (reason) {
+                        //console.error("Could not load buildings.");
+                        deferObject.reject(reason);
+                    });
+
+                return deferObject.promise;
+
+            },
+
+
+            getBuildingByID: function (id) {
+
+                if (buildings) {
+                    return buildings[id];
+                } else {
+                    getAllBuildings().then(
+                        function (answer) {
+                            return answer[id];
+                        },
+                        function (reason) {
+                            $location.path("/404");
+                            console.error("Could not load buildings: ", reason);
+                        }
+                    );
+                }
             }
         };
 
         return myMethods;
-  }])
+            }])

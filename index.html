@@ -15,7 +15,6 @@
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_bolditalic/stylesheet.css" rel="stylesheet">
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_italic/stylesheet.css" rel="stylesheet">
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_light/stylesheet.css" rel="stylesheet">
-    <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_lightitalic/stylesheet.css" rel="stylesheet">
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_regular/stylesheet.css" rel="stylesheet">
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_semibold/stylesheet.css" rel="stylesheet">
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_semibolditalic/stylesheet.css" rel="stylesheet">
@@ -48,7 +47,10 @@
                 </div>
             </a>
             <p href="#/impressum" class="settings">
-                <a href="" ng-click="changeLang()" translate="TRANSLATE"></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#/impressum" translate="IMPRESSUM"></a>
+                <a href="http://www.lmu.de/funktionen/impressum/index.html">Impressum</a>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <a href="http://www.lmu.de/funktionen/datenschutz/index.html" translate="Datenschutz"></a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                <a href="#/kontakt" translate="Kontakt"></a>
             </p>
         </div>
     </div>
@@ -74,7 +76,10 @@
     <script src="js/angular-translate.min.js"></script>
 
 
+  
+
     <script src="json/buildings.json"></script>
+    <script src="json/buildingsNeu.json"></script>
     <script src="json/rename.json"></script>
 
     <!-- Latest compiled and minified JavaScript -->
@@ -84,11 +89,14 @@
     <script src="app.js"></script>
     <script src="controller/languageController.js"></script>
     <script src="controller/mainController.js"></script>
-    <script src="controller/mapController.js"></script>
+    <script src="controller/mapController2.js"></script>
     <script src="controller/buildingController.js"></script>
+    <script src="service/building.js"></script>
+    <script src="service/buildingTestDirect.js"></script>
+    <script src="service/roomManager.js"></script>
+    <script src="service/buildingPart.js"></script>
+    <script src="service/buildingPartManager.js"></script>
     <script src="filter/filter.js"></script>
-    <script src="service/dataService.js"></script>
-    <script src="service/logicService.js"></script>
     <script src="service/translate.js"></script>
     <script src="controller/roomSearch.js"></script>
 </body>

@@ -1,31 +1,50 @@
 <div class="left ">
-    <div x-top-navi class="no-desktop mobileNavi"></div>
     
+    <div x-top-navi class="no-desktop mobileNavi"></div>
+
     <div class="searchHead">
-        <input type="text" id="searchHeadInput" placeholder="{{'MENU_SEARCH_BUILDING'|translate}}" ng-model="searchBuilding" ng-change="changeSearchInput()">
+        <input type="text" 
+               id="searchHeadInput" 
+               placeholder="{{'MENU_SEARCH_BUILDING'|translate}}" 
+               ng-model="searchText" 
+               ng-change="changeSearchInput()">
     </div>
 
     <div class="searchBody materialList webkitScrollbar card">
-        <a class="listElementIcon" href="#/building/{{building.code}}" ng-repeat="building in main.buildings  | filter: searchBuilding | orderBy : 'displayName'">
+        
+        <a class="listElementIcon" 
+           href="#building/{{building.code}}" 
+           ng-repeat="building in buildings | filter: searchText">
+            
             <div class="listIcon circular">
-                <img id="buildingSearch" 
-                     ng-src="{{building.hasImage == '1' && 'https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/thumbnails/'+ building.code + '.jpg' 
-                      || 'img/houseIcon.png'}}"/>
+              <img id="buildingSearch" 
+                   ng-src="{{building.getImageUrl(40)}}"/> 
             </div>
-            <p class="doubleMain">{{building.displayName | capitalize:true}}</p>
+            <p class="doubleMain">{{building.displayName}}</p>
             <p class="doubleSub">{{building.city}}</p>
         </a>
         
-        <p class="noresults" ng-show="(main.buildings | filter:searchBuilding).length == 0">{{'SEARCH_NO_RESULTS' | translate}}</p>
+        <p class="noresults" 
+           ng-show="filteredBuildings.length == 0">   
+            {{'SEARCH_NO_RESULTS' | translate}}
+        </p>
+
     </div>
 
+    
 </div>
+
 
 <div class="right card no-mobile">
 
-    <leaflet class="map" lf-center="cityCenter" tiles="cityLayers" markers="cityMarkers" bounds="cityBounds" maxbounds="cityMaxBounds" event-broadcast="events">
+    <leaflet 
+             class="map" 
+             lf-center="cityCenter" 
+             tiles="cityLayers" 
+             markers="cityMarkers" 
+             bounds="cityBounds" 
+             maxbounds="cityMaxBounds" 
+             event-broadcast="events">
     </leaflet>
 
 </div>
-
-

@@ -7,9 +7,17 @@
         </div>
 
         <div class="searchBody materialList" id="roomSearchBody">
+    
+            <a class="listElement" ng-repeat="room in ctrl.filteredRooms"
+                   href="#/building/{{ctrl.buildingCode}}/map?room={{room.rCode}}" 
+                   ng-click="mapViaRoom(room.rCode)">
+                <p class="singleMain">{{room.rName}}</p>
+            </a>
 
-            <a class="listElement" ng-repeat="(key, value) in ctrl.rooms | roomFilter: searchRoom" href="#/building/bw{{ctrl.buildingCode}}/map?room={{value.rCode}}" ng-click="mapViaRoom(value.rCode)">
-                <p class="singleMain">{{value.rName}}</p>
+            <a class="listElement"  
+                   ng-hide = "ctrl.filteredRooms.length < roomLimit"
+                   ng-click="showMoreRooms()">
+                <p class="singleMain"><i>Weitere Räume laden...</i></p>
             </a>
 
         </div>

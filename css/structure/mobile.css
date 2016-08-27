@@ -112,11 +112,25 @@ a {
     display: none;
 }
 
-.roomSearch .searchHead {
+.roomSearch .searchHead, {
     background-color: #f2f2f2;
     position: relative;
     padding: 15px;
     height: 55px;
+}
+.fakeSearch {
+    display: block;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    font-size: 15px;
+    margin: 10px 15px 10px 15px;
+    padding: 0 0 3px 0;
+    color: #999;
+    width: calc(100% - 30px);
+    text-align: left;
+    background-image: url(../../img/magnify-dark.png);
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    background-position: center right;
 }
 
 .roomSearch .searchBody {
