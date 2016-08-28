@@ -1,6 +1,6 @@
 angular.module('myApp')
-    .factory('buildingTestDirect', ['$http', '$q', 'Building', function ($http, $q, Building) {
-        var buildingTest = {
+    .factory('buildingManager', ['$http', '$q', 'Building', function ($http, $q, Building) {
+        var buildingManager = {
             
             _poolArray: [], // If all objects are needed (array form is better for angular.js)
             _pool:{},       // If a specific object is needed
@@ -82,5 +82,5 @@ angular.module('myApp')
 
             
         };
-        return buildingTest;
+        return buildingManager;
 }]);

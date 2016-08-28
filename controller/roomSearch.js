@@ -2,14 +2,14 @@
 
 angular.module('myApp').controller('roomSearchCtrl', ['$scope',
                                     '$routeParams',
-                                    'buildingTestDirect',
+                                    'buildingManager',
                                     '$filter',
                                     'roomManager',
                                                       
 
     function ($scope,
         $routeParams,
-        buildingTestDirect,
+        buildingManager,
         $filter,
         roomManager) {
 
@@ -31,7 +31,7 @@ angular.module('myApp').controller('roomSearchCtrl', ['$scope',
             $scope.naviLink = "building/" + ctrl.buildingCode + '/map';
             
 
-            var loadBuildig = buildingTestDirect.getBuilding(ctrl.buildingCode);
+            var loadBuildig = buildingManager.getBuilding(ctrl.buildingCode);
             var loadRooms = roomManager.getAllRooms(ctrl.buildingCode);
 
             var onechain = loadBuildig.then(function (building) {

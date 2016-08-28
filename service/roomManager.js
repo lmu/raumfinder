@@ -91,7 +91,7 @@ angular.module('myApp')
                     if (filtered.length > limit) break;
                 }
 
-                console.log('Filter Räume');
+                //console.log('Filter Räume');
                 return filtered;
             }
         };

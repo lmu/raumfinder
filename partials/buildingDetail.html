@@ -25,7 +25,14 @@
                 <p class="singleMain" translate="MENU_SHOW_BUILDINGMAP"></p>
             </a>
 
-            <a class="listElementIcon" href="#/building/{{ctrl.building.code}}/map">
+            <a class="listElementIcon only-mobile" 
+               href="#/building/{{ctrl.building.code}}/map/search">
+                <i class="listIcon fi-magnifying-glass"></i>
+                <p class="singleMain" translate="MENU_SEARCH_ROOM"></p>
+            </a> 
+            
+            <a class="listElementIcon no-mobile" 
+               href="#/building/{{ctrl.building.code}}/map">
                 <i class="listIcon fi-magnifying-glass"></i>
                 <p class="singleMain" translate="MENU_SEARCH_ROOM"></p>
             </a>

@@ -1,46 +1,47 @@
 'use strict';
-
 angular.module('myApp').controller('mapCtrl', ['$scope',
                                     '$routeParams',
                                     '$location',
+                                    '$log',
                                     'leafletData',
                                     'leafletMapEvents',
-                                    'dataService',
-                                    'logicService',
-                                    'buildingTestDirect',           
+                                    'buildingManager',
+                                    'roomManager',
+                                    'buildingPartManager',
+                                    '$q',
     function ($scope,
         $routeParams,
         $location,
+        $log,
         leafletData,
         leafletMapEvents,
-        dataService,
-        logicService,
-        buildingTestDirect) {
+        buildingManager,
+        roomManager,
+        buildingPartManager,
+        $q) {
 
-        $scope.searchRoom = "";
-        $scope.naviText = "";
-        $scope.naviLink = true;
 
         // Set up all variables
         var ctrl = this;
         ctrl.building;
         ctrl.buildingCode;
-    //    ctrl.streetName;
+        ctrl.buildingParts;
         ctrl.rooms;
-        ctrl.uniqueBuildParts;
-        ctrl.buildingStructure;
-    //    ctrl.hasImage;
+        ctrl.filteredRooms;
 
-        // Map 
-        var map;
-        var tileLayer;
-        var bounds;
-        var marker;
-        var initLevelControl;
-        var levelControl;
-        var initBPartControl;
-        var BPartControl;
-        var isComplexBuilding;
+        $scope.naviText = "Gebäudesuche";
+        $scope.naviLink = true;
+        $scope.roomLimit = 30;
+
+        //        
+        var map,
+            tileLayer,
+            bounds,
+            marker,
+            initLevelControl,
+            levelControl,
+            initBPartControl,
+            BPartControl;
 
 
         angular.extend($scope, {
@@ -62,108 +63,69 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
             }
         });
 
-        //--------------------------- Data ---------------------------//
-        //------------------------------------------------------------//
-        
-        
+
         var init = function () {
             ctrl.buildingCode = $routeParams.id;
-       
-            loadBuilding();
-            loadBuildingParts();
-            loadRooms();
+            $log.debug('Building code ', ctrl.buildingCode);
+
+            var loadBuildig = buildingManager.getBuilding(ctrl.buildingCode);
+            var loadRooms = roomManager.getAllRooms(ctrl.buildingCode);
+            var loadBuildingParts = buildingPartManager.getBuildingPart(ctrl.buildingCode);
+
+            var onechain = loadBuildig.then(function (building) {
+                $log.debug(building);
+                ctrl.building = building;
+            });
+            var twochain = loadRooms.then(function (rooms) {
+                $log.debug(rooms);
+                ctrl.rooms = rooms;
+                // Show List with rooms by running filter 
+                ctrl.filteredRooms = ctrl.rooms.getRooms(undefined, $scope.roomLimit);
+            });
+            var threechain = loadBuildingParts.then(function (buildingParts) {
+                $log.debug(buildingParts);
+                ctrl.buildingParts = buildingParts;
+                $log.debug(buildingParts.getStructure(ctrl.buildingCode));
+            });
+
+            $q.all([onechain, twochain, threechain]).then(function () {
+                $log.debug("ALL PROMISES RESOLVED");
+                // Watch search input and update visible marker
+                mapViaUrl();
+            });
+
         };
-        init();  
-        
-        
-        // BUILDING CODE
-        // Get the building code from URI
-        function
-        
-        buildingTestDirect.getBuilding()
-        .then(function (building) {
-            ctrl.building = building;
-            
-            console.log("Building code: " + ctrl.buildingCode);
-            $scope.naviLink = "building/" + building.code;
-            
-        }, function (err) {
-            // Building could not be found 
-            $location.path("/404");
-        });
-           
-
-        // ROOMS
-        // Get all rooms
-        dataService.getRooms($routeParams.id).then(
-            function (answer) { // OnSuccess function
-                ctrl.rooms = answer;
-                // Set map via url params
-                mapViaUrl();
-            },
-            function (reason) { // OnFailure function
-                $location.path("/404");
-                console.error("Could not load rooms: ", reason);
-            }
-        );
-        
-      
-        // Unique Building Parts
-        // Get all unique building parts, extract street name and then init map
-        dataService.getBuildingParts(ctrl.buildingCode).then(
-            // OnSuccess function
-            function (answer) {
-                // Get all building parts
-                ctrl.uniqueBuildParts = answer;
-
-                // Transform building part list into building structure
-                ctrl.buildingStructure = logicService.composeBuildPartList(answer);
-                //console.log("Next: buildingStructure");
-                //console.log(ctrl.buildingStructure);
-
-                // Find out if building is complex
-                if (Object.keys(ctrl.buildingStructure)[0] != 0) {
-                    isComplexBuilding = true;
-                }
-
-                //Initialize Map
-                initMap(ctrl.uniqueBuildParts[Object.keys(ctrl.uniqueBuildParts)[0]]);
-
-                // Set map via url params
-                mapViaUrl();
-            },
-            // OnFailure function
-            function (reason) {
-                 $location.path("/404");
-                console.error("Could not load rooms: ", reason);
-            }
-        );
+        init();
 
 
         // Get set room / level / building part from url and update map 
         function mapViaUrl() {
-            // Check if everything is loaded
-            if (ctrl.buildingStructure !== undefined && ctrl.rooms !== undefined) {
-                // The order of if-clauses decreases in precision (room, level, building part)
-                
-                // If search query contains a room -> show it on map
-                if ($location.search().room) {
-                    $scope.mapViaRoom($location.search().room);
-                }
 
-                // If search query contains a level (aka mapUri) -> show it on map
-                else if ($location.search().level) {
-                    //console.log('Show map via url mapUri', $location.search().level);
-                    $scope.mapViaLevel($location.search().level);
-                }
+            // The order of the follwing ifs is from specific to less specific location given in uri
+            // If search query contains room -> show it on map
+            if ($location.search().room) {
+                // $log.debug('Show map via url room', $location.search());
+                $scope.mapViaRoom($location.search().room);
+            }
 
-                // If search query contains a level (aka mapUri) -> show it on map
-                else if ($location.search().part) {
-                    //console.log('Show map via url part', $location.search().part);
-                    $scope.mapViaPart($location.search().part);
-                }
+            // If search query contains level (aka mapUri) -> show it on map
+            else if ($location.search().level) {
+                //$log.debug('Show map via url mapUri', $location.search().level);
+                $scope.mapViaLevel($location.search().level);
+            }
+
+            // If search query contains level (aka mapUri) -> show it on map
+            else if ($location.search().part) {
+                //$log.debug('Show map via url part', $location.search().part);
+                $scope.mapViaPart($location.search().part);
+            }
+
+            // Else init with first building part
+            else {
+                initMap(ctrl.buildingParts[Object.keys(ctrl.buildingParts)[0]]);
             }
         };
+
 
 
         //--------------------------- Map ----------------------------//
@@ -172,6 +134,7 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
         // Set up map
         // Create map object with tile layer, control panels and bounds
         function initMap(buildingPart) {
+            $log.debug("Init Map");
 
             leafletData.getMap().then(function (map) {
                 // If tile layer, level control panel or building part control level exist -> remove so they can be updated and loaded again
@@ -180,7 +143,7 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                 if (BPartControl) map.removeControl(BPartControl);
 
                 // Set up tile layer
-                tileLayer = L.tileLayer.lmuMaps('http://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/tiles/v2/' + buildingPart.mapUri + '/', {
+                tileLayer = L.tileLayer.lmuMaps('https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/tiles/v2/' + buildingPart.mapUri.split(".")[0] + '/', {
                     width: buildingPart.mapSizeX,
                     height: buildingPart.mapSizeY,
                     attribution: '© LMU München'
@@ -191,12 +154,16 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                 calcBounds(map, buildingPart);
 
                 // Create and add level control
-                levelControl = new initLevelControl(buildingPart.mapUri, buildingPart.level, buildingPart.realPart);
+                var BPartStructure = ctrl.buildingParts.getStructure();
+
+                levelControl = new initLevelControl(buildingPart.fCode, BPartStructure[buildingPart.buildingPart]);
+
                 map.addControl(levelControl);
 
                 //Check if complex building -> create Building Control
-                if (isComplexBuilding) {
-                    BPartControl = new initBPartControl(buildingPart.realPart);
+                if (ctrl.buildingParts.isComplex()) {
+                    $log.debug('This Building has multiple building parts')
+                    BPartControl = new initBPartControl(buildingPart.buildingPart, BPartStructure);
                     map.addControl(BPartControl);
                 }
             });
@@ -208,23 +175,39 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
 
         // Function for front end to select a room
         $scope.mapViaRoom = function (roomId) {
-            var mapURI = ctrl.rooms[roomId].mapUri.split(".")[0];
-            initMap(ctrl.uniqueBuildParts[mapURI]);
-            updateMarker(ctrl.rooms[roomId].pX, ctrl.rooms[roomId].pY);
+            // var mapURI = ctrl.rooms[roomId].mapUri.split(".")[0];
+            $log.debug(roomId);
+            var floorCode = ctrl.rooms.getRoom(roomId).floorCode;
+            initMap(ctrl.buildingParts[floorCode]);
+            updateMarker(ctrl.rooms.getRoom(roomId).pX, ctrl.rooms.getRoom(roomId).pY);
         }
 
         // Function for front end to select a level
-        $scope.mapViaLevel = function (mapURI) {
+        $scope.mapViaLevel = function (floorCode) {
             removeMarker(); // Remove old marker as it belongs to another map 
-            initMap(ctrl.uniqueBuildParts[mapURI]);
+            initMap(ctrl.buildingParts[floorCode]);
         }
 
         // Function for front end to select a building part
         $scope.mapViaPart = function (part) {
             removeMarker(); // Remove old marker as it belongs to another map 
-            var mapUri = ctrl.buildingStructure[part][Object.keys(ctrl.buildingStructure[part])[0]];
-            initMap(ctrl.uniqueBuildParts[mapUri]);
+            var floor = ctrl.buildingParts.getGroundFloor(part);
+            $log.debug(floor);
+            initMap(floor);
         }
+
+        // Function for extending list of rooms
+        $scope.showMoreRooms = function () {
+            $scope.roomLimit += 50;
+            ctrl.filteredRooms = ctrl.rooms.getRooms(undefined, $scope.roomLimit);
+        }
+
+
+        // Set up watcher for rooms
+        $scope.$watch('searchRoom', function (value) {
+            if(ctrl.filteredRooms) ctrl.filteredRooms = ctrl.rooms.getRooms(value, $scope.roomLimit);
+        });
+
 
 
         // --------- Helper functions --------- //
@@ -264,55 +247,40 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
 
         }
 
+
         // --------- Definiton of control panels --------- //
 
         var initLevelControl = L.Control.extend({
             options: {
                 position: 'topright',
-                mapURI: '',
-                activeLevel: '',
-                buildingPart: ''
+                activeLevelCode: '',
+                activeBPartStructure: '',
             },
-            initialize: function (mapUri, activeLevel, buildingPart) {
-                // options.mapUri
-                this.options.activeLevel = activeLevel;
-                this.options.buildingPart = buildingPart;
+            initialize: function (activeFloorCode, activeBPartStructure) {
+                this.options.activeLevelCode = activeFloorCode;
+                this.options.activeBPartStructure = activeBPartStructure;
             },
             onAdd: function (map) {
-                var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
-                var buildingPart = ctrl.buildingStructure[this.options.buildingPart];
-                var buildingPartArray = Object.keys(buildingPart);
-                buildingPartArray.sort(function (a, b) {
-                    var levels = ["OG 08","OG 07","OG 06", "OG 05", "OG 04","OG 03 Z", "OG 03", "OG 02 Z", "OG 02", "OG 01 Z", "OG 01", "EG Z", "EG", "UG 01", "UG 02", "UG 03"];
-                    var aPos = levels.indexOf(a);
-                    var bPos = levels.indexOf(b);
+                var container = L.DomUtil.create('div',
+                    'leaflet-bar leaflet-control leaflet-control-custom');
+                var levels = this.options.activeBPartStructure.levels;
 
-                    if (aPos == bPos)
-                        return 0;
-                    if (aPos < bPos)
-                        return -1;
 
-                    return 1;
-                });
-
-                for (var level in buildingPartArray) {
+                for (var l in levels) {
                     var a = L.DomUtil.create('a', '');
-                    var mapUri = buildingPart[buildingPartArray[level]];
+                    var fCode = levels[l].fCode;
 
-                    if (this.options.activeLevel == buildingPartArray[level]) {
+                    if (this.options.activeLevelCode == levels[l].fCode) {
                         a.setAttribute('class', 'active');
                     }
 
-                    a.setAttribute('mapUri', mapUri);
-                    a.setAttribute('href', '#/building/' + ctrl.buildingCode + '/map?level=' + mapUri)
-                    
-                    
-                    a.innerHTML = dataService.getCorrectedLevelName(buildingPartArray[level]);
-                        //(rename[buildingPartArray[level]] ? rename[buildingPartArray[level]] : buildingPartArray[level]);
+                    a.setAttribute('fCode', levels[l].fCode);
+                    a.setAttribute('href', '#/building/' + ctrl.buildingCode + '/map?level=' + levels[l].fCode)
 
+                    a.innerHTML = levels[l].level;
 
                     a.onclick = function (e) {
-                        $scope.mapViaLevel(e.target.attributes['mapUri'].nodeValue);
+                        $scope.mapViaLevel(e.target.attributes['fCode'].nodeValue);
                     };
                     container.appendChild(a);
                 }
@@ -327,13 +295,16 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                 position: 'bottomleft',
                 activePart: ''
             },
-            initialize: function (activePart) {
+            initialize: function (activePart, buildingStructure) {
                 this.options.activePart = activePart;
+                this.options.structure = buildingStructure;
             },
             onAdd: function (map) {
                 var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+                $log.debug(this.options.structure);
 
-                for (var part in ctrl.buildingStructure) {
+                for (var part in this.options.structure) {
+                    var thisPart = this.options.structure[part];
                     var a = L.DomUtil.create('a', '');
 
                     if (this.options.activePart == part) {
@@ -342,7 +313,7 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
 
                     a.setAttribute('buildingPart', part);
                     a.setAttribute('href', '#/building/' + ctrl.buildingCode + '/map?part=' + part)
-                    a.innerHTML = part;
+                    a.innerHTML = thisPart.name;
 
 
                     a.onclick = function (e) {
@@ -356,5 +327,4 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
             }
         });
 
-
-}]);
+    }]);

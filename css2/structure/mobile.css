@@ -1,0 +1,119 @@
+.no-mobile {
+    display: none;
+}
+
+.only-mobile {
+    display: block;
+}
+
+
+/* --- Mobile Navi --- */
+.mobileNavi {
+    background-color: #009440;
+    overflow: auto;
+    height: 100px
+}
+
+.mobileNavi h2   {
+    color: white;
+    font-size: 16px;
+    margin: 0;
+    padding: 0px 15px;
+    line-height: 50px;
+    text-decoration: none;
+}
+
+.mobileNavi .settings img {
+    position: relative;
+    top: 13px;
+    right: 10px;
+}
+
+.mobileNavi .headline {
+    float: left;
+}
+
+.mobileNavi .headline img {
+    left: -7px;
+    top: 6px;
+    position: relative;
+}
+
+.mobileNavi .settings {
+    float: right;
+}
+
+.mobileNavi .logo {
+    height: 50px;
+    display: block;
+    background-color: #007633;
+}
+
+.mobileNavi .logo img {
+    padding: 10px 15px;
+}
+
+/* --- Structure --- */
+
+a {
+    text-decoration: none;
+}
+
+.map {
+    height: 400px;
+    width: 100%;
+}
+
+
+.noTouch {
+    z-index: 1000;
+    height: 400px;
+    width: 100%;
+    position: absolute;
+}
+
+.card {
+    background-color: #fafafa;
+    position: relative;
+    overflow: auto;
+}
+
+.searchHead {
+    background-color: #009440;
+    padding: 0 15px 10px 15px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    color: white;
+    height: 40px;
+}
+
+.searchBody {
+    height: calc(100vh - 140px);
+    overflow-y: scroll;
+    background: white;
+    -webkit-overflow-scrolling: touch;
+}
+
+.fakeSearch {
+    display: block;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    font-size: 15px;
+    margin: 15px 15px 10px 15px;
+    padding: 0 0 3px 0;
+    color: #999;
+    width: calc(100% - 30px);
+    text-align: left;
+    background-image: url(../../img/magnify-dark.png);
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    background-position: center right;
+}
+
+
+/* --- Popup --- */
+
+#popup {
+    top: 60px;
+    right: -30px;
+}

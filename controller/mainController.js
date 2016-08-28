@@ -1,14 +1,14 @@
 'use strict';
 angular.module('myApp').
-controller('MainCtrl', ['$scope', 'buildingTestDirect', '$filter',
-                        function ($scope, buildingTestDirect, $filter) {
+controller('MainCtrl', ['$scope', 'buildingManager', '$filter', 'MAP_DEFAULTS',
+                        function ($scope, buildingManager, $filter, MAP_DEFAULTS) {
 
         // Setup mobile top menu
         $scope.naviLink = '';
         $scope.naviText = "Raumfinder";
 
 
-        // Initialize map
+        // Initialize map object
         angular.extend($scope, {
             cityCenter: {
                 lat: 48.145,
@@ -16,23 +16,18 @@ controller('MainCtrl', ['$scope', 'buildingTestDirect', '$filter',
                 zoom: 14
             },
             cityLayers: {
-                url: 'http://api.tiles.mapbox.com/v4/maxmediapictures.o2e7pbh8/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWF4bWVkaWFwaWN0dXJlcyIsImEiOiJ2NXRBMGlFIn0.K9dbubXdaU77e0PdLGN7iw',
+                url: MAP_DEFAULTS.MAPTILES_URL,
                 type: 'xyz',
-                layerOptions: {
-                    attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
+                options: {
+                    attribution: MAP_DEFAULTS.MAP_CREDITS
                 }
             },
             cityMarkers: {},
-            events: {
-                map: {
-                    enable: [],
-                    logic: 'emit'
-                }
-            }
+            events: {}
         });
 
         // Load Buildings     
-        buildingTestDirect.getAllBuildings().then(function (buildings) {
+        buildingManager.getAllBuildings().then(function (buildings) {
             $scope.buildings = buildings;
         });
 
@@ -47,6 +42,9 @@ controller('MainCtrl', ['$scope', 'buildingTestDirect', '$filter',
         function setMarker(buildings) {
             var tempMarkers = {};
             var bounds = {};
+            
+            // In order to show "no builings" instead of list
+            $scope.builingsCount = buildings.length;
 
             // If no buldings are selected, show this part of map
             if (buildings.length == 0) {
@@ -82,10 +80,9 @@ controller('MainCtrl', ['$scope', 'buildingTestDirect', '$filter',
                 tempMarkers[buildings[i].code] = {
                     lat: parseFloat(buildings[i].lat),
                     lng: parseFloat(buildings[i].lng),
-                    message: '<p style="text-align: center">' +
-                        '<b>' + buildings[i].displayName + '</b></br>' +
-                        '<a href="#/building/' + buildings[i].code + '/map">Raumplan anzeigen &#62;</a>' +
-                        '</p>',
+                    message: '<b>' + buildings[i].displayName + '</b></br>' +
+                        '<a href="#/building/' + buildings[i].code + '/map">Raumplan anzeigen &#62;</a>' 
+                        
                 }
 
                 if (buildings[i].lat < bounds.southWest.lat) bounds.southWest.lat = buildings[i].lat - 0.001;
@@ -101,32 +98,5 @@ controller('MainCtrl', ['$scope', 'buildingTestDirect', '$filter',
                 cityBounds: bounds
             });
         };
-
-                            /*
-        function setMaxBounds(buildings) {
-            console.info('setMaxBounds');
-            var temp = {
-                southWest: {
-                    lat: 100.0,
-                    lng: 100.0
-                },
-                northEast: {
-                    lat: 0.0,
-                    lng: 0.0
-                }
-            };
-
-            for (var i = 0; i < buildings.length; i++) {
-                if (buildings[i].lat < temp.southWest.lat) temp.southWest.lat = (buildings[i].lat) - 0.1;
-                if (buildings[i].lng > temp.northEast.lng) temp.northEast.lng = (buildings[i].lng) + 0.1;
-                if (buildings[i].lat > temp.northEast.lat) temp.northEast.lat = (buildings[i].lat) + 0.15;
-                if (buildings[i].lng < temp.southWest.lng) temp.southWest.lng = (buildings[i].lng) - 0.1;
-            };
-
-            angular.extend($scope, {
-                cityMaxBounds: temp
-            });
-        };
-        */
 
 }]);
