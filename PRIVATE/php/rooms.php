@@ -22,8 +22,7 @@ if (!is_dir('rooms')) {
 foreach($allBuildings as $val) {
    print $val . '<br />';
 
-     $sql2 = "SELECT room.Code as rCode, building_part.code as bpCode, floor.mapUri, ".
-             "       building.code as bCode, " .
+     $sql2 = "SELECT room.Code as rCode,   ".
              "       room.name as rName, room.floorCode, room.posX as pX, room.posY as pY ".
        
              "FROM building ".

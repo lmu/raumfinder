@@ -1,3 +1,5 @@
+/* --- General --- */
+
 * {
     font-family: "Open Sans", sans-serif;
     font-weight: normal;
@@ -12,81 +14,158 @@ body {
     background: #dfdfdf;
 }
 
-.only-mobile {
-    display: none;
-}
 
-.desktop-only {
-    display: none;
+
+
+/* --- Font --- */
+
+h1 {
+    font-size: 20px;
+    font-weight: bold;
 }
 
 h2 {
+    font-size: 16px;
+    color: #333;
     font-weight: bold;
+}
+
+.right h1, .right h2, .right p{
+    padding-left: 20px;
+}
+
+.menuRoom .searchHead a,
+.menuRoom .searchHead i,
+.menuSearch .searchHead a,
+.menuSearch .searchHead i,
+.menuBuilding .searchHead a,
+.menuBuilding .searchHead i {
+    color: white;
     text-decoration: none;
+    font-size: 15px;
+    vertical-align: top;
+    top: 4px;
+    position: relative;
 }
 
-.top .settings {
-    float: right;
-}
-
-
-/*
- *
- * --- Menu ---
- *
-*/
-
-::-webkit-input-placeholder {
-    /* WebKit, Blink, Edge */
-    color: #fff;
-}
-
-:-moz-placeholder {
-    /* Mozilla Firefox 4 to 18 */
-    color: #fff;
-    opacity: 1;
-}
-
-::-moz-placeholder {
-    /* Mozilla Firefox 19+ */
-    color: #fff;
-    opacity: 1;
-}
-
-:-ms-input-placeholder {
-    /* Internet Explorer 10-11 */
-    color: #fff;
+.searchHead img {
+    position: relative;
+    top: -1px;
 }
 
 
-/*
- *
- * --- More general styles ---
- *
-*/
+/* --- Material List --- */
+
+.listElement,
+.listElementIcon {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+    font-size: 24px;
+    vertical-align: middle;
+}
+
+.listElement:after,
+.listElementIcon:after {
+    content: " ";
+    display: block;
+    height: 1px;
+    background-color: #e2e2e2;
+    clear: both;
+}
+
+.listElementIcon:after {
+    margin: 0px 0 0 70px;
+}
+
+.listElementIcon:last-child:after {
+    content: "";
+    height: 0px;
+}
+
+.listIcon {
+    height: 40px;
+    width: 40px;
+    float: left;
+    margin: 15px;
+    color: black;
+    text-align: center;
+    line-height: 40px;
+}
+
+.circular {
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.circular img {
+    height: 40px;
+    min-width: 40px;
+    width: auto;
+}
+
+.listIconImg {
+    float: left;
+    margin: 25px;
+}
+
+.noresults {
+    overflow: hidden;
+    text-align: center;
+    line-height: 50px;
+}
+
+.materialList .doubleMain {
+    font-size: 15px;
+    margin: 15px 0 0 0;
+    color: black;
+}
+
+.materialList .doubleSub {
+    font-size: 13px;
+    margin: 3px 0 15px 0;
+    color: #BBB;
+}
+
+.materialList .singleMain {
+    margin: 25px 0 0 15px;
+    font-size: 15px;
+    text-decoration: none;
+    color: black;
+}
+
+.materialList .listElement .singleMain {
+    margin: 15px 0 15px 15px;
+}
+
+
+/* --- Building Detail --- */
 
 .buildingDetail {
-    /*margin-bottom: 20px;*/
     height: 175px;
-    z-index: 1;
     position: relative;
     background-color: #CCC;
     background-size: cover;
+    color: white;
 }
 
 .buildingDetail .main {
     font-size: 20px;
-    color: white;
     font-weight: 500;
-    margin: 0 0 0px 0;
-    text-shadow: 0 0 10px rgba(0,0,0,0.6);
+    margin: 0;
+}
+
+.buildingDetail .sub {
+    font-size: 14px;
+    color: #e6e6e6;
+    margin: 0;
 }
 
 .buildingDetail .stackBottom {
     position: absolute;
     bottom: 0;
     margin: 20px 20px;
-   
 }
 
 .buildingDetail .grandient {
@@ -98,13 +177,78 @@ h2 {
     background: linear-gradient(rgba(0, 0, 0, 0.0), rgba(0, 0, 0, 0.6));
 }
 
-.buildingDetail .sub {
-    font-size: 14px;
-    color: rgba(255,255,255,0.85);
-    font-weight: 300;
+
+/* --- Input --- */
+
+.searchHead input {
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+    display: block;
+    font-size: 15px;
     margin: 0;
-     text-shadow: 0 0 10px rgba(0,0,0,0.6);
+    padding: 0;
+    width: 100%;
+    background-color: transparent;
+    color: white;
+    background-image: url(../img/magnify.png);
+    background-size: 21px 21px;
+    background-repeat: no-repeat;
+    background-position: center right;
+    height: 30px;
+    border-radius: 0px;
 }
+
+.roomSearch .searchHead input {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    background-image: url(../img/magnify-dark.png);
+    background-position: center right;
+    color: #999;
+    padding: 1px 0;
+    height: 24px;
+}
+
+.searchHead input::-ms-clear {
+    display: none;
+}
+
+::-webkit-input-placeholder {
+    color: #fff;
+}
+
+:-moz-placeholder {
+    color: #fff;
+    opacity: 1;
+}
+
+::-moz-placeholder {
+    color: #fff;
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    color: #fff;
+}
+
+.roomSearch input::-webkit-input-placeholder {
+    color: #aaa;
+}
+
+.roomSearch input:-moz-placeholder {
+    color: #aaa;
+    opacity: 1;
+}
+
+.menuRoom input::-moz-placeholder {
+    color: #aaa;
+    opacity: 1;
+}
+
+.roomSearch input:-ms-input-placeholder {
+    color: #aaa;
+}
+
+
+/* --- Leaflet Material Style --- */
 
 .leaflet-bar {
     border-radius: 1px;
@@ -148,200 +292,6 @@ h2 {
     font-weight: bold;
     background-color: rgb(240, 240, 240);
     color: #000;
-}
-
-
-/*
- *
- * --- Material List ---
- *
-*/
-
-.listElement,
-.listElementIcon {
-    display: block;
-    position: relative;
-    overflow: hidden;
-    text-decoration: none;
-    font-size: 24px;
-    vertical-align: middle;
-}
-
-.listElementIcon:after {
-    content: " ";
-    display: block;
-    height: 1px;
-    background-color: #e2e2e2;
-    clear: both;
-    margin: 0px 0 0 70px;
-}
-
-.listElementIcon:last-child:after {
-    content: "";
-    height: 0px;
-}
-
-.listElement:after {
-    content: " ";
-    display: block;
-    height: 1px;
-    background-color: #e2e2e2;
-    clear: both;
-}
-
-.listIcon {
-    height: 40px;
-    width: 40px;
-    float: left;
-    margin: 15px 15px 15px 15px;
-    text-align: center;
-    vertical-align: baseline;
-    line-height: 40px;
-    color: black;
-}
-
-.listIconImg {
-    float: left;
-    margin: 25px;
-}
-
-.circular {
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.circular img {
-    min-height: 40px;
-    width: 40px;
-    background-image: url('../img/houseIcon.png');
-    background-size: contain;
-}
-
-.noresults {
-    overflow: hidden;
-    text-align: center;
-    line-height: 50px;
-}
-
-.materialList .doubleMain {
-    font-size: 15px;
-    margin: 15px 0 0 0;
-    color: black;
-}
-
-.materialList .doubleSub {
-    font-size: 13px;
-    margin: 3px 0 15px 0;
-    color: #BBB;
-}
-
-.materialList .singleMain {
-    margin: 25px 0 0 15px;
-    font-size: 15px;
-    text-decoration: none;
-    color: black;
-}
-
-.materialList .listElement .singleMain {
-    margin: 15px 0 15px 15px;
-    cursor: pointer;
-}
-
-.searchHead input {
-    border: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.8);
-    display: block;
-    font-size: 15px;
-    margin: 0;
-    padding: 0px 0px;
-    width: 100%;
-    background-color: transparent;
-    text-align: left;
-    color: inherit;
-    background-image: url(../img/magnify.png);
-    background-size: 21px 21px;
-    background-repeat: no-repeat;
-    background-position: center right;
-    height: 30px;
-    border-radius: 0px;
-}
-
-.searchHead input::-ms-clear {
-    display: none;
-}
-
-.roomSearch .searchHead input {
-    border: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    color: inherit;
-    background-image: url(../img/magnify-dark.png);
-    background-size: 21px 21px;
-    background-repeat: no-repeat;
-    padding: 1px 0;
-    background-position: center right;
-    width: 100%;
-    color: #999;
-    font-size: 15px;
-    height: 24px;
-}
-
-.menuRoom .searchHead a,
-.menuRoom .searchHead i,
-.menuSearch .searchHead a,
-.menuSearch .searchHead i,
-.menuBuilding .searchHead a,
-.menuBuilding .searchHead i {
-    color: white;
-    text-decoration: none;
-    font-size: 15px;
-    vertical-align: top;
-    top: 4px;
-    position: relative;
-}
-
-.roomSearch input::-webkit-input-placeholder {
-    /* WebKit, Blink, Edge */
-    color: #aaa;
-}
-
-.roomSearch input:-moz-placeholder {
-    /* Mozilla Firefox 4 to 18 */
-    color: #aaa;
-    opacity: 1;
-}
-
-.menuRoom input::-moz-placeholder {
-    /* Mozilla Firefox 19+ */
-    color: #aaa;
-    opacity: 1;
-}
-
-.roomSearch input:-ms-input-placeholder {
-    /* Internet Explorer 10-11 */
-    color: #aaa;
-}
-
-
-/*
- *
- * --- Impressum ---
- *
-*/
-
-.right h1 {
-    margin: 20px;
-    font-size: 20px;
-        font-weight: bold;
-}
-
-.right h2 {
-    margin: 20px 20px 10px 20px;
-    font-size: 16px;
-    color: #333;
-}
-
-.right p {
-    margin: 0px 20px;
 }
 
 
@@ -406,4 +356,15 @@ h2 {
     width: 25px;
     font-size: 12px;
     text-align: center;
+}
+
+
+/* --- Show/No show --- */
+
+.only-mobile {
+    display: none;
+}
+
+.desktop-only {
+    display: none;
 }
