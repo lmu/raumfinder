@@ -34,7 +34,7 @@ angular.module('myApp').factory('BuildingPart', ['$http', '$filter', function ($
 
 
             this.setData({
-                structure
+                "strcuture": structure
             });
 
         }
@@ -81,11 +81,11 @@ angular.module('myApp').factory('BuildingPart', ['$http', '$filter', function ($
             return this.structure;
         },
 
-        getFirstPart() {
+        getFirstPart: function () {
             return this[Object.keys(this)[0]];
         },
 
-        getGroundFloor(buildingPartCode) {
+        getGroundFloor: function(buildingPartCode) {
             var thisPart = this.structure[buildingPartCode];
             for (floor in thisPart.levels) {
                 if (thisPart.levels[floor].level == 'EG') {
@@ -95,7 +95,7 @@ angular.module('myApp').factory('BuildingPart', ['$http', '$filter', function ($
             return thisPart.levels[0];
         },
 
-        getPart(code) {
+        getPart: function(code) {
             return this[code];
         }
 
