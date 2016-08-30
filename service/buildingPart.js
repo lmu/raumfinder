@@ -34,7 +34,7 @@ angular.module('myApp').factory('BuildingPart', ['$http', '$filter', function ($
 
 
             this.setData({
-                "strcuture": structure
+                "structure": structure
             });
 
         }

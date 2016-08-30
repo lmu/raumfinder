@@ -155,7 +155,7 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
 
                 // Create and add level control
                 var BPartStructure = ctrl.buildingParts.getStructure();
-
+                
                 levelControl = new initLevelControl(buildingPart.fCode, BPartStructure[buildingPart.buildingPart]);
 
                 map.addControl(levelControl);

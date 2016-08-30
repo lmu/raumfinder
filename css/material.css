@@ -51,6 +51,7 @@ h2 {
 .searchHead img {
     position: relative;
     top: -1px;
+    vertical-align: middle;
 }
 
 
