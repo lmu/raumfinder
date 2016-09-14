@@ -64,6 +64,7 @@ angular.module('myApp', [
         return {
             restrict: 'AE',
             replace: 'true',
+            controller:'AdvertisementController',
             templateUrl: 'partials/mobileTopMenu.html'
         };
     }]);

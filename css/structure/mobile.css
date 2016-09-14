@@ -8,13 +8,14 @@
 
 
 /* --- Mobile Navi --- */
+
 .mobileNavi {
     background-color: #009440;
     overflow: auto;
     height: 100px
 }
 
-.mobileNavi h2   {
+.mobileNavi h2 {
     color: white;
     font-size: 16px;
     margin: 0;
@@ -53,6 +54,7 @@
     padding: 10px 15px;
 }
 
+
 /* --- Structure --- */
 
 a {
@@ -60,10 +62,9 @@ a {
 }
 
 .map {
-    height: 400px;
+    height: 400px; /*calc(100vh - 100px - 50px)*/
     width: 100%;
 }
-
 
 .noTouch {
     z-index: 1000;
@@ -116,4 +117,56 @@ a {
 #popup {
     top: 60px;
     right: -30px;
+}
+
+
+/* --- Android App Advertisement --- */
+
+#appAd {
+    position: fixed;
+    bottom: 0;
+    z-index: 9999;
+    width: 100%;
+    height: 65px;
+    background-color: black;
+    color: white;
+}
+
+#appAd a {
+    color: white;
+}
+
+#appAd .fi-social-android {
+    font-size: 35px;
+    width: 70px;
+    text-align: center;
+    display: inline-block;
+}
+
+#appAd p {
+    margin-top: 13px;
+    display: inline-block;
+    line-height: 18px;
+}
+
+#appAd .main {
+    font-weight: 500;
+    font-size: 14px;
+}
+
+#appAd .sub {
+    font-size: 12px;
+    text-decoration: underline;
+}
+
+#appAd .fi-x {
+    display: block;
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 16px;
+    height: 50px;
+    width: 30px;
+    text-align: right;
+    background: rgba(0,0,0,0.8);
 }

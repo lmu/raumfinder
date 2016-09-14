@@ -2,21 +2,32 @@
     <a class="logo" href="#/">
         <img src="img/logo-smartphone2x.png" width="208px" height="30px" alt="LMU Logo" />
     </a>
-    <a href="#/{{naviLink}}" class="headline">
+    <a ng-href="#/{{naviLink}}" class="headline">
         <h2><img src="./img/chev_white_24px.svg" ng-show="naviLink" alt="Zurück"/>{{naviText}}</h2>
     </a>
 
     <label class="mobileSettingsBtn" for="radio1"><img src="./img/more_white_24px.svg"></label>
     <input id="radio1" name="radio" type="checkbox" class="mobileSettings no-desktop">
-    
-    
-    <div id="popup">  
+
+
+    <div id="popup">
         <!--<a for="radio1" class="menuItem" href="#/impressum" translate="IMPRESSUM"></a>-->
         <a for="radio1" class="menuItem" href="http://www.lmu.de/funktionen/impressum/index.html" target="_blank">Impressum</a>
         <a for="radio1" class="menuItem" href="http://www.lmu.de/funktionen/datenschutz/index.html" translate="Datenschutz" target="_blank"></a>
         <a for="radio1" class="menuItem" href="#/kontakt" translate="Kontakt"></a>
         <label class="close" for="radio1" ontouchstart="">✖</label>
     </div>
-   
+
+    <div id="appAd" class="only-mobile" ng-if="showAd">
+         
+        <a href="https://play.google.com/store/apps/details?id=de.lmuroomfinder.release" target="_blank">
+            <i class="fi-social-android"></i>
+            <p>
+                <span class="main">LMU Raumfinder als Android App</span><br>
+                <span class="sub">Kostenlos im Playstore herunterladen!</span>
+            </p>
+        </a>
+       <i class="fi-x" ng-click="dismiss()"></i>   
+    </div>
 
 </div>

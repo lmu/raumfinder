@@ -29,8 +29,8 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
         ctrl.rooms;
         ctrl.filteredRooms;
 
-        $scope.naviText = "Gebäudesuche";
-        $scope.naviLink = true;
+        $scope.naviText = "Gebäudedetails";
+        $scope.naviLink = 'building/'+ $routeParams.id +'/';
         $scope.roomLimit = 30;
 
         //        
