@@ -68,8 +68,7 @@ angular.module('myApp').config(function ($translateProvider) {
         IMPRESSUM_HELP_HEADLINE: 'You want to support us?',
         IMPRESSUM_HELP: 'We continuously try to improve our website and app. Please contact us if you want to help us developing our website or app (iOS, Android)!',
 
-        ERROR_HEADLINE: 'This building or room could not be found (Error 404)',
-        ERROR_MESSAGE: 'Unfortunately, the building or room you were looking for could not be found.<br>Please use the <a href="http://www.maxmediapictures.de/kontakt/index.html">contact form</a> to report this error.<br><a href="/">Search buildings</a><br>&nbsp;<br>',
+       
 
         ERROR_NOTE: 'Note',
 
