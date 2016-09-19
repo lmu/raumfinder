@@ -10,9 +10,8 @@
         </div>
 
         <div class="materialList card">
-
             <div class="buildingDetail" 
-                 style="background-image:url({{ctrl.building.getImageUrl(400)}})">
+                 ng-style="{'background-image':'url('+ctrl.building.getImageUrl(400)+')'}">
                 <div class="grandient"> &nbsp;</div>
                 <div class="stackBottom">
                     <p class="main">{{ctrl.building.displayName}}</p>
