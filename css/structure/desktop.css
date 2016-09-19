@@ -62,6 +62,7 @@ body::before {
     width: calc(70% - 10px);
     height: calc(100vh - 130px - 25px);
     float: right;
+    overflow-y: auto;
 }
 
 .searchBody {

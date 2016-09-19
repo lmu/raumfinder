@@ -37,8 +37,10 @@
 
                 <a class="listElement"  
                    ng-hide = "ctrl.filteredRooms.length < roomLimit"
-                   ng-click="showMoreRooms()">
-                    <p class="singleMain"><i>Weitere Räume laden...</i></p>
+                   ng-click="showMoreRooms()"
+                   analytics-on="click"
+                   analytics-category="Raum">
+                    <p class="singleMain loadMore"><i>Weitere Räume laden...</i></p>
                 </a>
             </div>
         </div>

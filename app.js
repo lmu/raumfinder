@@ -5,7 +5,9 @@ angular.module('myApp', [
     'ngRoute',
     'leaflet-directive',
     'filter',
-    'pascalprecht.translate'
+    'pascalprecht.translate',
+    'angulartics',
+    'angulartics.piwik'
     ])
     .config(['$routeProvider', function ($routeProvider) {
         $routeProvider

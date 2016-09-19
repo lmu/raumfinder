@@ -9,6 +9,7 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                                     'roomManager',
                                     'buildingPartManager',
                                     '$q',
+                                    '$analytics',
     function ($scope,
         $routeParams,
         $location,
@@ -18,7 +19,8 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
         buildingManager,
         roomManager,
         buildingPartManager,
-        $q) {
+        $q,
+        $analytics) {
 
 
         // Set up all variables
@@ -30,9 +32,10 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
         ctrl.filteredRooms;
 
         $scope.naviText = "Gebäudedetails";
-        $scope.naviLink = 'building/'+ $routeParams.id +'/';
+        $scope.naviLink = 'building/' + $routeParams.id + '/';
         $scope.roomLimit = 30;
 
+      
         //        
         var map,
             tileLayer,
@@ -92,6 +95,10 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                 $log.debug("ALL PROMISES RESOLVED");
                 // Watch search input and update visible marker
                 mapViaUrl();
+            }, function (err) {
+                // Building could not be found 
+                $analytics.eventTrack('Roomfinder Error!', {  category: 'ERROR', label: "Can't find building " + ctrl.buildingCode });
+                $location.path("/404");
             });
 
         };
@@ -122,7 +129,14 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
 
             // Else init with first building part
             else {
-                initMap(ctrl.buildingParts[Object.keys(ctrl.buildingParts)[0]]);
+                var thisBuildingPart = ctrl.buildingParts[Object.keys(ctrl.buildingParts)[0]];
+
+                if (thisBuildingPart){
+                    initMap(thisBuildingPart);
+                } else {
+                    $analytics.eventTrack('Roomfinder Error!', {  category: 'ERROR', label: "Can't find building " + thisBuildingPart});
+                    $location.path("/404");
+                } 
             }
         };
 
@@ -135,6 +149,12 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
         // Create map object with tile layer, control panels and bounds
         function initMap(buildingPart) {
             $log.debug("Init Map");
+          
+            if (!buildingPart) {
+                // Building could not be found 
+
+                $location.path("/404");
+            }
 
             leafletData.getMap().then(function (map) {
                 // If tile layer, level control panel or building part control level exist -> remove so they can be updated and loaded again
@@ -155,7 +175,7 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
 
                 // Create and add level control
                 var BPartStructure = ctrl.buildingParts.getStructure();
-                
+
                 levelControl = new initLevelControl(buildingPart.fCode, BPartStructure[buildingPart.buildingPart]);
 
                 map.addControl(levelControl);
@@ -175,37 +195,61 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
 
         // Function for front end to select a room
         $scope.mapViaRoom = function (roomId) {
-            // var mapURI = ctrl.rooms[roomId].mapUri.split(".")[0];
-            $log.debug(roomId);
-            var floorCode = ctrl.rooms.getRoom(roomId).floorCode;
-            initMap(ctrl.buildingParts[floorCode]);
-            updateMarker(ctrl.rooms.getRoom(roomId).pX, ctrl.rooms.getRoom(roomId).pY);
+
+            try{
+                var floorCode = ctrl.rooms.getRoom(roomId).floorCode;
+                initMap(ctrl.buildingParts[floorCode]);
+                updateMarker(ctrl.rooms.getRoom(roomId).pX, ctrl.rooms.getRoom(roomId).pY);
+                // Track user interaction
+                $analytics.pageTrack('/building/' + ctrl.buildingCode + '/map?room=' + roomId);
+            } catch (err){
+                $analytics.eventTrack('Roomfinder Error!', {  category: 'ERROR', label: "Can't find room " + roomId + " in building " + ctrl.buildingCode });
+                $location.path("/404");
+            }
         }
 
         // Function for front end to select a level
         $scope.mapViaLevel = function (floorCode) {
             removeMarker(); // Remove old marker as it belongs to another map 
-            initMap(ctrl.buildingParts[floorCode]);
+            var buildingPart = ctrl.buildingParts[floorCode];
+            
+            if(buildingPart){
+                initMap(buildingPart);
+                // Track user interaction
+                $analytics.pageTrack('/building/' + ctrl.buildingCode + '/map?level=' + floorCode);
+            } else {
+                $analytics.eventTrack('Roomfinder Error!', {  category: 'ERROR', label: "Can't find level " + floorCode + " of building " + ctrl.buildingCode });
+                $location.path("/404");
+            }
         }
 
         // Function for front end to select a building part
         $scope.mapViaPart = function (part) {
             removeMarker(); // Remove old marker as it belongs to another map 
-            var floor = ctrl.buildingParts.getGroundFloor(part);
-            $log.debug(floor);
-            initMap(floor);
+            try{
+                var floor = ctrl.buildingParts.getGroundFloor(part);
+                initMap(floor);
+                // Track user interaction
+                $analytics.pageTrack('/building/' + ctrl.buildingCode + '/map?part=' + part);
+            }    catch (err){
+                $analytics.eventTrack('Roomfinder Error!', {  category: 'ERROR', label: "Can't find building part " + part + " of building " + ctrl.buildingCode });
+                $location.path("/404");
+            }
         }
 
         // Function for extending list of rooms
         $scope.showMoreRooms = function () {
             $scope.roomLimit += 50;
             ctrl.filteredRooms = ctrl.rooms.getRooms(undefined, $scope.roomLimit);
+
+            // Track user interaction
+            $analytics.eventTrack('Show more rooms');
         }
 
 
         // Set up watcher for rooms
         $scope.$watch('searchRoom', function (value) {
-            if(ctrl.filteredRooms) ctrl.filteredRooms = ctrl.rooms.getRooms(value, $scope.roomLimit);
+            if (ctrl.filteredRooms) ctrl.filteredRooms = ctrl.rooms.getRooms(value, $scope.roomLimit);
         });
 
 

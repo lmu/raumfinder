@@ -20,9 +20,9 @@
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_regular/stylesheet.css" rel="stylesheet">
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_semibold/stylesheet.css" rel="stylesheet">
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_semibolditalic/stylesheet.css" rel="stylesheet">
-    
+
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/foundation-icons/foundation-icons.css" rel="stylesheet">
-    
+
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
 
     <link rel="stylesheet" href="css/normalize.css">
@@ -37,6 +37,30 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="144x144" href="/img/icon144.png">
 
+    <!-- Piwik -->
+    <script type="text/javascript">
+        var _paq = _paq || [];
+        //_paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function () {
+            var u = "//localhost/piwik/";
+            _paq.push(['setTrackerUrl', u + 'piwik.php']);
+            _paq.push(['setSiteId', '1']);
+            var d = document,
+                g = d.createElement('script'),
+                s = d.getElementsByTagName('script')[0];
+            g.type = 'text/javascript';
+            g.async = true;
+            g.defer = true;
+            g.src = u + 'piwik.js';
+            s.parentNode.insertBefore(g, s);
+        })();
+    </script>
+    <noscript>
+        <p><img src="//localhost/piwik/piwik.php?idsite=1" style="border:0;" alt="" /></p>
+    </noscript>
+    <!-- End Piwik Code -->
+
 </head>
 
 <body>
@@ -49,8 +73,18 @@
                 </div>
             </a>
             <p href="#/impressum" class="links">
-                <a href="http://www.lmu.de/funktionen/impressum/index.html" target="_blank">Impressum</a>&nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href="http://www.lmu.de/funktionen/datenschutz/index.html" translate="Datenschutz" target="_blank"></a>&nbsp;&nbsp;|&nbsp;&nbsp;
+                <a href="http://www.lmu.de/funktionen/impressum/index.html" 
+                   target="_blank" 
+                   analytics-on="click" 
+                   analytics-event="Impressum"
+                   analytics-category="Navigation">Impressum</a>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
+                <a href="http://www.lmu.de/funktionen/datenschutz/index.html" 
+                   target="_blank" 
+                   analytics-on="click" 
+                   analytics-event="Datenschutz"
+                   analytics-category="Navigation">Datenschutz</a>
+                &nbsp;&nbsp;|&nbsp;&nbsp;
                 <a href="#/kontakt" translate="Kontakt"></a>
             </p>
         </div>
@@ -75,6 +109,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-route.min.js"></script>
     <script src="js/angular-leaflet-directive.min.js"></script>
     <script src="js/angular-translate.min.js"></script>
+
+    <script src="js/angulartics.min.js"></script>
+    <script src="js/angulartics-piwik.min.js"></script>
 
 
     <script src="json/buildings.json"></script>

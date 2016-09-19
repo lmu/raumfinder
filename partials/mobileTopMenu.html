@@ -6,21 +6,43 @@
         <h2><img src="./img/chev_white_24px.svg" ng-show="naviLink" alt="Zurück"/>{{naviText}}</h2>
     </a>
 
-    <label class="mobileSettingsBtn" for="radio1"><img src="./img/more_white_24px.svg"></label>
+    <label class="mobileSettingsBtn" 
+           for="radio1" 
+           analytics-on="click" 
+           analytics-event="Open Mobile Settings"
+           analytics-category="Navigation">
+        <img src="./img/more_white_24px.svg">
+    </label>
     <input id="radio1" name="radio" type="checkbox" class="mobileSettings no-desktop">
 
 
     <div id="popup">
         <!--<a for="radio1" class="menuItem" href="#/impressum" translate="IMPRESSUM"></a>-->
-        <a for="radio1" class="menuItem" href="http://www.lmu.de/funktionen/impressum/index.html" target="_blank">Impressum</a>
-        <a for="radio1" class="menuItem" href="http://www.lmu.de/funktionen/datenschutz/index.html" translate="Datenschutz" target="_blank"></a>
+        <a for="radio1" 
+           class="menuItem" 
+           href="http://www.lmu.de/funktionen/impressum/index.html" 
+           target="_blank" 
+           analytics-on="click" 
+           analytics-event="Impressum"
+           analytics-category="Navigation">Impressum</a>
+        <a for="radio1" 
+           class="menuItem" 
+           href="http://www.lmu.de/funktionen/datenschutz/index.html" 
+           target="_blank" analytics-on="click" 
+           analytics-event="Datenschutz"
+           analytics-category="Navigation">Datenschutz</a>
         <a for="radio1" class="menuItem" href="#/kontakt" translate="Kontakt"></a>
         <label class="close" for="radio1" ontouchstart="">✖</label>
     </div>
 
     <div id="appAd" class="only-mobile" ng-if="showAd">
          
-        <a href="https://play.google.com/store/apps/details?id=de.lmuroomfinder.release" target="_blank">
+        <a 
+           href="https://play.google.com/store/apps/details?id=de.lmuroomfinder.release" 
+           target="_blank" 
+           analytics-on="click" 
+           analytics-event="Open Android Appstore Mobile"
+           analytics-category="Navigation">
             <i class="fi-social-android"></i>
             <p>
                 <span class="main">LMU Raumfinder als Android App</span><br>
