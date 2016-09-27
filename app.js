@@ -33,6 +33,16 @@ angular.module('myApp', [
                 reloadOnSearch: false,
                 templateUrl: 'partials/roomSearch.html',
             })
+            .when('/part/:id/:map*', {
+                redirectTo: function (params,path,search) {
+                     var url =''+ window.location.href.split('#')[1];
+                     url = url.replace("part", "building");
+                     url = url.replace(params.id, buildingsLookup[params.id]);
+                    
+                    if (url) return url;
+                    else return "/404";
+                }
+            })
             .when('/', {
                 controller: 'MainCtrl',
                 controllerAs: 'main',
@@ -57,7 +67,7 @@ angular.module('myApp', [
 
         // Alternative Karten Quelle. 
         // Quelle und Infos: https://carto.com/location-data-services/basemaps/ (Kostenlos bis 75.000 Abrufe/Monat)
-    
+
         // 
         // "MAPTILES_URL": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
         // "MAP_CREDITS": "<a href='https://www.mapzen.com/rights'>Attribution.</a>. Data &copy;<a href='https://openstreetmap.org/copyright'>OSM</a> contributors."
@@ -66,7 +76,7 @@ angular.module('myApp', [
         return {
             restrict: 'AE',
             replace: 'true',
-            controller:'AdvertisementController',
+            controller: 'AdvertisementController',
             templateUrl: 'partials/mobileTopMenu.html'
         };
     }]);

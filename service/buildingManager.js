@@ -29,7 +29,7 @@ angular.module('myApp')
   
                 // Data is directly referenced (-> index.html), no ajax necessary
                 // Create objects for all buildings and return array 
-                test.forEach(function (buildingData) {
+                buildingsJSON.forEach(function (buildingData) {
                    scope._retrieveInstance(buildingData.code, buildingData);
                 });
                 
@@ -41,7 +41,7 @@ angular.module('myApp')
                 
                 // Data is directly referenced (-> index.html), no ajax necessary 
                 // Buildings can't be accessed individually
-                test.forEach(function (buildingData) {
+                buildingsJSON.forEach(function (buildingData) {
                    scope._retrieveInstance(buildingData.code, buildingData);
                 });
                 
@@ -78,9 +78,7 @@ angular.module('myApp')
                     this._loadAll(deferred);
                 }
                 return deferred.promise;
-            },
-
-            
+            },            
         };
         return buildingManager;
 }]);
