@@ -1,0 +1,3 @@
+Hauptgebäude Raum N120 (gr. physialischer Hörsaal) fehlt. 
+(json/rooms/bw0000.json -> "002001120_":{"rName":"N 120","floorCode":"g003001","pX":"2850","pY":"1184"})
+Der Raum ist in den CSVs im falschen Stockwerk eingetragen.
