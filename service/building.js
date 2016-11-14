@@ -1,4 +1,4 @@
-angular.module('myApp')
+angular.module('LMURaumfinder')
     .factory('Building', ['$http', '$filter', function ($http, $filter) {
         function Building(buildingData) {
             if (buildingData) {

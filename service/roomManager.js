@@ -1,4 +1,4 @@
-angular.module('myApp').factory('roomManager', ['$http', '$q', 'Room', function ($http, $q, Room) {
+angular.module('LMURaumfinder').factory('roomManager', ['$http', '$q', 'Room', function ($http, $q, Room) {
     var roomManager = {
         _pool: {},
         _search: function (buildingCode) {
@@ -50,7 +50,7 @@ angular.module('myApp').factory('roomManager', ['$http', '$q', 'Room', function 
 }]);
 
 
-angular.module('myApp')
+angular.module('LMURaumfinder')
     .factory('Room', ['$http', function ($http) {
         function Room(RoomList) {
             if (RoomList) {

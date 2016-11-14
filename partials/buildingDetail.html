@@ -5,7 +5,7 @@
         <div class="searchHead desktop-only">
             <a href="#/">
                 <img src="./img/chev_white_24px.svg" alt="Zurück"> 
-                {{ 'BACK_TO_BUILDINGSEARCH' | translate }}
+                Nach Gebäude suchen
             </a>
         </div>
 
@@ -21,24 +21,24 @@
 
             <a class="listElementIcon" href="#/building/{{ctrl.building.code}}/map">
                 <i class="listIcon fi-map"></i>
-                <p class="singleMain" translate="MENU_SHOW_BUILDINGMAP"></p>
+                <p class="singleMain">Gebäudeplan anzeigen</p>
             </a>
 
             <a class="listElementIcon only-mobile" 
                href="#/building/{{ctrl.building.code}}/map/search">
                 <i class="listIcon fi-magnifying-glass"></i>
-                <p class="singleMain" translate="MENU_SEARCH_ROOM"></p>
+                <p class="singleMain">Raum suchen</p>
             </a> 
             
             <a class="listElementIcon no-mobile" 
                href="#/building/{{ctrl.building.code}}/map">
                 <i class="listIcon fi-magnifying-glass"></i>
-                <p class="singleMain" translate="MENU_SEARCH_ROOM"></p>
+                <p class="singleMain">Raum suchen</p>
             </a>
 
             <a class="listElementIcon" target="_blank" href="https://www.google.com/maps/place/{{ctrl.building.displayName}}/@{{ctrl.building.lat}},{{ctrl.building.lng}}">
                 <i class="listIcon fi-marker"></i>
-                <p class="singleMain" translate="MENU_SHOW_ON_GOOGLEMAPS"></p>
+                <p class="singleMain">Auf Google Maps zeigen</p>
             </a>
 
         </div>

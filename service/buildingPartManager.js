@@ -1,4 +1,4 @@
-angular.module('myApp').factory('buildingPartManager', ['$http', '$q', 'BuildingPart', function($http, $q, BuildingPart) {  
+angular.module('LMURaumfinder').factory('buildingPartManager', ['$http', '$q', 'BuildingPart', function($http, $q, BuildingPart) {  
     var buildingPartManager = {
         _pool: {},
         _retrieveInstance: function(buildingCode, buildingData) {

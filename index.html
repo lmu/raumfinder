@@ -1,9 +1,9 @@
 <!doctype html>
-<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if lt IE 7]>      <html lang="de" ng-app="LMURaumfinder" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="de" ng-app="LMURaumfinder" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="de" ng-app="LMURaumfinder" class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html lang="de" ng-app="myApp" class="no-js">
+<html lang="de" ng-app="LMURaumfinder" class="no-js">
 
 <head>
     <meta charset="utf-8">
@@ -11,15 +11,26 @@
     <meta name="viewport" content="width=device-width,initial-scale=1, user-scalable=no" />
     <meta name="theme-color" content="#007633">
     <meta name="apple-mobile-web-app-capable" content="yes">
+
     <title>LMU Raumfinder</title>
+    <meta name="description" content="Mit dem LMU Raumfinder Gebäude und Räume der Ludwig-Maximilians-Universität München finden und teilen.">
+
+    <!-- Open Graph Info for Social Medial -->   
+    <meta property="og:type"    content="website" />
+    <meta property="og:title"   content="LMU Raumfinder" />
+    <meta property="og:description" content="Mit dem Raumfinder Gebäude und Räume der LMU finden und teilen." />
+    <meta property="og:image"  content="http://www.uni-muenchen.de/raumfinder/img/opengraph_logo.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
 
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_bold/stylesheet.css" rel="stylesheet">
-    <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_bolditalic/stylesheet.css" rel="stylesheet">
+    <!-- <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_bolditalic/stylesheet.css" rel="stylesheet"> -->
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_italic/stylesheet.css" rel="stylesheet">
-    <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_light/stylesheet.css" rel="stylesheet">
+    <!-- <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_light/stylesheet.css" rel="stylesheet"> -->
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_regular/stylesheet.css" rel="stylesheet">
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_semibold/stylesheet.css" rel="stylesheet">
-    <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_semibolditalic/stylesheet.css" rel="stylesheet">
+    <!-- <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/opensans_semibolditalic/stylesheet.css" rel="stylesheet">-->
 
     <link href="http://cms-static.uni-muenchen.de/default/foundation-zuv/fonts/foundation-icons/foundation-icons.css" rel="stylesheet">
 
@@ -37,21 +48,20 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" sizes="144x144" href="/img/icon144.png">
 
-        <!-- Piwik -->
+    <!-- Piwik -->
     <script type="text/javascript">
       var _paq = _paq || [];
-      _paq.push(["setDomains", ["*.www.lmu.de/raumfinder","*.www.uni-muenchen.de/raumfinder"]]);
-     // _paq.push(['trackPageView']);
+      //_paq.push(['trackPageView']);
       _paq.push(['enableLinkTracking']);
       (function() {
-        var u="//piwik1.verwaltung.uni-muenchen.de/30_zentralbereich/";
+        var u="//piwik-test.verwaltung.uni-muenchen.de/piwik/";
         _paq.push(['setTrackerUrl', u+'piwik.php']);
-        _paq.push(['setSiteId', '5']);
+        _paq.push(['setSiteId', 29]);
         var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
         g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
       })();
     </script>
-    <noscript><p><img src="//piwik1.verwaltung.uni-muenchen.de/30_zentralbereich/piwik.php?idsite=5" style="border:0;" alt="" /></p></noscript>
+    <noscript><p><img src="//piwik-test.verwaltung.uni-muenchen.de/piwik/piwik.php?idsite=29" style="border:0;" alt="" /></p></noscript>
     <!-- End Piwik Code -->
 
 
@@ -59,27 +69,25 @@
 
 <body>
 
-    <div class="top desktop-only" ng-controller="languageCtrl">
+    <div class="top desktop-only">
         <div class="container">
             <a href="#/" id="logo">
                 <div class="box">
-                    <h1 translate='APP_NAME_SHORT'>RAUMFINDER</h1>
+                    <h1>RAUMFINDER</h1>
                 </div>
             </a>
             <p href="#/impressum" class="links">
                 <a href="http://www.lmu.de/funktionen/impressum/index.html" 
                    target="_blank" 
                    analytics-on="click" 
-                   analytics-event="Impressum"
-                   analytics-category="Navigation">Impressum</a>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
+                   analytics-event="Impressum" 
+                   analytics-category="Navigation">Impressum</a> &nbsp;&nbsp;|&nbsp;&nbsp;
                 <a href="http://www.lmu.de/funktionen/datenschutz/index.html" 
                    target="_blank" 
                    analytics-on="click" 
-                   analytics-event="Datenschutz"
-                   analytics-category="Navigation">Datenschutz</a>
-                &nbsp;&nbsp;|&nbsp;&nbsp;
-                <a href="#/kontakt" translate="Kontakt"></a>
+                   analytics-event="Datenschutz" 
+                   analytics-category="Navigation">Datenschutz</a> &nbsp;&nbsp;|&nbsp;&nbsp;
+                <a href="#/kontakt">Kontakt</a>
             </p>
         </div>
     </div>
@@ -101,23 +109,21 @@
     <!-- Angular Dependencies -->
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-route.min.js"></script>
-    <script src="js/angular-leaflet-directive.min.js"></script>
-    <script src="js/angular-translate.min.js"></script>
 
+
+    <script src="js/angular-leaflet-directive.min.js"></script>
+    
     <script src="js/angulartics.min.js"></script>
     <script src="js/angulartics-piwik.min.js"></script>
-
 
     <script src="json/buildings.json"></script>
     <script src="json/buildingsLookup.json"></script>
     <script src="json/rename.json"></script>
 
-    <!-- Latest compiled and minified JavaScript -->
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
     <script src="js/L.TileLayer.LMUMaps.js"></script>
 
     <script src="app.js"></script>
-    <script src="controller/languageController.js"></script>
     <script src="controller/mainController.js"></script>
     <script src="controller/mapController.js"></script>
     <script src="controller/buildingController.js"></script>
@@ -127,7 +133,6 @@
     <script src="service/buildingPart.js"></script>
     <script src="service/buildingPartManager.js"></script>
     <script src="filter/filter.js"></script>
-    <script src="service/translate.js"></script>
     <script src="controller/roomSearch.js"></script>
 </body>
 

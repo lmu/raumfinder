@@ -1,5 +1,5 @@
 'use strict';
-angular.module('myApp').controller('mapCtrl', ['$scope',
+angular.module('LMURaumfinder').controller('mapCtrl', ['$scope',
                                     '$routeParams',
                                     '$location',
                                     '$log',
@@ -44,7 +44,8 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
             initLevelControl,
             levelControl,
             initBPartControl,
-            BPartControl;
+            BPartControl,
+            showImageBtn;
 
 
         angular.extend($scope, {
@@ -177,8 +178,15 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                 var BPartStructure = ctrl.buildingParts.getStructure();
 
                 levelControl = new initLevelControl(buildingPart.fCode, BPartStructure[buildingPart.buildingPart]);
-
                 map.addControl(levelControl);
+                
+                
+                /* ######## TEMP ######## */
+                if (showImageBtn) map.removeControl(showImageBtn);
+                showImageBtn = new initShowImage();
+                map.addControl(showImageBtn);
+                /* ######## TEMP ######## */
+               
 
                 //Check if complex building -> create Building Control
                 if (ctrl.buildingParts.isComplex()) {
@@ -259,6 +267,7 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
         // Update the position of a marker
         function updateMarker(x, y) {
             leafletData.getMap().then(function (map) {
+          
                 if (!marker) {
                     var mapPoint = map.unproject([0, 0], 3);
                     marker = L.marker(mapPoint);
@@ -366,6 +375,40 @@ angular.module('myApp').controller('mapCtrl', ['$scope',
                     container.appendChild(a);
                 }
 
+
+                return container;
+            }
+        }); 
+        
+        var initShowImage = L.Control.extend({
+            options: {
+                position: 'bottomright',
+                activePart: ''
+            },
+            initialize: function () {
+            },
+            onAdd: function (map) {
+                var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+            
+                var a = L.DomUtil.create('a', '');
+                
+                var link = "?building=" + ctrl.buildingCode;
+                                  
+               // a.setAttribute('href', 'http://localhost/roomfinder/createImage.php'+link);
+                a.innerHTML = 'Bild';
+
+
+                a.onclick = function (e) {
+                    
+                   if ($location.search().room) {
+                        link =  link + "&room="+$location.search().room;
+                    }else if ($location.search().level) {
+                        link =  link + "&floor="+$location.search().level;
+                    }
+                    window.location.assign('http://www.cip.ifi.lmu.de/~vonbuelow/php/createImage/createImage.php'+link);
+                    
+                };
+                container.appendChild(a);
 
                 return container;
             }

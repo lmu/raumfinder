@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp').controller('roomSearchCtrl', ['$scope',
+angular.module('LMURaumfinder').controller('roomSearchCtrl', ['$scope',
                                     '$routeParams',
                                     'buildingManager',
                                     '$filter',

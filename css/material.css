@@ -32,6 +32,7 @@ h2 {
 
 .right h1, .right h2, .right p{
     padding-left: 20px;
+    padding-right: 20px;
 }
 
 .menuRoom .searchHead a,

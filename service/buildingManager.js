@@ -1,4 +1,4 @@
-angular.module('myApp')
+angular.module('LMURaumfinder')
     .factory('buildingManager', ['$http', '$q', 'Building', function ($http, $q, Building) {
         var buildingManager = {
             

@@ -1,15 +1,15 @@
 'use strict';
 
 // Declare app level module which depends on views, and components
-angular.module('myApp', [
+angular.module('LMURaumfinder', [
     'ngRoute',
     'leaflet-directive',
     'filter',
-    'pascalprecht.translate',
     'angulartics',
-    'angulartics.piwik'
+    'angulartics.piwik',
     ])
-    .config(['$routeProvider', function ($routeProvider) {
+    .config(['$logProvider','$routeProvider', function ($logProvider, $routeProvider) {
+        $logProvider.debugEnabled(false);
         $routeProvider
             .when('/kontakt', {
                 controller: 'impressumCtrl',
@@ -33,12 +33,13 @@ angular.module('myApp', [
                 reloadOnSearch: false,
                 templateUrl: 'partials/roomSearch.html',
             })
+            // Weiterleitung für LSF
             .when('/part/:id/:map*', {
-                redirectTo: function (params,path,search) {
-                     var url =''+ window.location.href.split('#')[1];
-                     url = url.replace("part", "building");
-                     url = url.replace(params.id, buildingsLookup[params.id]);
-                    
+                redirectTo: function (params, path, search) {
+                    var url = '' + window.location.href.split('#')[1];
+                    url = url.replace("part", "building");
+                    url = url.replace(params.id, buildingsLookup[params.id]);
+
                     if (url) return url;
                     else return "/404";
                 }
@@ -56,10 +57,8 @@ angular.module('myApp', [
             .otherwise({
                 redirectTo: '/'
             });
+
     }])
-    .config(function ($logProvider) {
-        $logProvider.debugEnabled(false);
-    })
     .constant("MAP_DEFAULTS", {
         "MAPTILES_URL": "http://api.tiles.mapbox.com/v4/maxmediapictures.o2e7pbh8/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWF4bWVkaWFwaWN0dXJlcyIsImEiOiJ2NXRBMGlFIn0.K9dbubXdaU77e0PdLGN7iw",
         "MAP_CREDITS": "© <a href='https://www.mapbox.com/map-feedback/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
@@ -72,11 +71,11 @@ angular.module('myApp', [
         // "MAPTILES_URL": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
         // "MAP_CREDITS": "<a href='https://www.mapzen.com/rights'>Attribution.</a>. Data &copy;<a href='https://openstreetmap.org/copyright'>OSM</a> contributors."
     })
-    .directive('topNavi', ['$translate', function ($translate) {
+    .directive('topNavi', function () {
         return {
             restrict: 'AE',
             replace: 'true',
             controller: 'AdvertisementController',
             templateUrl: 'partials/mobileTopMenu.html'
         };
-    }]);
+    });

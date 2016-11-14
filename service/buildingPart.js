@@ -1,4 +1,4 @@
-angular.module('myApp').factory('BuildingPart', ['$http', '$filter', function ($http, $filter) {
+angular.module('LMURaumfinder').factory('BuildingPart', ['$http', '$filter', function ($http, $filter) {
     function BuildingPart(buildingPartData) {
         if (buildingPartData) {
             this.setData(buildingPartData);

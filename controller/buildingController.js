@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('myApp')
+angular.module('LMURaumfinder')
 
 .controller('buildingCtrl', ['$scope', 'buildingManager', '$routeParams', 'leafletData', '$filter', '$location', 'MAP_DEFAULTS',
     function ($scope, buildingManager, $routeParams, leafletData, $filter, $location, MAP_DEFAULTS) {

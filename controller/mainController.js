@@ -1,5 +1,5 @@
 'use strict';
-angular.module('myApp').
+angular.module('LMURaumfinder').
 controller('MainCtrl', ['$scope', 'buildingManager', '$filter', 'MAP_DEFAULTS',
                         function ($scope, buildingManager, $filter, MAP_DEFAULTS) {
 
