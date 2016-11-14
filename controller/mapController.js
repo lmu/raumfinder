@@ -180,13 +180,6 @@ angular.module('LMURaumfinder').controller('mapCtrl', ['$scope',
                 levelControl = new initLevelControl(buildingPart.fCode, BPartStructure[buildingPart.buildingPart]);
                 map.addControl(levelControl);
                 
-                
-                /* ######## TEMP ######## */
-                if (showImageBtn) map.removeControl(showImageBtn);
-                showImageBtn = new initShowImage();
-                map.addControl(showImageBtn);
-                /* ######## TEMP ######## */
-               
 
                 //Check if complex building -> create Building Control
                 if (ctrl.buildingParts.isComplex()) {
@@ -379,39 +372,4 @@ angular.module('LMURaumfinder').controller('mapCtrl', ['$scope',
                 return container;
             }
         }); 
-        
-        var initShowImage = L.Control.extend({
-            options: {
-                position: 'bottomright',
-                activePart: ''
-            },
-            initialize: function () {
-            },
-            onAdd: function (map) {
-                var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
-            
-                var a = L.DomUtil.create('a', '');
-                
-                var link = "?building=" + ctrl.buildingCode;
-                                  
-               // a.setAttribute('href', 'http://localhost/roomfinder/createImage.php'+link);
-                a.innerHTML = 'Bild';
-
-
-                a.onclick = function (e) {
-                    
-                   if ($location.search().room) {
-                        link =  link + "&room="+$location.search().room;
-                    }else if ($location.search().level) {
-                        link =  link + "&floor="+$location.search().level;
-                    }
-                    window.location.assign('http://www.cip.ifi.lmu.de/~vonbuelow/php/createImage/createImage.php'+link);
-                    
-                };
-                container.appendChild(a);
-
-                return container;
-            }
-        });
-
     }]);
