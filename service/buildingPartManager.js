@@ -2,6 +2,7 @@ angular.module('LMURaumfinder').factory('buildingPartManager', ['$http', '$q', '
     var buildingPartManager = {
         _pool: {},
         _retrieveInstance: function(buildingCode, buildingData) {
+    
             var instance = this._pool[buildingCode];
 
             if (instance) {
