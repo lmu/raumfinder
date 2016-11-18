@@ -41,7 +41,7 @@ angular.module('LMURaumfinder')
 
             }
         };
-
+ 
         // Level sorting function
         function sortLevels(a, b) {
             var levels = ["OG8", "OG7", "OG6", "OG5", "OG4", "ZG3", "OG3", "ZG2", "OG2", "ZG1", "OG1", "ZG", "EG", "UG1", "UG2", "UG3"];

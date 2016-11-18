@@ -6,9 +6,9 @@ var ngAnnotate = require('gulp-ng-annotate');
 
 gulp.task('js', function () {
     gulp.src(['./json/*.json', ])
-        .pipe(concat('data.json'))
+      .pipe(concat('data.json'))
       .pipe(uglify())
-        .pipe(gulp.dest('.'));
+      .pipe(gulp.dest('.'));
 
     gulp.src(['./js/*.js',
               './app.js',
