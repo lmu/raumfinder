@@ -41,6 +41,7 @@ angular.module('LMURaumfinder').controller('mapCtrl', ['$scope',
             tileLayer,
             bounds,
             marker,
+            popup,
             initLevelControl,
             levelControl,
             initBPartControl,
@@ -200,7 +201,9 @@ angular.module('LMURaumfinder').controller('mapCtrl', ['$scope',
             try{
                 var floorCode = ctrl.rooms.getRoom(roomId).floorCode;
                 initMap(ctrl.buildingParts[floorCode]);
-                updateMarker(ctrl.rooms.getRoom(roomId).pX, ctrl.rooms.getRoom(roomId).pY);
+                var thisRoom = ctrl.rooms.getRoom(roomId);
+                
+                updateMarker(thisRoom.pX, thisRoom.pY, thisRoom.rName, roomId);
                 // Track user interaction
                 $analytics.pageTrack('/building/' + ctrl.buildingCode + '/map?room=' + roomId);
             } catch (err){
@@ -258,17 +261,26 @@ angular.module('LMURaumfinder').controller('mapCtrl', ['$scope',
         // --------- Helper functions --------- //
 
         // Update the position of a marker
-        function updateMarker(x, y) {
+        function updateMarker(x, y, name, id) {
             leafletData.getMap().then(function (map) {
           
+                //If marker and popup does not exist, create it
                 if (!marker) {
                     var mapPoint = map.unproject([0, 0], 3);
                     marker = L.marker(mapPoint);
+                    marker.bindPopup(''); 
                     map.addLayer(marker);
                 }
 
                 var mapPoint = map.unproject([x, y], 3);
                 marker.setLatLng(mapPoint);
+                marker.getPopup().setContent('<b>Raum '
+                                             + name
+                                             + ' </b> '
+                                             + ' <i class="fi-wheelchair accessIcon"></i>'
+                                             + ' <i class="fi-hearing-aid accessIcon"></i>'
+                                             + ' <br><a href="#/building/'+ctrl.buildingCode+'/'+id +'">Details</a>');
+                marker.openPopup();
                 map.panTo(mapPoint);
             });
         }
@@ -280,7 +292,7 @@ angular.module('LMURaumfinder').controller('mapCtrl', ['$scope',
                     marker = null;
                 }
             });
-        }
+        } 
 
         function calcBounds(map, buildingPart) {
 

@@ -33,6 +33,12 @@ angular.module('LMURaumfinder', [
                 reloadOnSearch: false,
                 templateUrl: 'partials/roomSearch.html',
             })
+            .when('/building/:buildingID/:roomID', {
+                controller: 'roomCtrl',
+                controllerAs: 'ctrl',
+                reloadOnSearch: false,
+                templateUrl: 'partials/room.html',
+            })
             // Weiterleitung für LSF
             .when('/part/:id/:map*', {
                 redirectTo: function (params, path, search) {

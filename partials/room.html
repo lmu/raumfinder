@@ -1,0 +1,59 @@
+<div class="left ">
+    <div x-top-navi class="no-desktop mobileNavi"></div>
+
+    <div class="menuRoom">
+        <div class="searchHead desktop-only">
+            <a href="#/">
+                <img src="./img/chev_white_24px.svg" alt="Zurück"> Gebäudeplan anzeigen
+            </a>
+        </div>
+
+        <div class="materialList card no-mobile">
+            <div class="buildingDetail" 
+                 ng-style="{'background-image':'url('+ctrl.building.getImageUrl(400)+')'}">
+                <div class="grandient"> &nbsp;</div>
+                <div class="stackBottom">
+                    <p class="main">{{ctrl.building.displayName}}</p>
+                    <p class="sub">{{ctrl.building.city}}</p>
+                </div>
+            </div>
+             <a class="listElementIcon" href="#/building/{{ctrl.buildingCode}}">
+                <i class="listIcon fi-map"></i>
+                <p class="singleMain">Raum auf Gebäudeplan zeigen</p>
+            </a>
+            <a class="listElementIcon" href="#/building/{{ctrl.buildingCode}}">
+                <i class="listIcon fi-marker"></i>
+                <p class="singleMain">Gebäude auf Karte zeigen</p>
+            </a>
+        </div>
+
+    </div>
+</div>
+<div class="right card">
+    <h1>Raum A120</h1>
+    
+    <p> Hörsaal, 120 Sitzplätze <br>
+    Geschwister-Scholl-Platz 1, München</p>
+
+    
+    
+    <h2>Informationen zur Barrierefreiheit</h2>
+    <p>&nbsp;<i class="fi-wheelchair accessIcon"></i> Barrierefreier Zugang möglich</p>
+    <p>&nbsp;<i class="fi-hearing-aid accessIcon"></i> Audioanlage vorhanden</p>
+
+    
+    <h2>Informationen zum Gebäude</h2>
+        <p><i>Aufzüge</i></p>
+    <ul>
+        <li>Haupteingang (80cm)</li>
+        <li>Amalienhalle (Lastenlift, 120cm)</li>
+        <li>Adalberttrakt (80cm)</li>
+    </ul>
+    
+    <p>Der Zugang zum Hauptgebäude für Mobilitätsbehinderte erfolgt durch rollstuhlgerechte, automatische Türen an der der Ludwigstraße zugewandten Gebäudeseite (große Flügeltür rechts vom Haupteingang) sowie am Hintereingang von der Amalienstraße aus, über die Rampe.</p><p>
+    Vom Haupteingang Geschwister-Scholl-Platz 1 aus erreichen Sie die Gebäudeteile A, D und Teile von E. Direkt links vor den Eingangstüren auf der Vorderseite befindet sich ein mit einem Behindertenpiktogramm gekennzeichneter Aufzug, über den Sie auch die oberen Stockwerke erreichen können.</p><p>
+    Vom Hintereingang Amalienstraße aus erreichen Sie über die Rampe das Erdgeschoss des Gebäudeteiles M sowie über den Lastenaufzug die oberen Stockwerke der Gebäudeteile B und M. (Lastenaufzug: von der Amalienstraße kommend auf der linken Seite)</p><p>
+    Über den Gebäudeteil A im ersten und zweiten Stockwerk sind die Vorder- und Rückseite des Hauptgebäudes barrierefrei miteinander verbunden.</p><p>
+    An zentralen Stellen im Hauptgebäude befinden sich auch Wegweiser mit Hinweisen zur Zugänglichkeit zu wichtigen Räumen.</p>
+    
+</div>

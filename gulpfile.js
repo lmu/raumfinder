@@ -1,8 +1,11 @@
 var gulp = require('gulp');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
-var sourcemaps = require('gulp-sourcemaps');
-var ngAnnotate = require('gulp-ng-annotate');
+//var sourcemaps = require('gulp-sourcemaps');
+//var ngAnnotate = require('gulp-ng-annotate');
+var connect = require('gulp-connect');
+
+gulp.task('default', [ 'webserver','watch']);
 
 gulp.task('js', function () {
     gulp.src(['./json/*.json', ])
@@ -15,15 +18,23 @@ gulp.task('js', function () {
               './filter/*.js',
               './controller/*.js',
               './service/*.js'])
-        //.pipe(sourcemaps.init())
         .pipe(concat('build.js'))
-        //.pipe(ngAnnotate())
         .pipe(uglify())
-        //.pipe(sourcemaps.write())
         .pipe(gulp.dest('.'));
-})
+});
 
 
 gulp.task('watch', ['js'], function () {
     gulp.watch('./**/*.js', ['js'])
-})
+});
+
+
+gulp.task('webserver', function () {
+    connect.server({
+        livereload: true,
+        root: '/'
+    });
+});
+
+
+

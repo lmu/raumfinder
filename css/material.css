@@ -374,3 +374,17 @@ h2 {
 .desktop-only {
     display: none;
 }
+
+/* --- Accessibility Icons --- */
+
+.accessIcon{
+    display: inline-block;
+    height:20px;
+    width: 20px;
+    color: white;
+    text-align: center;
+    line-height: 20px;
+    font-size: 18px;
+    background-color: #3c3cb5;
+    border-radius: 2px;
+}
