@@ -19,12 +19,11 @@ angular.module('filter', [])
                 return input;
             }
 
-            str.toLowerCase();
+            str = str.toLowerCase();06
 
             angular.forEach(input, function (val, key) {
-                var street = val.displayName.toLocaleLowerCase();
-                var city = val.city.toLocaleLowerCase();
-
+                var street = val.displayName.toLowerCase();
+                var city = val.city.toLowerCase();
 
                 if (street.indexOf(str) !== -1 || city.indexOf(str) !== -1) {
                     tmp.push(val)
