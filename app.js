@@ -1,4 +1,5 @@
-'use strict';
+/*global angular, buildingsLookup */
+/*jslint browser: true */
 
 // Declare app level module which depends on views, and components
 angular.module('LMURaumfinder', [
@@ -6,9 +7,11 @@ angular.module('LMURaumfinder', [
     'leaflet-directive',
     'filter',
     'angulartics',
-    'angulartics.piwik',
-    ])
-    .config(['$logProvider','$routeProvider', function ($logProvider, $routeProvider) {
+    'angulartics.piwik'])
+
+    .config(['$logProvider', '$routeProvider', function ($logProvider, $routeProvider) {
+        'use strict';
+        
         $logProvider.debugEnabled(false);
         $routeProvider
             .when('/kontakt', {
@@ -25,23 +28,26 @@ angular.module('LMURaumfinder', [
                 controller: 'mapCtrl',
                 controllerAs: 'ctrl',
                 reloadOnSearch: false,
-                templateUrl: 'partials/buildingMap.html',
+                templateUrl: 'partials/buildingMap.html'
             })
             .when('/building/:id/map/search', {
                 controller: 'roomSearchCtrl',
                 controllerAs: 'ctrl',
                 reloadOnSearch: false,
-                templateUrl: 'partials/roomSearch.html',
+                templateUrl: 'partials/roomSearch.html'
             })
             // Weiterleitung für LSF
             .when('/part/:id/:map*', {
                 redirectTo: function (params, path, search) {
-                    var url = '' + window.location.href.split('#')[1];
+                    var url = window.location.href.split('#')[1].toString();
                     url = url.replace("part", "building");
+                    // buildingsLookup is available in data.json
                     url = url.replace(params.id, buildingsLookup[params.id]);
 
-                    if (url) return url;
-                    else return "/404";
+                    if (url) {
+                        return url;
+                    }
+                    return "/404";
                 }
             })
             .when('/', {
@@ -72,6 +78,7 @@ angular.module('LMURaumfinder', [
         // "MAP_CREDITS": "<a href='https://www.mapzen.com/rights'>Attribution.</a>. Data &copy;<a href='https://openstreetmap.org/copyright'>OSM</a> contributors."
     })
     .directive('topNavi', function () {
+        'use strict';
         return {
             restrict: 'AE',
             replace: 'true',

@@ -1,4 +1,7 @@
+/*global angular */
 angular.module('LMURaumfinder').factory('roomManager', ['$http', '$q', 'Room', function ($http, $q, Room) {
+    'use strict';
+    
     var roomManager = {
         _pool: {},
         _search: function (buildingCode) {
@@ -11,8 +14,11 @@ angular.module('LMURaumfinder').factory('roomManager', ['$http', '$q', 'Room', f
                     var newRoom = new Room(roomData);
                     scope._pool[buildingCode] = newRoom;
 
-                    if (roomCode) deferred.resolve(newRoom.getRoom(roomCode));
-                    else deferred.resolve(newRoom);
+                    if (roomCode) {
+                        deferred.resolve(newRoom.getRoom(roomCode));
+                    } else {
+                        deferred.resolve(newRoom);
+                    }
                 })
                 .error(function () {
                     deferred.reject();
@@ -22,8 +28,8 @@ angular.module('LMURaumfinder').factory('roomManager', ['$http', '$q', 'Room', f
         /* Public Methods */
         /* Use this function in order to get all rooms of a building */
         getAllRooms: function (buildingCode) {
-            var deferred = $q.defer();
-            var rooms = this._search(buildingCode);
+            var deferred = $q.defer(),
+                rooms = this._search(buildingCode);
             if (rooms) {
                 deferred.resolve(rooms);
             } else {
@@ -34,8 +40,8 @@ angular.module('LMURaumfinder').factory('roomManager', ['$http', '$q', 'Room', f
         },
 
         getRoom: function (buildingCode, roomCode) {
-            var deferred = $q.defer();
-            var room = this._search(buildingCode, roomCode);
+            var deferred = $q.defer(),
+                room = this._search(buildingCode, roomCode);
             if (room) {
                 deferred.resolve(room);
             } else {
@@ -52,6 +58,8 @@ angular.module('LMURaumfinder').factory('roomManager', ['$http', '$q', 'Room', f
 
 angular.module('LMURaumfinder')
     .factory('Room', ['$http', function ($http) {
+        'use strict';
+        
         function Room(RoomList) {
             if (RoomList) {
                 this.setData({
@@ -61,7 +69,8 @@ angular.module('LMURaumfinder')
                 //this.data.setData(RoomList);
             }
             // Some other initializations related to Building
-        };
+        }
+        
         Room.prototype = {
             setData: function (buildingData) {
                 angular.extend(this, buildingData);
@@ -73,13 +82,15 @@ angular.module('LMURaumfinder')
                 return this.data[code];
             },
             getRooms: function (query, limit) {
-                var filtered = [];
+                var filtered = [],
+                    showAll = false,
+                    query_l = " ";
 
-                var showAll = false;
-                var query_l = " ";
-
-                if (query === undefined) showAll = true;
-                else query_l = query.replace(/ /g, '').toLowerCase();
+                if (query === undefined) {
+                    showAll = true;
+                } else {
+                    query_l = query.replace(/ /g, '').toLowerCase();
+                }
 
                 for (var room in this.data) {
                     if (showAll ||

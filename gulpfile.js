@@ -4,7 +4,7 @@ var uglify = require('gulp-uglify');
 var ngAnnotate = require('gulp-ng-annotate');
 var connect = require('gulp-connect');
 
-gulp.task('js', function () {
+gulp.task('build', function () {
     gulp.src(['./json/*.json', ])
         .pipe(concat('data.json'))
         .pipe(uglify())
@@ -29,7 +29,7 @@ gulp.task('connect', function() {
 });
 
 gulp.task('watch', function () {
-    gulp.watch('./*/*.js', ['js']);
+    gulp.watch('./*/*.js', ['build']);
 });
 
 gulp.task('default', ['connect', 'watch']);

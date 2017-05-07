@@ -1,5 +1,8 @@
+/*global angular */
 angular.module('filter', [])
+
     .filter('capitalize', function () {
+        'use strict';
         return function (input, all) {
             var reg = /([^\W_]+[^\s-]*) */g;
             if (input !== undefined) {
@@ -9,31 +12,35 @@ angular.module('filter', [])
             return (!!input) ? input.replace(reg, function (txt) {
                 return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             }) : '';
-        }
+        };
     })
+
     .filter('filterBuildings', function () {
+        'use strict';
         return function (input, str) {
             var tmp = [];
 
-            if (str == undefined || str == "") {
+            if (str === undefined || str === "") {
                 return input;
             }
 
-            str = str.toLowerCase();06
+            str = str.toLowerCase();
 
             angular.forEach(input, function (val, key) {
                 var street = val.displayName.toLowerCase();
                 var city = val.city.toLowerCase();
 
                 if (street.indexOf(str) !== -1 || city.indexOf(str) !== -1) {
-                    tmp.push(val)
+                    tmp.push(val);
                 }
             });
 
             return tmp;
         };
     })
+
     .filter('findInObjects', function () {
+        'use strict';
         return function (input, str) {
             var tmp = {};
 
@@ -47,8 +54,10 @@ angular.module('filter', [])
             return tmp;
         };
     })
+
     //get text in brackets 
     .filter('stringInBrackets', function () {
+        'use strict';
         return function (input, all) {
 
             var regExp = /\(([^)]+)\)/;
@@ -59,13 +68,13 @@ angular.module('filter', [])
             }
 
             return matches[1];
-        }
+        };
     })
+
     //remove text in brackets
     .filter('removeStringInBrackets', function () {
+        'use strict';
         return function (input) {
             return input.replace(/ *\([^)]*\) */g, "");
-        }
-
-
+        };
     });

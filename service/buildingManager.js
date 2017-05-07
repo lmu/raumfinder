@@ -1,10 +1,13 @@
+/*global angular, buildingsJSON */
 angular.module('LMURaumfinder')
     .factory('buildingManager', ['$http', '$q', 'Building', function ($http, $q, Building) {
+        'use strict';
+
         var buildingManager = {
-            
+
             _poolArray: [], // If all objects are needed (array form is better for angular.js)
-            _pool:{},       // If a specific object is needed
-            
+            _pool: {}, // If a specific object is needed
+
             _retrieveInstance: function (buildingId, buildingData) {
                 var instance = this._poolArray[buildingId];
 
@@ -18,36 +21,36 @@ angular.module('LMURaumfinder')
 
                 return instance;
             },
-            
+
             _search: function (buildingId) {
                 // Use associative array '_pool' to find building and return it
                 return this._pool[buildingId];
             },
-            
+
             _loadAll: function (deferred) {
                 var scope = this;
-  
+
                 // Data is directly referenced (-> index.html), no ajax necessary
                 // Create objects for all buildings and return array 
                 buildingsJSON.forEach(function (buildingData) {
-                   scope._retrieveInstance(buildingData.code, buildingData);
+                    scope._retrieveInstance(buildingData.code, buildingData);
                 });
-                
+
                 deferred.resolve(scope._poolArray);
             },
-            
+
             _load: function (deferred, id) {
                 var scope = this;
-                
+
                 // Data is directly referenced (-> index.html), no ajax necessary 
                 // Buildings can't be accessed individually
                 buildingsJSON.forEach(function (buildingData) {
-                   scope._retrieveInstance(buildingData.code, buildingData);
+                    scope._retrieveInstance(buildingData.code, buildingData);
                 });
-                
+
                 // Check if building with given ID exists and return it, else reject promise
-                if(scope._pool[id]){
-                     deferred.resolve(scope._pool[id]); 
+                if (scope._pool[id]) {
+                    deferred.resolve(scope._pool[id]);
                 } else {
                     deferred.reject();
                 }
@@ -57,8 +60,8 @@ angular.module('LMURaumfinder')
             /* Public Methods */
             /* Use this function in order to get a building instance by it's id */
             getBuilding: function (buildingId) {
-                var deferred = $q.defer();
-                var building = this._search(buildingId);
+                var deferred = $q.defer(),
+                    building = this._search(buildingId);
                 if (building) {
                     deferred.resolve(building);
                 } else {
@@ -66,19 +69,19 @@ angular.module('LMURaumfinder')
                 }
                 return deferred.promise;
             },
-            
-             /* Use this function in order to get instances of all the books */
+
+            /* Use this function in order to get instances of all the books */
             getAllBuildings: function () {
                 var deferred = $q.defer();
-             
-                if (this._poolArray.length >0) {
-                  //  console.log(this._poolArray);
-                    deferred.resolve(this._poolArray);  
+
+                if (this._poolArray.length > 0) {
+                    //  console.log(this._poolArray);
+                    deferred.resolve(this._poolArray);
                 } else {
                     this._loadAll(deferred);
                 }
                 return deferred.promise;
-            },            
+            }
         };
         return buildingManager;
-}]);
+    }]);

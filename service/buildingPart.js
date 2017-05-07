@@ -1,18 +1,21 @@
+/*global angular, rename */
 angular.module('LMURaumfinder')
     .factory('BuildingPart', ['$http', '$filter', function ($http, $filter) {
+        'use strict';
+        
         function BuildingPart(buildingPartData) {
             if (buildingPartData) {
                 this.setData(buildingPartData);
 
                 // Object to return with building structure
-                var structure = {};
-                var thisFloor;
+                var structure = {},
+                    thisFloor = {};
               
                 // For all floors provided in json
                 for (var floor in buildingPartData) {
           
                     //Correct the floor name
-                    buildingPartData[floor]['level'] = renameFloorNames(buildingPartData[floor]['level']);
+                    buildingPartData[floor].level = renameFloorNames(buildingPartData[floor].level);
 
                     thisFloor = buildingPartData[floor];
                     thisFloor.fCode = floor; //So we have the floor code in the object
@@ -31,7 +34,7 @@ angular.module('LMURaumfinder')
 
                 // Sort levels (descending: OG1, EG, UG)
                 for (var part in structure) {
-                    structure[part].levels.sort(sortLevels)
+                    structure[part].levels.sort(sortLevels);
                 }
 
 
@@ -40,7 +43,7 @@ angular.module('LMURaumfinder')
                 });
 
             }
-        };
+        }
  
         // Level sorting function
         function sortLevels(a, b) {
@@ -54,7 +57,7 @@ angular.module('LMURaumfinder')
                 return -1;
 
             return 1;
-        };
+        }
 
         function renameFloorNames(level) {
             var temp = level;
@@ -64,7 +67,7 @@ angular.module('LMURaumfinder')
             level = (rename[level] ? rename[level] : level);
             return level;
 
-        };
+        }
 
 
         BuildingPart.prototype = {
@@ -89,7 +92,7 @@ angular.module('LMURaumfinder')
 
             getGroundFloor: function (buildingPartCode) {
                 var thisPart = this.structure[buildingPartCode];
-                for (floor in thisPart.levels) {
+                for (var floor in thisPart.levels) {
                     if (thisPart.levels[floor].level == 'EG') {
                         return thisPart.levels[floor];
                     }
