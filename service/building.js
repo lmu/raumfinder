@@ -28,7 +28,7 @@ angular.module('LMURaumfinder')
                     }
                     //Medium Sized
                 } else if (width <= 400) {
-                    if (this.hasImage === 1) {
+                    if (this.hasImage === '1') {
                         return 'https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/medium/' + this.code + '.jpg';
                     } else {
                         return 'img/pattern.jpg';
