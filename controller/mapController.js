@@ -161,7 +161,7 @@ angular.module('LMURaumfinder').controller('mapCtrl', ['$scope',
                 if (BPartControl) { map.removeControl(BPartControl); }
 
                 // Set up tile layer
-                tileLayer = L.tileLayer.lmuMaps('https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/tiles/v2/' + buildingPart.mapUri.split(".")[0] + '/', {
+                tileLayer = L.tileLayer.lmuMaps('https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/tiles/v3/' + buildingPart.mapUri.split(".")[0] + '/', {
                     width: buildingPart.mapSizeX,
                     height: buildingPart.mapSizeY,
                     attribution: '© LMU München'
