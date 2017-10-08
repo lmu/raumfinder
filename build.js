@@ -1,4 +1,1472 @@
-!function(angular){"use strict";!function(angular){angular.module("leaflet-directive",[]).directive("leaflet",["$q","leafletData","leafletMapDefaults","leafletHelpers","leafletMapEvents",function(e,t,r,a,n){return{restrict:"EA",replace:!0,scope:{center:"=",lfCenter:"=",defaults:"=",maxbounds:"=",bounds:"=",markers:"=",legend:"=",geojson:"=",paths:"=",tiles:"=",layers:"=",controls:"=",decorations:"=",eventBroadcast:"=",markersWatchOptions:"=",geojsonWatchOptions:"="},transclude:!0,template:'<div class="angular-leaflet-map"><div ng-transclude></div></div>',controller:["$scope",function(t){this._leafletMap=e.defer(),this.getMap=function(){return this._leafletMap.promise},this.getLeafletScope=function(){return t}}],link:function(e,o,i,l){function s(){isNaN(i.width)?o.css("width",i.width):o.css("width",i.width+"px")}function u(){isNaN(i.height)?o.css("height",i.height):o.css("height",i.height+"px")}var c=a.isDefined,d=r.setDefaults(e.defaults,i.id),f=n.getAvailableMapEvents(),p=n.addEvents;e.mapId=i.id,t.setDirectiveControls({},i.id),c(i.width)&&(s(),e.$watch(function(){return o[0].getAttribute("width")},function(){s(),g.invalidateSize()})),c(i.height)&&(u(),e.$watch(function(){return o[0].getAttribute("height")},function(){u(),g.invalidateSize()}));var g=new L.Map(o[0],r.getMapCreationDefaults(i.id));if(l._leafletMap.resolve(g),c(i.center)||c(i.lfCenter)||g.setView([d.center.lat,d.center.lng],d.center.zoom),!c(i.tiles)&&!c(i.layers)){var v=L.tileLayer(d.tileLayer,d.tileLayerOptions);v.addTo(g),t.setTiles(v,i.id)}if(c(g.zoomControl)&&c(d.zoomControlPosition)&&g.zoomControl.setPosition(d.zoomControlPosition),c(g.zoomControl)&&d.zoomControl===!1&&g.zoomControl.removeFrom(g),c(g.zoomsliderControl)&&c(d.zoomsliderControl)&&d.zoomsliderControl===!1&&g.zoomsliderControl.removeFrom(g),!c(i.eventBroadcast)){var y="broadcast";p(g,f,"eventName",e,y)}g.whenReady(function(){t.setMap(g,i.id)}),e.$on("$destroy",function(){r.reset(),g.remove(),t.unresolveMap(i.id)}),e.$on("invalidateSize",function(){g.invalidateSize()})}}}]),angular.module("leaflet-directive").factory("leafletBoundsHelpers",["$log","leafletHelpers",function(e,t){function r(e){return angular.isDefined(e)&&angular.isDefined(e.southWest)&&angular.isDefined(e.northEast)&&angular.isNumber(e.southWest.lat)&&angular.isNumber(e.southWest.lng)&&angular.isNumber(e.northEast.lat)&&angular.isNumber(e.northEast.lng)}var a=t.isArray,n=t.isNumber,o=t.isFunction,i=t.isDefined;return{createLeafletBounds:function(e){return r(e)?L.latLngBounds([e.southWest.lat,e.southWest.lng],[e.northEast.lat,e.northEast.lng]):void 0},isValidBounds:r,createBoundsFromArray:function(t){return a(t)&&2===t.length&&a(t[0])&&a(t[1])&&2===t[0].length&&2===t[1].length&&n(t[0][0])&&n(t[0][1])&&n(t[1][0])&&n(t[1][1])?{northEast:{lat:t[0][0],lng:t[0][1]},southWest:{lat:t[1][0],lng:t[1][1]}}:void e.error("[AngularJS - Leaflet] The bounds array is not valid.")},createBoundsFromLeaflet:function(t){if(!(i(t)&&o(t.getNorthEast)&&o(t.getSouthWest)))return void e.error("[AngularJS - Leaflet] The leaflet bounds is not valid object.");var r=t.getNorthEast(),a=t.getSouthWest();return{northEast:{lat:r.lat,lng:r.lng},southWest:{lat:a.lat,lng:a.lng}}}}}]),angular.module("leaflet-directive").factory("leafletControlHelpers",["$rootScope","$log","leafletHelpers","leafletLayerHelpers","leafletMapDefaults",function(e,t,r,a,n){var o=r.isDefined,i=r.isObject,l=a.createLayer,s={},u=r.errorHeader+" [Controls] ",c=function(e,t,r){var a=n.getDefaults(r);if(!a.controls.layers.visible)return!1;var l=!1;return i(e)&&Object.keys(e).forEach(function(t){var r=e[t];o(r.layerOptions)&&r.layerOptions.showOnSelector===!1||(l=!0)}),i(t)&&Object.keys(t).forEach(function(e){var r=t[e];o(r.layerParams)&&r.layerParams.showOnSelector===!1||(l=!0)}),l},d=function(e){var t=n.getDefaults(e),r={collapsed:t.controls.layers.collapsed,position:t.controls.layers.position,autoZIndex:!1};angular.extend(r,t.controls.layers.options);var a;return a=t.controls.layers&&o(t.controls.layers.control)?t.controls.layers.control.apply(this,[[],[],r]):new L.control.layers([],[],r)},f={draw:{isPluginLoaded:function(){return!!angular.isDefined(L.Control.Draw)||(t.error(u+" Draw plugin is not loaded."),!1)},checkValidParams:function(){return!0},createControl:function(e){return new L.Control.Draw(e)}},scale:{isPluginLoaded:function(){return!0},checkValidParams:function(){return!0},createControl:function(e){return new L.control.scale(e)}},fullscreen:{isPluginLoaded:function(){return!!angular.isDefined(L.Control.Fullscreen)||(t.error(u+" Fullscreen plugin is not loaded."),!1)},checkValidParams:function(){return!0},createControl:function(e){return new L.Control.Fullscreen(e)}},search:{isPluginLoaded:function(){return!!angular.isDefined(L.Control.Search)||(t.error(u+" Search plugin is not loaded."),!1)},checkValidParams:function(){return!0},createControl:function(e){return new L.Control.Search(e)}},custom:{},minimap:{isPluginLoaded:function(){return!!angular.isDefined(L.Control.MiniMap)||(t.error(u+" Minimap plugin is not loaded."),!1)},checkValidParams:function(e){return!!o(e.layer)||(t.warn(u+' minimap "layer" option should be defined.'),!1)},createControl:function(e){var r=l(e.layer);return o(r)?new L.Control.MiniMap(r,e):void t.warn(u+' minimap control "layer" could not be created.')}}};return{layersControlMustBeVisible:c,isValidControlType:function(e){return-1!==Object.keys(f).indexOf(e)},createControl:function(e,t){return f[e].checkValidParams(t)?f[e].createControl(t):void 0},updateLayersControl:function(e,t,r,a,n,i){var l,u=s[t],f=c(a,n,t);if(o(u)&&r){for(l in i.baselayers)u.removeLayer(i.baselayers[l]);for(l in i.overlays)u.removeLayer(i.overlays[l]);e.removeControl(u),delete s[t]}if(f){u=d(t),s[t]=u;for(l in a){var p=o(a[l].layerOptions)&&a[l].layerOptions.showOnSelector===!1;!p&&o(i.baselayers[l])&&u.addBaseLayer(i.baselayers[l],a[l].name)}for(l in n){var g=o(n[l].layerParams)&&n[l].layerParams.showOnSelector===!1;!g&&o(i.overlays[l])&&u.addOverlay(i.overlays[l],n[l].name)}e.addControl(u)}return f}}}]),angular.module("leaflet-directive").service("leafletData",["$log","$q","leafletHelpers",function(e,t,r){var a=r.getDefer,n=r.getUnresolvedDefer,o=r.setResolvedDefer,i={},l=this,s=function(e){return e.charAt(0).toUpperCase()+e.slice(1)},u=["map","tiles","layers","paths","markers","geoJSON","UTFGrid","decorations","directiveControls"];u.forEach(function(e){i[e]={}}),this.unresolveMap=function(e){var t=r.obtainEffectiveMapId(i.map,e);u.forEach(function(e){i[e][t]=void 0})},u.forEach(function(e){var t=s(e);l["set"+t]=function(t,r){var a=n(i[e],r);a.resolve(t),o(i[e],r)},l["get"+t]=function(t){var r=a(i[e],t);return r.promise}})}]),angular.module("leaflet-directive").service("leafletDirectiveControlsHelpers",["$log","leafletData","leafletHelpers",function(e,t,r){var a=r.isDefined,n=r.isString,o=r.isObject,i=r.errorHeader,l=i+"[leafletDirectiveControlsHelpers",s=function(r,i,s,u){var c=l+".extend] ",d={};if(!a(i))return void e.error(c+"thingToAddName cannot be undefined");if(n(i)&&a(s)&&a(u))d[i]={create:s,clean:u};else{if(!o(i)||a(s)||a(u))return void e.error(c+"incorrect arguments");d=i}t.getDirectiveControls().then(function(e){angular.extend(e,d),t.setDirectiveControls(e,r)})};return{extend:s}}]),angular.module("leaflet-directive").service("leafletGeoJsonHelpers",["leafletHelpers","leafletIterators",function(e,t){var r=e,a=t,n=function(e,t){return this.lat=e,this.lng=t,this},o=function(e){return Array.isArray(e)&&2===e.length?e[1]:r.isDefined(e.type)&&"Point"===e.type?+e.coordinates[1]:+e.lat},i=function(e){return Array.isArray(e)&&2===e.length?e[0]:r.isDefined(e.type)&&"Point"===e.type?+e.coordinates[0]:+e.lng},l=function(e){if(r.isUndefined(e))return!1;if(r.isArray(e)){if(2===e.length&&r.isNumber(e[0])&&r.isNumber(e[1]))return!0}else if(r.isDefined(e.type)&&"Point"===e.type&&r.isArray(e.coordinates)&&2===e.coordinates.length&&r.isNumber(e.coordinates[0])&&r.isNumber(e.coordinates[1]))return!0;var t=a.all(["lat","lng"],function(t){return r.isDefined(e[t])&&r.isNumber(e[t])});return t},s=function(e){if(e&&l(e)){var t=null;if(Array.isArray(e)&&2===e.length)t=new n(e[1],e[0]);else{if(!r.isDefined(e.type)||"Point"!==e.type)return e;t=new n(e.coordinates[1],e.coordinates[0])}return angular.extend(e,t)}};return{getLat:o,getLng:i,validateCoords:l,getCoords:s}}]),angular.module("leaflet-directive").service("leafletHelpers",["$q","$log",function(e,t){function r(e,r){var a,o;if(angular.isDefined(r))a=r;else if(0===Object.keys(e).length)a="main";else if(Object.keys(e).length>=1)for(o in e)e.hasOwnProperty(o)&&(a=o);else t.error(n+"- You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");return a}function a(t,a){var n,o=r(t,a);return angular.isDefined(t[o])&&t[o].resolvedDefer!==!0?n=t[o].defer:(n=e.defer(),t[o]={defer:n,resolvedDefer:!1}),n}var n="[AngularJS - Leaflet] ",o=angular.copy,i=o,l=function(e,t){var r;if(e&&angular.isObject(e))return null!==t&&angular.isString(t)?(r=e,t.split(".").forEach(function(e){r&&(r=r[e])}),r):t},s=function(e){return e.split(".").reduce(function(e,t){return e+'["'+t+'"]'})},u=function(e){return e.reduce(function(e,t){return e+"."+t})},c=function(e){return angular.isDefined(e)&&null!==e},d=function(e){return!c(e)},f=/([\:\-\_]+(.))/g,p=/^moz([A-Z])/,g=/^((?:x|data)[\:\-_])/i,v=function(e){return e.replace(f,function(e,t,r,a){return a?r.toUpperCase():r}).replace(p,"Moz$1")},y=function(e){return v(e.replace(g,""))};return{camelCase:v,directiveNormalize:y,copy:o,clone:i,errorHeader:n,getObjectValue:l,getObjectArrayPath:s,getObjectDotPath:u,defaultTo:function(e,t){return c(e)?e:t},isTruthy:function(e){return"true"===e||e===!0},isEmpty:function(e){return 0===Object.keys(e).length},isUndefinedOrEmpty:function(e){return angular.isUndefined(e)||null===e||0===Object.keys(e).length},isDefined:c,isUndefined:d,isNumber:angular.isNumber,isString:angular.isString,isArray:angular.isArray,isObject:angular.isObject,isFunction:angular.isFunction,equals:angular.equals,isValidCenter:function(e){return angular.isDefined(e)&&angular.isNumber(e.lat)&&angular.isNumber(e.lng)&&angular.isNumber(e.zoom)},isValidPoint:function(e){return!!angular.isDefined(e)&&(angular.isArray(e)?2===e.length&&angular.isNumber(e[0])&&angular.isNumber(e[1]):angular.isNumber(e.lat)&&angular.isNumber(e.lng))},isSameCenterOnMap:function(e,t){var r=t.getCenter(),a=t.getZoom();return!(!e.lat||!e.lng||r.lat.toFixed(4)!==e.lat.toFixed(4)||r.lng.toFixed(4)!==e.lng.toFixed(4)||a!==e.zoom)},safeApply:function(e,t){var r=e.$root.$$phase;"$apply"===r||"$digest"===r?e.$eval(t):e.$evalAsync(t)},obtainEffectiveMapId:r,getDefer:function(e,t){var n,o=r(e,t);return n=angular.isDefined(e[o])&&e[o].resolvedDefer!==!1?e[o].defer:a(e,t)},getUnresolvedDefer:a,setResolvedDefer:function(e,t){var a=r(e,t);e[a].resolvedDefer=!0},rangeIsSupported:function(){var e=document.createElement("input");return e.setAttribute("type","range"),"range"===e.type},FullScreenControlPlugin:{isLoaded:function(){return angular.isDefined(L.Control.Fullscreen)}},MiniMapControlPlugin:{isLoaded:function(){return angular.isDefined(L.Control.MiniMap)}},AwesomeMarkersPlugin:{isLoaded:function(){return angular.isDefined(L.AwesomeMarkers)&&angular.isDefined(L.AwesomeMarkers.Icon)},is:function(e){return!!this.isLoaded()&&e instanceof L.AwesomeMarkers.Icon},equal:function(e,t){return!(!this.isLoaded()||!this.is(e))&&angular.equals(e,t)}},VectorMarkersPlugin:{isLoaded:function(){return angular.isDefined(L.VectorMarkers)&&angular.isDefined(L.VectorMarkers.Icon)},is:function(e){return!!this.isLoaded()&&e instanceof L.VectorMarkers.Icon},equal:function(e,t){return!(!this.isLoaded()||!this.is(e))&&angular.equals(e,t)}},DomMarkersPlugin:{isLoaded:function(){return!(!angular.isDefined(L.DomMarkers)||!angular.isDefined(L.DomMarkers.Icon))},is:function(e){return!!this.isLoaded()&&e instanceof L.DomMarkers.Icon},equal:function(e,t){return!(!this.isLoaded()||!this.is(e))&&angular.equals(e,t)}},PolylineDecoratorPlugin:{isLoaded:function(){return!!angular.isDefined(L.PolylineDecorator)},is:function(e){return!!this.isLoaded()&&e instanceof L.PolylineDecorator},equal:function(e,t){return!(!this.isLoaded()||!this.is(e))&&angular.equals(e,t)}},MakiMarkersPlugin:{isLoaded:function(){return!(!angular.isDefined(L.MakiMarkers)||!angular.isDefined(L.MakiMarkers.Icon))},is:function(e){return!!this.isLoaded()&&e instanceof L.MakiMarkers.Icon},equal:function(e,t){return!(!this.isLoaded()||!this.is(e))&&angular.equals(e,t)}},ExtraMarkersPlugin:{isLoaded:function(){return!(!angular.isDefined(L.ExtraMarkers)||!angular.isDefined(L.ExtraMarkers.Icon))},is:function(e){return!!this.isLoaded()&&e instanceof L.ExtraMarkers.Icon},equal:function(e,t){return!(!this.isLoaded()||!this.is(e))&&angular.equals(e,t)}},LabelPlugin:{isLoaded:function(){return angular.isDefined(L.Label)},is:function(e){return!!this.isLoaded()&&e instanceof L.MarkerClusterGroup}},MarkerClusterPlugin:{isLoaded:function(){return angular.isDefined(L.MarkerClusterGroup)},is:function(e){return!!this.isLoaded()&&e instanceof L.MarkerClusterGroup}},GoogleLayerPlugin:{isLoaded:function(){return angular.isDefined(L.Google)},is:function(e){return!!this.isLoaded()&&e instanceof L.Google}},LeafletProviderPlugin:{isLoaded:function(){return angular.isDefined(L.TileLayer.Provider)},is:function(e){return!!this.isLoaded()&&e instanceof L.TileLayer.Provider}},ChinaLayerPlugin:{isLoaded:function(){return angular.isDefined(L.tileLayer.chinaProvider)}},HeatLayerPlugin:{isLoaded:function(){return angular.isDefined(L.heatLayer)}},WebGLHeatMapLayerPlugin:{isLoaded:function(){return angular.isDefined(L.TileLayer.WebGLHeatMap)}},BingLayerPlugin:{isLoaded:function(){return angular.isDefined(L.BingLayer)},is:function(e){return!!this.isLoaded()&&e instanceof L.BingLayer}},WFSLayerPlugin:{isLoaded:function(){return void 0!==L.GeoJSON.WFS},is:function(e){return!!this.isLoaded()&&e instanceof L.GeoJSON.WFS}},AGSBaseLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.basemapLayer},is:function(e){return!!this.isLoaded()&&e instanceof L.esri.basemapLayer}},AGSLayerPlugin:{isLoaded:function(){return void 0!==lvector&&void 0!==lvector.AGS},is:function(e){return!!this.isLoaded()&&e instanceof lvector.AGS}},AGSFeatureLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.featureLayer},is:function(e){return!!this.isLoaded()&&e instanceof L.esri.featureLayer}},AGSTiledMapLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.tiledMapLayer},is:function(e){return!!this.isLoaded()&&e instanceof L.esri.tiledMapLayer}},AGSDynamicMapLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.dynamicMapLayer},is:function(e){return!!this.isLoaded()&&e instanceof L.esri.dynamicMapLayer}},AGSImageMapLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.imageMapLayer},is:function(e){return!!this.isLoaded()&&e instanceof L.esri.imageMapLayer}},AGSClusteredLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.clusteredFeatureLayer},is:function(e){return!!this.isLoaded()&&e instanceof L.esri.clusteredFeatureLayer}},AGSHeatmapLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.heatmapFeatureLayer},is:function(e){return!!this.isLoaded()&&e instanceof L.esri.heatmapFeatureLayer}},YandexLayerPlugin:{isLoaded:function(){return angular.isDefined(L.Yandex)},is:function(e){return!!this.isLoaded()&&e instanceof L.Yandex}},GeoJSONPlugin:{isLoaded:function(){return angular.isDefined(L.TileLayer.GeoJSON)},is:function(e){return!!this.isLoaded()&&e instanceof L.TileLayer.GeoJSON}},UTFGridPlugin:{isLoaded:function(){return angular.isDefined(L.UtfGrid)},is:function(e){return this.isLoaded()?e instanceof L.UtfGrid:(t.error("[AngularJS - Leaflet] No UtfGrid plugin found."),!1)}},CartoDB:{isLoaded:function(){return cartodb},is:function(){return!0}},Leaflet:{DivIcon:{is:function(e){return e instanceof L.DivIcon},equal:function(e,t){return!!this.is(e)&&angular.equals(e,t)}},Icon:{is:function(e){return e instanceof L.Icon},equal:function(e,t){return!!this.is(e)&&angular.equals(e,t)}}},watchOptions:{doWatch:!0,isDeep:!0,individual:{doWatch:!0,isDeep:!0}}}}]),angular.module("leaflet-directive").service("leafletIterators",["$log","leafletHelpers",function(e,t){var r,a=t,n=t.errorHeader+"leafletIterators: ",o=Object.keys,i=a.isFunction,l=a.isObject,s=Math.pow(2,53)-1,u=function(e){var t=null!==e&&e.length;return a.isNumber(t)&&t>=0&&s>=t},c=function(e){return e},d=function(e){return function(t){return null===t?void 0:t[e]}},f=function(e,t,r){if(void 0===t)return e;switch(null===r?3:r){case 1:return function(r){return e.call(t,r)};case 2:return function(r,a){return e.call(t,r,a)};case 3:return function(r,a,n){return e.call(t,r,a,n)};case 4:return function(r,a,n,o){return e.call(t,r,a,n,o)}}return function(){return e.apply(t,arguments)}},p=function(e,t){return function(r){var a=arguments.length;if(2>a||null===r)return r;for(var n=1;a>n;n++)for(var o=arguments[n],i=e(o),l=i.length,s=0;l>s;s++){var u=i[s];t&&void 0!==r[u]||(r[u]=o[u])}return r}},g=null;r=g=p(o);var v,y=function(e,t){var r=o(t),a=r.length;if(null===e)return!a;for(var n=Object(e),i=0;a>i;i++){var l=r[i];if(t[l]!==n[l]||!(l in n))return!1}return!0},m=null;v=m=function(e){return e=r({},e),function(t){return y(t,e)}};var h,L=function(e,t,r){return null===e?c:i(e)?f(e,t,r):l(e)?v(e):d(e)},b=null;h=b=function(e,t,r){t=L(t,r);for(var a=!u(e)&&o(e),n=(a||e).length,i=0;n>i;i++){var l=a?a[i]:i;if(!t(e[l],l,e))return!1}return!0};var k=function(t,r,o,i){return!(o||a.isDefined(t)&&a.isDefined(r))||!a.isFunction(r)&&(i=a.defaultTo(r,"cb"),e.error(n+i+" is not a function"),!0)},P=function(e,t,r){if(!k(void 0,r,!0,"internalCb")&&!k(e,t))for(var a in e)e.hasOwnProperty(a)&&r(e[a],a)},w=function(e,t){P(e,t,function(e,r){t(e,r)})};return{each:w,forEach:w,every:h,all:b}}]),angular.module("leaflet-directive").factory("leafletLayerHelpers",["$rootScope","$log","$q","leafletHelpers","leafletIterators",function($rootScope,$log,$q,leafletHelpers,leafletIterators){function isValidLayerType(e){return isString(e.type)?-1===Object.keys(layerTypes).indexOf(e.type)?($log.error("[AngularJS - Leaflet] A layer must have a valid type: "+Object.keys(layerTypes)),!1):layerTypes[e.type].mustHaveUrl&&!isString(e.url)?($log.error("[AngularJS - Leaflet] A base layer must have an url"),!1):layerTypes[e.type].mustHaveData&&!isDefined(e.data)?($log.error('[AngularJS - Leaflet] The base layer must have a "data" array attribute'),!1):layerTypes[e.type].mustHaveLayer&&!isDefined(e.layer)?($log.error("[AngularJS - Leaflet] The type of layer "+e.type+" must have an layer defined"),!1):layerTypes[e.type].mustHaveBounds&&!isDefined(e.bounds)?($log.error("[AngularJS - Leaflet] The type of layer "+e.type+" must have bounds defined"),!1):!(layerTypes[e.type].mustHaveKey&&!isDefined(e.key))||($log.error("[AngularJS - Leaflet] The type of layer "+e.type+" must have key defined"),!1):($log.error("[AngularJS - Leaflet] A layer must have a valid type defined."),!1)}function createLayer(e){if(isValidLayerType(e)){if(!isString(e.name))return void $log.error("[AngularJS - Leaflet] A base layer must have a name");isObject(e.layerParams)||(e.layerParams={}),isObject(e.layerOptions)||(e.layerOptions={});for(var t in e.layerParams)e.layerOptions[t]=e.layerParams[t];var r={url:e.url,data:e.data,options:e.layerOptions,layer:e.layer,icon:e.icon,type:e.layerType,bounds:e.bounds,key:e.key,apiKey:e.apiKey,pluginOptions:e.pluginOptions,user:e.user};return layerTypes[e.type].createLayer(r)}}function safeAddLayer(e,t){t&&"function"==typeof t.addTo?t.addTo(e):e.addLayer(t)}function safeRemoveLayer(e,t,r){if(isDefined(r)&&isDefined(r.loadedDefer))if(angular.isFunction(r.loadedDefer)){var a=r.loadedDefer();$log.debug("Loaded Deferred",a);var n=a.length;if(n>0)for(var o=function(){n--,0===n&&e.removeLayer(t)},i=0;i<a.length;i++)a[i].promise.then(o);else e.removeLayer(t)}else r.loadedDefer.promise.then(function(){e.removeLayer(t)});else e.removeLayer(t)}var Helpers=leafletHelpers,isString=leafletHelpers.isString,isObject=leafletHelpers.isObject,isArray=leafletHelpers.isArray,isDefined=leafletHelpers.isDefined,errorHeader=leafletHelpers.errorHeader,$it=leafletIterators,utfGridCreateLayer=function(e){if(!Helpers.UTFGridPlugin.isLoaded())return void $log.error("[AngularJS - Leaflet] The UTFGrid plugin is not loaded.");var t=new L.UtfGrid(e.url,e.pluginOptions);return t.on("mouseover",function(e){$rootScope.$broadcast("leafletDirectiveMap.utfgridMouseover",e)}),t.on("mouseout",function(e){$rootScope.$broadcast("leafletDirectiveMap.utfgridMouseout",e)}),t.on("click",function(e){$rootScope.$broadcast("leafletDirectiveMap.utfgridClick",e)}),t.on("mousemove",function(e){$rootScope.$broadcast("leafletDirectiveMap.utfgridMousemove",e)}),t},layerTypes={xyz:{mustHaveUrl:!0,createLayer:function(e){return L.tileLayer(e.url,e.options)}},mapbox:{mustHaveKey:!0,createLayer:function(e){var t=3;isDefined(e.options.version)&&4===e.options.version&&(t=e.options.version);var r=3===t?"//{s}.tiles.mapbox.com/v3/"+e.key+"/{z}/{x}/{y}.png":"//api.tiles.mapbox.com/v4/"+e.key+"/{z}/{x}/{y}.png?access_token="+e.apiKey;return L.tileLayer(r,e.options)}},geoJSON:{mustHaveUrl:!0,createLayer:function(e){return Helpers.GeoJSONPlugin.isLoaded()?new L.TileLayer.GeoJSON(e.url,e.pluginOptions,e.options):void 0}},geoJSONShape:{mustHaveUrl:!1,createLayer:function(e){return new L.GeoJSON(e.data,e.options)}},geoJSONAwesomeMarker:{mustHaveUrl:!1,createLayer:function(e){return new L.geoJson(e.data,{pointToLayer:function(t,r){return L.marker(r,{icon:L.AwesomeMarkers.icon(e.icon)})}})}},geoJSONVectorMarker:{mustHaveUrl:!1,createLayer:function(e){return new L.geoJson(e.data,{pointToLayer:function(t,r){return L.marker(r,{icon:L.VectorMarkers.icon(e.icon)})}})}},utfGrid:{mustHaveUrl:!0,createLayer:utfGridCreateLayer},cartodbTiles:{mustHaveKey:!0,createLayer:function(e){var t="//"+e.user+".cartodb.com/api/v1/map/"+e.key+"/{z}/{x}/{y}.png";return L.tileLayer(t,e.options)}},cartodbUTFGrid:{mustHaveKey:!0,mustHaveLayer:!0,createLayer:function(e){return e.url="//"+e.user+".cartodb.com/api/v1/map/"+e.key+"/"+e.layer+"/{z}/{x}/{y}.grid.json",utfGridCreateLayer(e)}},cartodbInteractive:{mustHaveKey:!0,mustHaveLayer:!0,createLayer:function(e){var t="//"+e.user+".cartodb.com/api/v1/map/"+e.key+"/{z}/{x}/{y}.png",r=L.tileLayer(t,e.options);e.url="//"+e.user+".cartodb.com/api/v1/map/"+e.key+"/"+e.layer+"/{z}/{x}/{y}.grid.json";var a=utfGridCreateLayer(e);return L.layerGroup([r,a])}},wms:{mustHaveUrl:!0,createLayer:function(e){return L.tileLayer.wms(e.url,e.options)}},wmts:{mustHaveUrl:!0,createLayer:function(e){return L.tileLayer.wmts(e.url,e.options)}},wfs:{mustHaveUrl:!0,mustHaveLayer:!0,createLayer:function(params){if(Helpers.WFSLayerPlugin.isLoaded()){var options=angular.copy(params.options);return options.crs&&"string"==typeof options.crs&&(options.crs=eval(options.crs)),new L.GeoJSON.WFS(params.url,params.layer,options)}}},group:{mustHaveUrl:!1,createLayer:function(e){var t=[];return $it.each(e.options.layers,function(e){t.push(createLayer(e))}),e.options.loadedDefer=function(){var t=[];if(isDefined(e.options.layers))for(var r=0;r<e.options.layers.length;r++){var a=e.options.layers[r].layerOptions.loadedDefer;isDefined(a)&&t.push(a)}return t},L.layerGroup(t)}},featureGroup:{mustHaveUrl:!1,createLayer:function(){return L.featureGroup()}},google:{mustHaveUrl:!1,createLayer:function(e){var t=e.type||"SATELLITE";if(Helpers.GoogleLayerPlugin.isLoaded())return new L.Google(t,e.options)}},here:{mustHaveUrl:!1,createLayer:function(e){var t=e.provider||"HERE.terrainDay";if(Helpers.LeafletProviderPlugin.isLoaded())return new L.TileLayer.Provider(t,e.options)}},china:{mustHaveUrl:!1,createLayer:function(e){var t=e.type||"";if(Helpers.ChinaLayerPlugin.isLoaded())return L.tileLayer.chinaProvider(t,e.options)}},agsBase:{mustHaveLayer:!0,createLayer:function(e){return Helpers.AGSBaseLayerPlugin.isLoaded()?L.esri.basemapLayer(e.layer,e.options):void 0}},ags:{mustHaveUrl:!0,createLayer:function(e){if(Helpers.AGSLayerPlugin.isLoaded()){var t=angular.copy(e.options);angular.extend(t,{url:e.url});var r=new lvector.AGS(t);return r.onAdd=function(e){this.setMap(e)},r.onRemove=function(){this.setMap(null)},r}}},agsFeature:{mustHaveUrl:!0,createLayer:function(e){if(!Helpers.AGSFeatureLayerPlugin.isLoaded())return void $log.warn(errorHeader+" The esri plugin is not loaded.");e.options.url=e.url;var t=L.esri.featureLayer(e.options),r=function(){isDefined(e.options.loadedDefer)&&e.options.loadedDefer.resolve()};return t.on("loading",function(){e.options.loadedDefer=$q.defer(),t.off("load",r),t.on("load",r)}),t}},agsTiled:{mustHaveUrl:!0,createLayer:function(e){return Helpers.AGSTiledMapLayerPlugin.isLoaded()?(e.options.url=e.url,L.esri.tiledMapLayer(e.options)):void $log.warn(errorHeader+" The esri plugin is not loaded.")}},agsDynamic:{mustHaveUrl:!0,createLayer:function(e){return Helpers.AGSDynamicMapLayerPlugin.isLoaded()?(e.options.url=e.url,L.esri.dynamicMapLayer(e.options)):void $log.warn(errorHeader+" The esri plugin is not loaded.")}},agsImage:{mustHaveUrl:!0,createLayer:function(e){return Helpers.AGSImageMapLayerPlugin.isLoaded()?(e.options.url=e.url,L.esri.imageMapLayer(e.options)):void $log.warn(errorHeader+" The esri plugin is not loaded.")}},agsClustered:{mustHaveUrl:!0,createLayer:function(e){return Helpers.AGSClusteredLayerPlugin.isLoaded()?Helpers.MarkerClusterPlugin.isLoaded()?L.esri.clusteredFeatureLayer(e.url,e.options):void $log.warn(errorHeader+" The markercluster plugin is not loaded."):void $log.warn(errorHeader+" The esri clustered layer plugin is not loaded.")}},agsHeatmap:{mustHaveUrl:!0,createLayer:function(e){return Helpers.AGSHeatmapLayerPlugin.isLoaded()?Helpers.HeatLayerPlugin.isLoaded()?L.esri.heatmapFeatureLayer(e.url,e.options):void $log.warn(errorHeader+" The heatlayer plugin is not loaded."):void $log.warn(errorHeader+" The esri heatmap layer plugin is not loaded.")}},markercluster:{mustHaveUrl:!1,createLayer:function(e){return Helpers.MarkerClusterPlugin.isLoaded()?new L.MarkerClusterGroup(e.options):void $log.warn(errorHeader+" The markercluster plugin is not loaded.")}},bing:{mustHaveUrl:!1,createLayer:function(e){return Helpers.BingLayerPlugin.isLoaded()?new L.BingLayer(e.key,e.options):void 0}},webGLHeatmap:{mustHaveUrl:!1,mustHaveData:!0,createLayer:function(e){if(Helpers.WebGLHeatMapLayerPlugin.isLoaded()){var t=new L.TileLayer.WebGLHeatMap(e.options);return isDefined(e.data)&&t.setData(e.data),t}}},heat:{mustHaveUrl:!1,mustHaveData:!0,createLayer:function(e){if(Helpers.HeatLayerPlugin.isLoaded()){var t=new L.heatLayer;return isArray(e.data)&&t.setLatLngs(e.data),isObject(e.options)&&t.setOptions(e.options),t}}},yandex:{mustHaveUrl:!1,createLayer:function(e){var t=e.type||"map";if(Helpers.YandexLayerPlugin.isLoaded())return new L.Yandex(t,e.options)}},imageOverlay:{mustHaveUrl:!0,mustHaveBounds:!0,createLayer:function(e){return L.imageOverlay(e.url,e.bounds,e.options)}},iip:{mustHaveUrl:!0,createLayer:function(e){return L.tileLayer.iip(e.url,e.options)}},custom:{createLayer:function(e){return e.layer instanceof L.Class?angular.copy(e.layer):void $log.error("[AngularJS - Leaflet] A custom layer must be a leaflet Class")}},cartodb:{mustHaveUrl:!0,createLayer:function(e){return cartodb.createLayer(e.map,e.url)}}};return{createLayer:createLayer,safeAddLayer:safeAddLayer,safeRemoveLayer:safeRemoveLayer}}]),angular.module("leaflet-directive").factory("leafletLegendHelpers",function(){var e=function(e,t,r,a){if(e.innerHTML="",t.error)e.innerHTML+='<div class="info-title alert alert-danger">'+t.error.message+"</div>";else if("arcgis"===r)for(var n=0;n<t.layers.length;n++){var o=t.layers[n];e.innerHTML+='<div class="info-title" data-layerid="'+o.layerId+'">'+o.layerName+"</div>";for(var i=0;i<o.legend.length;i++){var l=o.legend[i];e.innerHTML+='<div class="inline" data-layerid="'+o.layerId+'"><img src="data:'+l.contentType+";base64,"+l.imageData+'" /></div><div class="info-label" data-layerid="'+o.layerId+'">'+l.label+"</div>"}}else"image"===r&&(e.innerHTML='<img src="'+a+'"/>')},t=function(t,r,a,n){return function(){var o=L.DomUtil.create("div",r);return L.Browser.touch?L.DomEvent.on(o,"click",L.DomEvent.stopPropagation):(L.DomEvent.disableClickPropagation(o),L.DomEvent.on(o,"mousewheel",L.DomEvent.stopPropagation)),e(o,t,a,n),o}},r=function(e,t){return function(){for(var r=L.DomUtil.create("div",t),a=0;a<e.colors.length;a++)r.innerHTML+='<div class="outline"><i style="background:'+e.colors[a]+'"></i></div><div class="info-label">'+e.labels[a]+"</div>";return L.Browser.touch?L.DomEvent.on(r,"click",L.DomEvent.stopPropagation):(L.DomEvent.disableClickPropagation(r),L.DomEvent.on(r,"mousewheel",L.DomEvent.stopPropagation)),r}};return{getOnAddLegend:t,getOnAddArrayLegend:r,updateLegend:e}}),angular.module("leaflet-directive").factory("leafletMapDefaults",["$q","leafletHelpers",function(e,t){function r(){return{keyboard:!0,dragging:!0,worldCopyJump:!1,doubleClickZoom:!0,scrollWheelZoom:!0,tap:!0,touchZoom:!0,zoomControl:!0,zoomsliderControl:!1,zoomControlPosition:"topleft",attributionControl:!0,controls:{layers:{visible:!0,position:"topright",collapsed:!0}},nominatim:{server:" http://nominatim.openstreetmap.org/search"},crs:L.CRS.EPSG3857,tileLayer:"//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",tileLayerOptions:{attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'},path:{weight:10,opacity:1,color:"#0000ff"},center:{lat:0,lng:0,zoom:1}}}var a=t.isDefined,n=t.isObject,o=t.obtainEffectiveMapId,i={};return{reset:function(){i={}},getDefaults:function(e){var t=o(i,e);return i[t]},getMapCreationDefaults:function(e){var t=o(i,e),r=i[t],n={maxZoom:r.maxZoom,keyboard:r.keyboard,dragging:r.dragging,zoomControl:r.zoomControl,doubleClickZoom:r.doubleClickZoom,scrollWheelZoom:r.scrollWheelZoom,tap:r.tap,touchZoom:r.touchZoom,attributionControl:r.attributionControl,worldCopyJump:r.worldCopyJump,crs:r.crs};if(a(r.minZoom)&&(n.minZoom=r.minZoom),a(r.zoomAnimation)&&(n.zoomAnimation=r.zoomAnimation),a(r.fadeAnimation)&&(n.fadeAnimation=r.fadeAnimation),a(r.markerZoomAnimation)&&(n.markerZoomAnimation=r.markerZoomAnimation),r.map)for(var l in r.map)n[l]=r.map[l];return n},setDefaults:function(e,t){var l=r();a(e)&&(l.doubleClickZoom=a(e.doubleClickZoom)?e.doubleClickZoom:l.doubleClickZoom,l.scrollWheelZoom=a(e.scrollWheelZoom)?e.scrollWheelZoom:l.doubleClickZoom,l.tap=a(e.tap)?e.tap:l.tap,l.touchZoom=a(e.touchZoom)?e.touchZoom:l.doubleClickZoom,l.zoomControl=a(e.zoomControl)?e.zoomControl:l.zoomControl,l.zoomsliderControl=a(e.zoomsliderControl)?e.zoomsliderControl:l.zoomsliderControl,l.attributionControl=a(e.attributionControl)?e.attributionControl:l.attributionControl,l.tileLayer=a(e.tileLayer)?e.tileLayer:l.tileLayer,l.zoomControlPosition=a(e.zoomControlPosition)?e.zoomControlPosition:l.zoomControlPosition,l.keyboard=a(e.keyboard)?e.keyboard:l.keyboard,l.dragging=a(e.dragging)?e.dragging:l.dragging,a(e.controls)&&angular.extend(l.controls,e.controls),n(e.crs)?l.crs=e.crs:a(L.CRS[e.crs])&&(l.crs=L.CRS[e.crs]),a(e.center)&&angular.copy(e.center,l.center),a(e.tileLayerOptions)&&angular.copy(e.tileLayerOptions,l.tileLayerOptions),a(e.maxZoom)&&(l.maxZoom=e.maxZoom),a(e.minZoom)&&(l.minZoom=e.minZoom),a(e.zoomAnimation)&&(l.zoomAnimation=e.zoomAnimation),a(e.fadeAnimation)&&(l.fadeAnimation=e.fadeAnimation),a(e.markerZoomAnimation)&&(l.markerZoomAnimation=e.markerZoomAnimation),a(e.worldCopyJump)&&(l.worldCopyJump=e.worldCopyJump),a(e.map)&&(l.map=e.map),a(e.path)&&(l.path=e.path));var s=o(i,t);return i[s]=l,l}}}]),angular.module("leaflet-directive").service("leafletMarkersHelpers",["$rootScope","$timeout","leafletHelpers","$log","$compile","leafletGeoJsonHelpers",function(e,t,r,a,n,o){var i=r.isDefined,l=r.defaultTo,s=r.MarkerClusterPlugin,u=r.AwesomeMarkersPlugin,c=r.VectorMarkersPlugin,d=r.MakiMarkersPlugin,f=r.ExtraMarkersPlugin,p=r.DomMarkersPlugin,g=r.safeApply,v=r,y=r.isString,m=r.isNumber,h=r.isObject,b={},k=o,P=r.errorHeader,w=function(e){
-var t="";return["_icon","_latlng","_leaflet_id","_map","_shadow"].forEach(function(r){t+=r+": "+l(e[r],"undefined")+" \n"}),"[leafletMarker] : \n"+t},C=function(e,t){var r=t?console:a;r.debug(w(e))},A=function(t){if(i(t)&&i(t.type)&&"awesomeMarker"===t.type)return u.isLoaded()||a.error(P+" The AwesomeMarkers Plugin is not loaded."),new L.AwesomeMarkers.icon(t);if(i(t)&&i(t.type)&&"vectorMarker"===t.type)return c.isLoaded()||a.error(P+" The VectorMarkers Plugin is not loaded."),new L.VectorMarkers.icon(t);if(i(t)&&i(t.type)&&"makiMarker"===t.type)return d.isLoaded()||a.error(P+"The MakiMarkers Plugin is not loaded."),new L.MakiMarkers.icon(t);if(i(t)&&i(t.type)&&"extraMarker"===t.type)return f.isLoaded()||a.error(P+"The ExtraMarkers Plugin is not loaded."),new L.ExtraMarkers.icon(t);if(i(t)&&i(t.type)&&"div"===t.type)return new L.divIcon(t);if(i(t)&&i(t.type)&&"dom"===t.type){p.isLoaded()||a.error(P+"The DomMarkers Plugin is not loaded.");var r=angular.isFunction(t.getMarkerScope)?t.getMarkerScope():e,o=n(t.template)(r),l=angular.copy(t);return l.element=o[0],new L.DomMarkers.icon(l)}if(i(t)&&i(t.type)&&"icon"===t.type)return t.icon;var s="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAApCAYAAADAk4LOAAAGmklEQVRYw7VXeUyTZxjvNnfELFuyIzOabermMZEeQC/OclkO49CpOHXOLJl/CAURuYbQi3KLgEhbrhZ1aDwmaoGqKII6odATmH/scDFbdC7LvFqOCc+e95s2VG50X/LLm/f4/Z7neY/ne18aANCmAr5E/xZf1uDOkTcGcWR6hl9247tT5U7Y6SNvWsKT63P58qbfeLJG8M5qcgTknrvvrdDbsT7Ml+tv82X6vVxJE33aRmgSyYtcWVMqX97Yv2JvW39UhRE2HuyBL+t+gK1116ly06EeWFNlAmHxlQE0OMiV6mQCScusKRlhS3QLeVJdl1+23h5dY4FNB3thrbYboqptEFlphTC1hSpJnbRvxP4NWgsE5Jyz86QNNi/5qSUTGuFk1gu54tN9wuK2wc3o+Wc13RCmsoBwEqzGcZsxsvCSy/9wJKf7UWf1mEY8JWfewc67UUoDbDjQC+FqK4QqLVMGGR9d2wurKzqBk3nqIT/9zLxRRjgZ9bqQgub+DdoeCC03Q8j+0QhFhBHR/eP3U/zCln7Uu+hihJ1+bBNffLIvmkyP0gpBZWYXhKussK6mBz5HT6M1Nqpcp+mBCPXosYQfrekGvrjewd59/GvKCE7TbK/04/ZV5QZYVWmDwH1mF3xa2Q3ra3DBC5vBT1oP7PTj4C0+CcL8c7C2CtejqhuCnuIQHaKHzvcRfZpnylFfXsYJx3pNLwhKzRAwAhEqG0SpusBHfAKkxw3w4627MPhoCH798z7s0ZnBJ/MEJbZSbXPhER2ih7p2ok/zSj2cEJDd4CAe+5WYnBCgR2uruyEw6zRoW6/DWJ/OeAP8pd/BGtzOZKpG8oke0SX6GMmRk6GFlyAc59K32OTEinILRJRchah8HQwND8N435Z9Z0FY1EqtxUg+0SO6RJ/mmXz4VuS+DpxXC3gXmZwIL7dBSH4zKE50wESf8qwVgrP1EIlTO5JP9Igu0aexdh28F1lmAEGJGfh7jE6ElyM5Rw/FDcYJjWhbeiBYoYNIpc2FT/SILivp0F1ipDWk4BIEo2VuodEJUifhbiltnNBIXPUFCMpthtAyqws/BPlEF/VbaIxErdxPphsU7rcCp8DohC+GvBIPJS/tW2jtvTmmAeuNO8BNOYQeG8G/2OzCJ3q+soYB5i6NhMaKr17FSal7GIHheuV3uSCY8qYVuEm1cOzqdWr7ku/R0BDoTT+DT+ohCM6/CCvKLKO4RI+dXPeAuaMqksaKrZ7L3FE5FIFbkIceeOZ2OcHO6wIhTkNo0ffgjRGxEqogXHYUPHfWAC/lADpwGcLRY3aeK4/oRGCKYcZXPVoeX/kelVYY8dUGf8V5EBRbgJXT5QIPhP9ePJi428JKOiEYhYXFBqou2Guh+p/mEB1/RfMw6rY7cxcjTrneI1FrDyuzUSRm9miwEJx8E/gUmqlyvHGkneiwErR21F3tNOK5Tf0yXaT+O7DgCvALTUBXdM4YhC/IawPU+2PduqMvuaR6eoxSwUk75ggqsYJ7VicsnwGIkZBSXKOUww73WGXyqP+J2/b9c+gi1YAg/xpwck3gJuucNrh5JvDPvQr0WFXf0piyt8f8/WI0hV4pRxxkQZdJDfDJNOAmM0Ag8jyT6hz0WGXWuP94Yh2jcfjmXAGvHCMslRimDHYuHuDsy2QtHuIavznhbYURq5R57KpzBBRZKPJi8eQg48h4j8SDdowifdIrEVdU+gbO6QNvRRt4ZBthUaZhUnjlYObNagV3keoeru3rU7rcuceqU1mJBxy+BWZYlNEBH+0eH4vRiB+OYybU2hnblYlTvkHinM4m54YnxSyaZYSF6R3jwgP7udKLGIX6r/lbNa9N6y5MFynjWDtrHd75ZvTYAPO/6RgF0k76mQla3FGq7dO+cH8sKn0Vo7nDllwAhqwLPkxrHwWmHJOo+AKJ4rab5OgrM7rVu8eWb2Pu0Dh4eDgXoOfvp7Y7QeqknRmvcTBEyq9m/HQQSCSz6LHq3z0yzsNySRfMS253wl2KyRDbcZPcfJKjZmSEOjcxyi+Y8dUOtsIEH6R2wNykdqrkYJ0RV92H0W58pkfQk7cKevsLK10Py8SdMGfXNXATY+pPbyJR/ET6n9nIfztNtZYRV9XniQu9IA2vOVgy4ir7GCLVmmd+zjkH0eAF9Po6K61pmCXHxU5rHMYd1ftc3owjwRSVRzLjKvqZEty6cRUD7jGqiOdu5HG6MdHjNcNYGqfDm5YRzLBBCCDl/2bk8a8gdbqcfwECu62Fg/HrggAAAABJRU5ErkJggg==",g="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAACoYAD2AAAC5ElEQVRYw+2YW4/TMBCF45S0S1luXZCABy5CgLQgwf//S4BYBLTdJLax0fFqmB07nnQfEGqkIydpVH85M+NLjPe++dcPc4Q8Qh4hj5D/AaQJx6H/4TMwB0PeBNwU7EGQAmAtsNfAzoZkgIa0ZgLMa4Aj6CxIAsjhjOCoL5z7Glg1JAOkaicgvQBXuncwJAWjksLtBTWZe04CnYRktUGdilALppZBOgHGZcBzL6OClABvMSVIzyBjazOgrvACf1ydC5mguqAVg6RhdkSWQFj2uxfaq/BrIZOLEWgZdALIDvcMcZLD8ZbLC9de4yR1sYMi4G20S4Q/PWeJYxTOZn5zJXANZHIxAd4JWhPIloTJZhzMQduM89WQ3MUVAE/RnhAXpTycqys3NZALOBbB7kFrgLesQl2h45Fcj8L1tTSohUwuxhy8H/Qg6K7gIs+3kkaigQCOcyEXCHN07wyQazhrmIulvKMQAwMcmLNqyCVyMAI+BuxSMeTk3OPikLY2J1uE+VHQk6ANrhds+tNARqBeaGc72cK550FP4WhXmFmcMGhTwAR1ifOe3EvPqIegFmF+C8gVy0OfAaWQPMR7gF1OQKqGoBjq90HPMP01BUjPOqGFksC4emE48tWQAH0YmvOgF3DST6xieJgHAWxPAHMuNhrImIdvoNOKNWIOcE+UXE0pYAnkX6uhWsgVXDxHdTfCmrEEmMB2zMFimLVOtiiajxiGWrbU52EeCdyOwPEQD8LqyPH9Ti2kgYMf4OhSKB7qYILbBv3CuVTJ11Y80oaseiMWOONc/Y7kJYe0xL2f0BaiFTxknHO5HaMGMublKwxFGzYdWsBF174H/QDknhTHmHHN39iWFnkZx8lPyM8WHfYELmlLKtgWNmFNzQcC1b47gJ4hL19i7o65dhH0Negbca8vONZoP7doIeOC9zXm8RjuL0Gf4d4OYaU5ljo3GYiqzrWQHfJxA6ALhDpVKv9qYeZA8eM3EhfPSCmpuD0AAAAASUVORK5CYII=";return i(t)&&i(t.iconUrl)?new L.Icon(t):new L.Icon.Default({iconUrl:s,shadowUrl:g,iconSize:[25,41],iconAnchor:[12,41],popupAnchor:[1,-34],shadowSize:[41,41]})},M=function(e){i(b[e])&&b.splice(e,1)},D=function(){b={}},O=function(e,t,r){if(e.closePopup(),i(r)&&i(r.overlays))for(var a in r.overlays)if((r.overlays[a]instanceof L.LayerGroup||r.overlays[a]instanceof L.FeatureGroup)&&r.overlays[a].hasLayer(e))return void r.overlays[a].removeLayer(e);if(i(b))for(var n in b)b[n].hasLayer(e)&&b[n].removeLayer(e);t.hasLayer(e)&&t.removeLayer(e)},S=function(e,t){var r=e._popup._container.offsetHeight,a=new L.Point(e._popup._containerLeft,-r-e._popup._containerBottom),n=t.layerPointToContainerPoint(a);null!==n&&e._popup._adjustPan()},T=function(e,t){n(e._popup._contentNode)(t)},H=function(e,r,a){var n=e._popup._contentNode.innerText||e._popup._contentNode.textContent;n.length<1&&t(function(){H(e,r,a)});var o=e._popup._contentNode.offsetWidth;return e._popup._updateLayout(),e._popup._updatePosition(),e._popup.options.autoPan&&S(e,a),o},E=function(t,r,n){var o=angular.isFunction(r.getMessageScope)?r.getMessageScope():e,l=!i(r.compileMessage)||r.compileMessage;if(l){if(!i(t._popup)||!i(t._popup._contentNode))return a.error(P+"Popup is invalid or does not have any content."),!1;T(t,o),H(t,r,n)}},x=function(t,r){var a=angular.isFunction(r.getMessageScope)?r.getMessageScope():e,o=angular.isFunction(r.getLabelScope)?r.getLabelScope():a,l=!i(r.compileMessage)||r.compileMessage;v.LabelPlugin.isLoaded()&&i(r.label)&&(i(r.label.options)&&r.label.options.noHide===!0&&t.showLabel(),l&&i(t.label)&&n(t.label._container)(o))},$=function(e,t,r,n,o,l,s){if(i(t)){if(!k.validateCoords(e))return a.warn("There are problems with lat-lng data, please verify your marker model"),void O(r,s,l);var u=e===t;if(i(e.iconAngle)&&t.iconAngle!==e.iconAngle&&r.setIconAngle(e.iconAngle),y(e.layer)||y(t.layer)&&(i(l.overlays[t.layer])&&l.overlays[t.layer].hasLayer(r)&&(l.overlays[t.layer].removeLayer(r),r.closePopup()),s.hasLayer(r)||s.addLayer(r)),(m(e.opacity)||m(parseFloat(e.opacity)))&&e.opacity!==t.opacity&&r.setOpacity(e.opacity),y(e.layer)&&t.layer!==e.layer){if(y(t.layer)&&i(l.overlays[t.layer])&&l.overlays[t.layer].hasLayer(r)&&l.overlays[t.layer].removeLayer(r),r.closePopup(),s.hasLayer(r)&&s.removeLayer(r),!i(l.overlays[e.layer]))return void a.error(P+"You must use a name of an existing layer");var c=l.overlays[e.layer];if(!(c instanceof L.LayerGroup||c instanceof L.FeatureGroup))return void a.error(P+'A marker can only be added to a layer of type "group" or "featureGroup"');c.addLayer(r),s.hasLayer(r)&&e.focus===!0&&r.openPopup()}if(e.draggable!==!0&&t.draggable===!0&&i(r.dragging)&&r.dragging.disable(),e.draggable===!0&&t.draggable!==!0&&(r.dragging?r.dragging.enable():L.Handler.MarkerDrag&&(r.dragging=new L.Handler.MarkerDrag(r),r.options.draggable=!0,r.dragging.enable())),h(e.icon)||h(t.icon)&&(r.setIcon(A()),r.closePopup(),r.unbindPopup(),y(e.message)&&r.bindPopup(e.message,e.popupOptions)),h(e.icon)&&h(t.icon)&&!angular.equals(e.icon,t.icon)){var d=!1;r.dragging&&(d=r.dragging.enabled()),r.setIcon(A(e.icon)),d&&r.dragging.enable(),r.closePopup(),r.unbindPopup(),y(e.message)&&(r.bindPopup(e.message,e.popupOptions),s.hasLayer(r)&&e.focus===!0&&r.openPopup())}!y(e.message)&&y(t.message)&&(r.closePopup(),r.unbindPopup()),v.LabelPlugin.isLoaded()&&(i(e.label)&&i(e.label.message)?"label"in t&&"message"in t.label&&!angular.equals(e.label.message,t.label.message)?r.updateLabelContent(e.label.message):!angular.isFunction(r.getLabel)||angular.isFunction(r.getLabel)&&!i(r.getLabel())?(r.bindLabel(e.label.message,e.label.options),x(r,e)):x(r,e):(!("label"in e)||"message"in e.label)&&angular.isFunction(r.unbindLabel)&&r.unbindLabel()),y(e.message)&&!y(t.message)&&r.bindPopup(e.message,e.popupOptions),y(e.message)&&y(t.message)&&e.message!==t.message&&r.setPopupContent(e.message);var f=!1;e.focus!==!0&&t.focus===!0&&(r.closePopup(),f=!0),(e.focus===!0&&(!i(t.focus)||t.focus===!1)||u&&e.focus===!0)&&(r.openPopup(),f=!0),t.zIndexOffset!==e.zIndexOffset&&r.setZIndexOffset(e.zIndexOffset);var p=r.getLatLng(),g=y(e.layer)&&v.MarkerClusterPlugin.is(l.overlays[e.layer]);g?f?(e.lat!==t.lat||e.lng!==t.lng)&&(l.overlays[e.layer].removeLayer(r),r.setLatLng([e.lat,e.lng]),l.overlays[e.layer].addLayer(r)):p.lat!==e.lat||p.lng!==e.lng?(l.overlays[e.layer].removeLayer(r),r.setLatLng([e.lat,e.lng]),l.overlays[e.layer].addLayer(r)):e.lat!==t.lat||e.lng!==t.lng?(l.overlays[e.layer].removeLayer(r),r.setLatLng([e.lat,e.lng]),l.overlays[e.layer].addLayer(r)):h(e.icon)&&h(t.icon)&&!angular.equals(e.icon,t.icon)&&(l.overlays[e.layer].removeLayer(r),l.overlays[e.layer].addLayer(r)):(p.lat!==e.lat||p.lng!==e.lng)&&r.setLatLng([e.lat,e.lng])}};return{resetMarkerGroup:M,resetMarkerGroups:D,deleteMarker:O,manageOpenPopup:E,manageOpenLabel:x,createMarker:function(e){if(!i(e)||!k.validateCoords(e))return void a.error(P+"The marker definition is not valid.");var t=k.getCoords(e);if(!i(t))return void a.error(P+"Unable to get coordinates from markerData.");var r={icon:A(e.icon),title:i(e.title)?e.title:"",draggable:!!i(e.draggable)&&e.draggable,clickable:!i(e.clickable)||e.clickable,riseOnHover:!!i(e.riseOnHover)&&e.riseOnHover,zIndexOffset:i(e.zIndexOffset)?e.zIndexOffset:0,iconAngle:i(e.iconAngle)?e.iconAngle:0};for(var n in e)e.hasOwnProperty(n)&&!r.hasOwnProperty(n)&&(r[n]=e[n]);var o=new L.marker(t,r);return y(e.message)||o.unbindPopup(),o},addMarkerToGroup:function(e,t,r,n){return y(t)?s.isLoaded()?(i(b[t])||(b[t]=new L.MarkerClusterGroup(r),n.addLayer(b[t])),void b[t].addLayer(e)):void a.error(P+"The MarkerCluster plugin is not loaded."):void a.error(P+"The marker group you have specified is invalid.")},listenMarkerEvents:function(e,t,r,a,n){e.on("popupopen",function(){g(r,function(){(i(e._popup)||i(e._popup._contentNode))&&(t.focus=!0,E(e,t,n))})}),e.on("popupclose",function(){g(r,function(){t.focus=!1})}),e.on("add",function(){g(r,function(){"label"in t&&x(e,t)})})},updateMarker:$,addMarkerWatcher:function(e,t,r,a,n,o){var s=v.getObjectArrayPath("markers."+t);o=l(o,!0);var u=r.$watch(s,function(o,l){return i(o)?void $(o,l,e,t,r,a,n):(O(e,n,a),void u())},o)},string:w,log:C}}]),angular.module("leaflet-directive").factory("leafletPathsHelpers",["$rootScope","$log","leafletHelpers",function(e,t,r){function a(e){return e.filter(function(e){return c(e)}).map(function(e){return n(e)})}function n(e){return s(e)?new L.LatLng(e[0],e[1]):new L.LatLng(e.lat,e.lng)}function o(e){return e.map(function(e){return a(e)})}function i(e,t){for(var r={},a=0;a<d.length;a++){var n=d[a];l(e[n])?r[n]=e[n]:l(t.path[n])&&(r[n]=t.path[n])}return r}var l=r.isDefined,s=r.isArray,u=r.isNumber,c=r.isValidPoint,d=["stroke","weight","color","opacity","fill","fillColor","fillOpacity","dashArray","lineCap","lineJoin","clickable","pointerEvents","className","smoothFactor","noClip"],f=function(e,t){for(var r={},a=0;a<d.length;a++){var n=d[a];l(t[n])&&(r[n]=t[n])}e.setStyle(t)},p=function(e){if(!s(e))return!1;for(var t=0;t<e.length;t++){var r=e[t];if(!c(r))return!1}return!0},g={polyline:{isValid:function(e){var t=e.latlngs;return p(t)},createPath:function(e){return new L.Polyline([],e)},setPath:function(e,t){e.setLatLngs(a(t.latlngs)),f(e,t)}},multiPolyline:{isValid:function(e){var t=e.latlngs;if(!s(t))return!1;for(var r in t){var a=t[r];if(!p(a))return!1}return!0},createPath:function(e){return new L.multiPolyline([[[0,0],[1,1]]],e)},setPath:function(e,t){e.setLatLngs(o(t.latlngs)),f(e,t)}},polygon:{isValid:function(e){var t=e.latlngs;return p(t)},createPath:function(e){return new L.Polygon([],e)},setPath:function(e,t){e.setLatLngs(a(t.latlngs)),f(e,t)}},multiPolygon:{isValid:function(e){var t=e.latlngs;if(!s(t))return!1;for(var r in t){var a=t[r];if(!p(a))return!1}return!0},createPath:function(e){return new L.MultiPolygon([[[0,0],[1,1],[0,1]]],e)},setPath:function(e,t){e.setLatLngs(o(t.latlngs)),f(e,t)}},rectangle:{isValid:function(e){var t=e.latlngs;if(!s(t)||2!==t.length)return!1;for(var r in t){var a=t[r];if(!c(a))return!1}return!0},createPath:function(e){return new L.Rectangle([[0,0],[1,1]],e)},setPath:function(e,t){e.setBounds(new L.LatLngBounds(a(t.latlngs))),f(e,t)}},circle:{isValid:function(e){var t=e.latlngs;return c(t)&&u(e.radius)},createPath:function(e){return new L.Circle([0,0],1,e)},setPath:function(e,t){e.setLatLng(n(t.latlngs)),l(t.radius)&&e.setRadius(t.radius),f(e,t)}},circleMarker:{isValid:function(e){var t=e.latlngs;return c(t)&&u(e.radius)},createPath:function(e){return new L.CircleMarker([0,0],e)},setPath:function(e,t){e.setLatLng(n(t.latlngs)),l(t.radius)&&e.setRadius(t.radius),f(e,t)}}},v=function(e){var t={};return e.latlngs&&(t.latlngs=e.latlngs),e.radius&&(t.radius=e.radius),t};return{setPathOptions:function(e,t,r){l(t)||(t="polyline"),g[t].setPath(e,r)},createPath:function(e,r,a){l(r.type)||(r.type="polyline");var n=i(r,a),o=v(r);return g[r.type].isValid(o)?g[r.type].createPath(n):void t.error("[AngularJS - Leaflet] Invalid data passed to the "+r.type+" path")}}}]),angular.module("leaflet-directive").service("leafletWatchHelpers",function(){var e=function(e,t,r,a,n){var o=e[t](r,function(e,t){n(e,t),a.doWatch||o()},a.isDeep);return o},t=function(t,r,a,n){return e(t,"$watch",r,a,n)},r=function(t,r,a,n){return e(t,"$watchCollection",r,a,n)};return{maybeWatch:t,maybeWatchCollection:r}}),angular.module("leaflet-directive").factory("nominatimService",["$q","$http","leafletHelpers","leafletMapDefaults",function(e,t,r,a){var n=r.isDefined;return{query:function(r,o){var i=a.getDefaults(o),l=i.nominatim.server,s=e.defer();return t.get(l,{params:{format:"json",limit:1,q:r}}).success(function(e){e.length>0&&n(e[0].boundingbox)?s.resolve(e[0]):s.reject("[Nominatim] Invalid address")}),s.promise}}}]),angular.module("leaflet-directive").directive("bounds",["$log","$timeout","$http","leafletHelpers","nominatimService","leafletBoundsHelpers",function(e,t,r,a,n,o){return{restrict:"A",scope:!1,replace:!1,require:["leaflet"],link:function(r,i,l,s){var u=a.isDefined,c=o.createLeafletBounds,d=s[0].getLeafletScope(),f=s[0],p=a.errorHeader+" [Bounds] ",g=function(e){return 0===e._southWest.lat&&0===e._southWest.lng&&0===e._northEast.lat&&0===e._northEast.lng};f.getMap().then(function(a){d.$on("boundsChanged",function(e){var r=e.currentScope,n=a.getBounds();if(!g(n)&&!r.settingBoundsFromScope){r.settingBoundsFromLeaflet=!0;var o={northEast:{lat:n._northEast.lat,lng:n._northEast.lng},southWest:{lat:n._southWest.lat,lng:n._southWest.lng},options:n.options};angular.equals(r.bounds,o)||(r.bounds=o),t(function(){r.settingBoundsFromLeaflet=!1})}});var o;d.$watch("bounds",function(i){if(!r.settingBoundsFromLeaflet){if(u(i.address)&&i.address!==o)return r.settingBoundsFromScope=!0,n.query(i.address,l.id).then(function(e){var t=e.boundingbox,r=[[t[0],t[2]],[t[1],t[3]]];a.fitBounds(r)},function(t){e.error(p+" "+t+".")}),o=i.address,void t(function(){r.settingBoundsFromScope=!1});var s=c(i);s&&!a.getBounds().equals(s)&&(r.settingBoundsFromScope=!0,a.fitBounds(s,i.options),t(function(){r.settingBoundsFromScope=!1}))}},!0)})}}}]);var centerDirectiveTypes=["center","lfCenter"],centerDirectives={};centerDirectiveTypes.forEach(function(e){centerDirectives[e]=["$log","$q","$location","$timeout","leafletMapDefaults","leafletHelpers","leafletBoundsHelpers","leafletMapEvents",function(t,r,a,n,o,i,l,s){var u,c=i.isDefined,d=i.isNumber,f=i.isSameCenterOnMap,p=i.safeApply,g=i.isValidCenter,v=l.isValidBounds,y=i.isUndefinedOrEmpty,m=i.errorHeader,h=function(e,t){return c(e)&&v(e)&&y(t)};return{restrict:"A",scope:!1,replace:!1,require:"leaflet",controller:function(){u=r.defer(),this.getCenter=function(){return u.promise}},link:function(r,i,v,y){var L=y.getLeafletScope(),b=L[e];y.getMap().then(function(r){var i=o.getDefaults(v.id);if(-1!==v[e].search("-"))return t.error(m+' The "center" variable can\'t use a "-" on its key name: "'+v[e]+'".'),void r.setView([i.center.lat,i.center.lng],i.center.zoom);if(h(L.bounds,b))r.fitBounds(l.createLeafletBounds(L.bounds),L.bounds.options),b=r.getCenter(),p(L,function(t){angular.extend(t[e],{lat:r.getCenter().lat,lng:r.getCenter().lng,zoom:r.getZoom(),autoDiscover:!1})}),p(L,function(e){var t=r.getBounds();e.bounds={northEast:{lat:t._northEast.lat,lng:t._northEast.lng},southWest:{lat:t._southWest.lat,lng:t._southWest.lng}}});else{if(!c(b))return t.error(m+' The "center" property is not defined in the main scope'),void r.setView([i.center.lat,i.center.lng],i.center.zoom);c(b.lat)&&c(b.lng)||c(b.autoDiscover)||angular.copy(i.center,b)}var y,k;if("yes"===v.urlHashCenter){var P=function(){var e,t=a.search();if(c(t.c)){var r=t.c.split(":");3===r.length&&(e={lat:parseFloat(r[0]),lng:parseFloat(r[1]),zoom:parseInt(r[2],10)})}return e};y=P(),L.$on("$locationChangeSuccess",function(t){var a=t.currentScope,n=P();c(n)&&!f(n,r)&&angular.extend(a[e],{lat:n.lat,lng:n.lng,zoom:n.zoom})})}L.$watch(e,function(e){return L.settingCenterFromLeaflet?void 0:(c(y)&&(angular.copy(y,e),y=void 0),g(e)||e.autoDiscover===!0?e.autoDiscover===!0?(d(e.zoom)||r.setView([i.center.lat,i.center.lng],i.center.zoom),void(d(e.zoom)&&e.zoom>i.center.zoom?r.locate({setView:!0,maxZoom:e.zoom}):c(i.maxZoom)?r.locate({setView:!0,maxZoom:i.maxZoom}):r.locate({setView:!0}))):void(k&&f(e,r)||(L.settingCenterFromScope=!0,r.setView([e.lat,e.lng],e.zoom),s.notifyCenterChangedToBounds(L,r),n(function(){L.settingCenterFromScope=!1}))):void t.warn(m+" invalid 'center'"))},!0),r.whenReady(function(){k=!0}),r.on("moveend",function(){u.resolve(),s.notifyCenterUrlHashChanged(L,r,v,a.search()),f(b,r)||L.settingCenterFromScope||(L.settingCenterFromLeaflet=!0,p(L,function(t){L.settingCenterFromScope||angular.extend(t[e],{lat:r.getCenter().lat,lng:r.getCenter().lng,zoom:r.getZoom(),autoDiscover:!1}),s.notifyCenterChangedToBounds(L,r),n(function(){L.settingCenterFromLeaflet=!1})}))}),b.autoDiscover===!0&&r.on("locationerror",function(){t.warn(m+" The Geolocation API is unauthorized on this page."),g(b)?(r.setView([b.lat,b.lng],b.zoom),s.notifyCenterChangedToBounds(L,r)):(r.setView([i.center.lat,i.center.lng],i.center.zoom),s.notifyCenterChangedToBounds(L,r))})})}}}]}),centerDirectiveTypes.forEach(function(e){angular.module("leaflet-directive").directive(e,centerDirectives[e])}),angular.module("leaflet-directive").directive("controls",["$log","leafletHelpers","leafletControlHelpers",function(e,t,r){return{restrict:"A",scope:!1,replace:!1,require:"?^leaflet",link:function(a,n,o,i){if(i){var l=r.createControl,s=r.isValidControlType,u=i.getLeafletScope(),c=t.isDefined,d=t.isArray,f={},p=t.errorHeader+" [Controls] ";i.getMap().then(function(t){u.$watchCollection("controls",function(r){for(var a in f)c(r[a])||(t.hasControl(f[a])&&t.removeControl(f[a]),delete f[a]);for(var n in r){var o,i=c(r[n].type)?r[n].type:n;if(!s(i))return void e.error(p+" Invalid control type: "+i+".");if("custom"!==i)o=l(i,r[n]),t.addControl(o),f[n]=o;else{var u=r[n];if(d(u))for(var g in u){var v=u[g];t.addControl(v),f[n]=c(f[n])?f[n].concat([v]):[v]}else t.addControl(u),f[n]=u}}})})}}}}]),angular.module("leaflet-directive").directive("decorations",["$log","leafletHelpers",function(e,t){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(r,a,n,o){function i(t){return c(t)&&c(t.coordinates)&&(u.isLoaded()||e.error("[AngularJS - Leaflet] The PolylineDecorator Plugin is not loaded.")),L.polylineDecorator(t.coordinates)}function l(e,t){return c(e)&&c(t)&&c(t.coordinates)&&c(t.patterns)?(e.setPaths(t.coordinates),e.setPatterns(t.patterns),e):void 0}var s=o.getLeafletScope(),u=t.PolylineDecoratorPlugin,c=t.isDefined,d={};o.getMap().then(function(e){s.$watch("decorations",function(t){for(var r in d)c(t[r])&&angular.equals(t[r],d)||(e.removeLayer(d[r]),delete d[r]);for(var a in t){var n=t[a],o=i(n);c(o)&&(d[a]=o,e.addLayer(o),l(o,n))}},!0)})}}}]),angular.module("leaflet-directive").directive("eventBroadcast",["$log","$rootScope","leafletHelpers","leafletMapEvents","leafletIterators",function(e,t,r,a,n){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(t,o,i,l){var s=r.isObject,u=r.isDefined,c=l.getLeafletScope(),d=c.eventBroadcast,f=a.getAvailableMapEvents(),p=a.addEvents;l.getMap().then(function(t){var r=[],a="broadcast";u(d.map)?s(d.map)?("emit"!==d.map.logic&&"broadcast"!==d.map.logic?e.warn("[AngularJS - Leaflet] Available event propagation logic are: 'emit' or 'broadcast'."):a=d.map.logic,s(d.map.enable)&&d.map.enable.length>=0?n.each(d.map.enable,function(e){-1===r.indexOf(e)&&-1!==f.indexOf(e)&&r.push(e)}):e.warn("[AngularJS - Leaflet] event-broadcast.map.enable must be an object check your model.")):e.warn("[AngularJS - Leaflet] event-broadcast.map must be an object check your model."):r=f,p(t,r,"eventName",c,a)})}}}]),angular.module("leaflet-directive").directive("geojson",["$log","$rootScope","leafletData","leafletHelpers","leafletWatchHelpers","leafletDirectiveControlsHelpers","leafletIterators","leafletGeoJsonEvents",function(e,t,r,a,n,o,i,l){var s=n.maybeWatch,u=a.watchOptions,c=o.extend,d=a,f=i;return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(e,t,n,o){var i=a.isDefined,p=o.getLeafletScope(),g={},v=!1;o.getMap().then(function(e){var t=p.geojsonWatchOptions||u,o=function(e,t){var r;return r=angular.isFunction(e.onEachFeature)?e.onEachFeature:function(r,o){a.LabelPlugin.isLoaded()&&i(r.properties.description)&&o.bindLabel(r.properties.description),l.bindEvents(n.id,o,null,r,p,t,{resetStyleOnMouseout:e.resetStyleOnMouseout,mapId:n.id})}},y=d.isDefined(n.geojsonNested)&&d.isTruthy(n.geojsonNested),m=function(){if(g){var t=function(t){i(t)&&e.hasLayer(t)&&e.removeLayer(t)};return y?void f.each(g,function(e){t(e)}):void t(g)}},h=function(t,a){var l=angular.copy(t);if(i(l)&&i(l.data)){var s=o(l,a);i(l.options)||(l.options={style:l.style,filter:l.filter,onEachFeature:s,pointToLayer:l.pointToLayer});var u=L.geoJson(l.data,l.options);a&&d.isString(a)?g[a]=u:g=u,u.addTo(e),v||(v=!0,r.setGeoJSON(g,n.id))}},b=function(e){if(m(),y){if(!e||!Object.keys(e).length)return;return void f.each(e,function(e,t){h(e,t)})}h(e)};c(n.id,"geojson",b,m),s(p,"geojson",t,function(e){b(e)})})}}}]),angular.module("leaflet-directive").directive("layercontrol",["$filter","$log","leafletData","leafletHelpers",function(e,t,r,a){return{restrict:"E",scope:{icons:"=?",autoHideOpacity:"=?",showGroups:"=?",title:"@",baseTitle:"@",overlaysTitle:"@"},replace:!0,transclude:!1,require:"^leaflet",controller:["$scope","$element","$sce",function(e,n,o){t.debug("[Angular Directive - Layers] layers",e,n);var i=a.safeApply,l=a.isDefined;angular.extend(e,{baselayer:"",oldGroup:"",layerProperties:{},groupProperties:{},rangeIsSupported:a.rangeIsSupported(),changeBaseLayer:function(t,n){a.safeApply(e,function(a){a.baselayer=t,r.getMap().then(function(n){r.getLayers().then(function(r){if(!n.hasLayer(r.baselayers[t])){for(var o in a.layers.baselayers)a.layers.baselayers[o].icon=a.icons.unradio,n.hasLayer(r.baselayers[o])&&n.removeLayer(r.baselayers[o]);n.addLayer(r.baselayers[t]),a.layers.baselayers[t].icon=e.icons.radio}})})}),n.preventDefault()},moveLayer:function(t,r,a){var n=Object.keys(e.layers.baselayers).length;if(r>=1+n&&r<=e.overlaysArray.length+n){var o;for(var l in e.layers.overlays)if(e.layers.overlays[l].index===r){o=e.layers.overlays[l];break}o&&i(e,function(){o.index=t.index,t.index=r})}a.stopPropagation(),a.preventDefault()},initIndex:function(t,r){var a=Object.keys(e.layers.baselayers).length;t.index=l(t.index)?t.index:r+a+1},initGroup:function(t){e.groupProperties[t]=e.groupProperties[t]?e.groupProperties[t]:{}},toggleOpacity:function(t,r){if(r.visible){if(e.autoHideOpacity&&!e.layerProperties[r.name].opacityControl)for(var a in e.layerProperties)e.layerProperties[a].opacityControl=!1;e.layerProperties[r.name].opacityControl=!e.layerProperties[r.name].opacityControl}t.stopPropagation(),t.preventDefault()},toggleLegend:function(t){e.layerProperties[t.name].showLegend=!e.layerProperties[t.name].showLegend},showLegend:function(t){return t.legend&&e.layerProperties[t.name].showLegend},unsafeHTML:function(e){return o.trustAsHtml(e)},getOpacityIcon:function(t){return t.visible&&e.layerProperties[t.name].opacityControl?e.icons.close:e.icons.open},getGroupIcon:function(t){return t.visible?e.icons.check:e.icons.uncheck},changeOpacity:function(t){var a=e.layerProperties[t.name].opacity;r.getMap().then(function(n){r.getLayers().then(function(r){var o;for(var i in e.layers.overlays)if(e.layers.overlays[i]===t){o=r.overlays[i];break}n.hasLayer(o)&&(o.setOpacity&&o.setOpacity(a/100),o.getLayers&&o.eachLayer&&o.eachLayer(function(e){e.setOpacity&&e.setOpacity(a/100)}))})})},changeGroupVisibility:function(t){if(l(e.groupProperties[t])){var r=e.groupProperties[t].visible;for(var a in e.layers.overlays){var n=e.layers.overlays[a];n.group===t&&(n.visible=r)}}}});var s=n.get(0);L.Browser.touch?L.DomEvent.on(s,"click",L.DomEvent.stopPropagation):(L.DomEvent.disableClickPropagation(s),L.DomEvent.on(s,"mousewheel",L.DomEvent.stopPropagation))}],template:'<div class="angular-leaflet-control-layers" ng-show="overlaysArray.length"><h4 ng-if="title">{{ title }}</h4><div class="lf-baselayers"><h5 class="lf-title" ng-if="baseTitle">{{ baseTitle }}</h5><div class="lf-row" ng-repeat="(key, layer) in baselayersArray"><label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)"><input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ng-show="false" ng-checked="baselayer === key" ng-value="key" /> <i class="lf-icon lf-icon-radio" ng-class="layer.icon"></i><div class="lf-text">{{layer.name}}</div></label></div></div><div class="lf-overlays"><h5 class="lf-title" ng-if="overlaysTitle">{{ overlaysTitle }}</h5><div class="lf-container"><div class="lf-row" ng-repeat="layer in (o = (overlaysArray | orderBy:\'index\':order))" ng-init="initIndex(layer, $index)"><label class="lf-icon-ol-group" ng-if="showGroups &amp;&amp; layer.group &amp;&amp; layer.group != o[$index-1].group"><input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-change="changeGroupVisibility(layer.group)" ng-model="groupProperties[layer.group].visible"/> <i class="lf-icon lf-icon-check" ng-class="getGroupIcon(groupProperties[layer.group])"></i><div class="lf-text">{{ layer.group }}</div></label><label class="lf-icon-ol"><input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> <i class="lf-icon lf-icon-check" ng-class="layer.icon"></i><div class="lf-text">{{layer.name}}</div></label><div class="lf-icons"><i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> <i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> <i class="lf-icon lf-toggle-legend" ng-class="icons.toggleLegend" ng-if="layer.legend" ng-click="toggleLegend(layer)"></i> <i class="lf-icon lf-open" ng-class="getOpacityIcon(layer)" ng-click="toggleOpacity($event, layer)"></i></div><div class="lf-legend" ng-if="showLegend(layer)" ng-bind-html="unsafeHTML(layer.legend)"></div><div class="lf-opacity clearfix" ng-if="layer.visible &amp;&amp; layerProperties[layer.name].opacityControl"><label ng-if="rangeIsSupported" class="pull-left" style="width: 50%">0</label><label ng-if="rangeIsSupported" class="pull-left text-right" style="width: 50%">100</label><input ng-if="rangeIsSupported" class="clearfix" type="range" min="0" max="100" class="lf-opacity-control" ng-model="layerProperties[layer.name].opacity" ng-change="changeOpacity(layer)"/><h6 ng-if="!rangeIsSupported">Range is not supported in this browser</h6></div></div></div></div></div>',link:function(e,t,n,o){var i=a.isDefined,l=o.getLeafletScope(),s=l.layers;e.$watch("icons",function(){var t={uncheck:"fa fa-square-o",check:"fa fa-check-square-o",radio:"fa fa-dot-circle-o",unradio:"fa fa-circle-o",up:"fa fa-angle-up",down:"fa fa-angle-down",open:"fa fa-angle-double-down",close:"fa fa-angle-double-up",toggleLegend:"fa fa-pencil-square-o"};i(e.icons)?(angular.extend(t,e.icons),angular.extend(e.icons,t)):e.icons=t}),n.order=!i(n.order)||"normal"!==n.order&&"reverse"!==n.order?"normal":n.order,e.order="normal"===n.order,e.orderNumber="normal"===n.order?-1:1,e.layers=s,o.getMap().then(function(t){l.$watch("layers.baselayers",function(a){var n={};r.getLayers().then(function(r){var o;for(o in a){var i=a[o];i.icon=e.icons[t.hasLayer(r.baselayers[o])?"radio":"unradio"],n[o]=i}e.baselayersArray=n})}),l.$watch("layers.overlays",function(t){var a=[],n={};r.getLayers().then(function(r){var o;for(o in t){var l=t[o];l.icon=e.icons[l.visible?"check":"uncheck"],a.push(l),i(e.layerProperties[l.name])||(e.layerProperties[l.name]={opacity:i(l.layerOptions.opacity)?100*l.layerOptions.opacity:100,opacityControl:!1,showLegend:!0}),i(l.group)&&(i(e.groupProperties[l.group])||(e.groupProperties[l.group]={visible:!1}),n[l.group]=i(n[l.group])?n[l.group]:{count:0,visibles:0},n[l.group].count++,l.visible&&n[l.group].visibles++),i(l.index)&&r.overlays[o].setZIndex&&r.overlays[o].setZIndex(t[o].index)}for(o in n)e.groupProperties[o].visible=n[o].visibles===n[o].count;e.overlaysArray=a})},!0)})}}}]),angular.module("leaflet-directive").directive("layers",["$log","$q","leafletData","leafletHelpers","leafletLayerHelpers","leafletControlHelpers",function(e,t,r,a,n,o){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",controller:["$scope",function(e){e._leafletLayers=t.defer(),this.getLayers=function(){return e._leafletLayers.promise}}],link:function(e,t,i,l){var s=a.isDefined,u={},c=l.getLeafletScope(),d=c.layers,f=n.createLayer,p=n.safeAddLayer,g=n.safeRemoveLayer,v=o.updateLayersControl,y=!1;l.getMap().then(function(t){e._leafletLayers.resolve(u),r.setLayers(u,i.id),u.baselayers={},u.overlays={};var a=i.id,n=!1;for(var o in d.baselayers){var l=f(d.baselayers[o]);s(l)?(u.baselayers[o]=l,d.baselayers[o].top===!0&&(p(t,u.baselayers[o]),n=!0)):delete d.baselayers[o]}!n&&Object.keys(u.baselayers).length>0&&p(t,u.baselayers[Object.keys(d.baselayers)[0]]);for(o in d.overlays){var m=f(d.overlays[o]);s(m)?(u.overlays[o]=m,d.overlays[o].visible===!0&&p(t,u.overlays[o])):delete d.overlays[o]}c.$watch("layers.baselayers",function(e,r){if(angular.equals(e,r))return y=v(t,a,y,e,d.overlays,u),!0;for(var n in u.baselayers)(!s(e[n])||e[n].doRefresh)&&(t.hasLayer(u.baselayers[n])&&t.removeLayer(u.baselayers[n]),delete u.baselayers[n],e[n]&&e[n].doRefresh&&(e[n].doRefresh=!1));for(var o in e)if(s(u.baselayers[o]))e[o].top!==!0||t.hasLayer(u.baselayers[o])?e[o].top===!1&&t.hasLayer(u.baselayers[o])&&t.removeLayer(u.baselayers[o]):p(t,u.baselayers[o]);else{var i=f(e[o]);s(i)&&(u.baselayers[o]=i,e[o].top===!0&&p(t,u.baselayers[o]))}var l=!1;for(var c in u.baselayers)if(t.hasLayer(u.baselayers[c])){l=!0;break}!l&&Object.keys(u.baselayers).length>0&&p(t,u.baselayers[Object.keys(u.baselayers)[0]]),y=v(t,a,y,e,d.overlays,u)},!0),c.$watch("layers.overlays",function(e,r){if(angular.equals(e,r))return y=v(t,a,y,d.baselayers,e,u),!0;for(var n in u.overlays)if(!s(e[n])||e[n].doRefresh){if(t.hasLayer(u.overlays[n])){var o=s(e[n])?e[n].layerOptions:null;g(t,u.overlays[n],o)}delete u.overlays[n],e[n]&&e[n].doRefresh&&(e[n].doRefresh=!1)}for(var i in e){if(s(u.overlays[i]))e[i].visible&&!t.hasLayer(u.overlays[i])?p(t,u.overlays[i]):e[i].visible===!1&&t.hasLayer(u.overlays[i])&&g(t,u.overlays[i],e[i].layerOptions);else{
-var l=f(e[i]);if(!s(l))continue;u.overlays[i]=l,e[i].visible===!0&&p(t,u.overlays[i])}e[i].visible&&t._loaded&&e[i].data&&"heatmap"===e[i].type&&(u.overlays[i].setData(e[i].data),u.overlays[i].update())}y=v(t,a,y,d.baselayers,e,u)},!0)})}}}]),angular.module("leaflet-directive").directive("legend",["$log","$http","leafletHelpers","leafletLegendHelpers",function(e,t,r,a){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(n,o,i,l){var s,u,c,d,f=r.isArray,p=r.isDefined,g=r.isFunction,v=l.getLeafletScope(),y=v.legend;v.$watch("legend",function(e){p(e)&&(s=e.legendClass?e.legendClass:"legend",u=e.position||"bottomright",d=e.type||"arcgis")},!0),l.getMap().then(function(r){v.$watch("legend",function(t){return p(t)?p(t.url)||"arcgis"!==d||f(t.colors)&&f(t.labels)&&t.colors.length===t.labels.length?p(t.url)?void e.info("[AngularJS - Leaflet] loading legend service."):(p(c)&&(c.removeFrom(r),c=null),c=L.control({position:u}),"arcgis"===d&&(c.onAdd=a.getOnAddArrayLegend(t,s)),void c.addTo(r)):void e.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set."):void(p(c)&&(c.removeFrom(r),c=null))}),v.$watch("legend.url",function(n){p(n)&&t.get(n).success(function(e){p(c)?a.updateLegend(c.getContainer(),e,d,n):(c=L.control({position:u}),c.onAdd=a.getOnAddLegend(e,s,d,n),c.addTo(r)),p(y.loadedData)&&g(y.loadedData)&&y.loadedData()}).error(function(){e.warn("[AngularJS - Leaflet] legend.url not loaded.")})})})}}}]),angular.module("leaflet-directive").directive("markers",["$log","$rootScope","$q","leafletData","leafletHelpers","leafletMapDefaults","leafletMarkersHelpers","leafletMarkerEvents","leafletIterators","leafletWatchHelpers","leafletDirectiveControlsHelpers",function(e,t,r,a,n,o,i,l,s,u,c){var d=n.isDefined,f=n.errorHeader,p=n,g=n.isString,v=i.addMarkerWatcher,y=i.updateMarker,m=i.listenMarkerEvents,h=i.addMarkerToGroup,b=i.createMarker,k=i.deleteMarker,P=s,w=n.watchOptions,C=u.maybeWatch,A=c.extend,M=function(e,t,r){if(Object.keys(e).length){if(r&&g(r)){if(!e[r]||!Object.keys(e[r]).length)return;return e[r][t]}return e[t]}},D=function(e,t,r,a){return a&&g(a)?(d(t[a])||(t[a]={}),t[a][r]=e):t[r]=e,e},O=function(t,r,a,n,o,i){if(!g(t))return e.error(f+" A layername must be a string"),!1;if(!d(r))return e.error(f+" You must add layers to the directive if the markers are going to use this functionality."),!1;if(!d(r.overlays)||!d(r.overlays[t]))return e.error(f+' A marker can only be added to a layer of type "group"'),!1;var l=r.overlays[t];return l instanceof L.LayerGroup||l instanceof L.FeatureGroup?(l.addLayer(n),!o&&i.hasLayer(n)&&a.focus===!0&&n.openPopup(),!0):(e.error(f+' Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"'),!1)},S=function(t,r,a,n,o,i,s,u,c,g){for(var L in r)if(!g[L])if(-1===L.search("-")){var k=p.copy(r[L]),P=p.getObjectDotPath(c?[c,L]:[L]),w=M(i,L,c);if(d(w)){var C=d(C)?a[L]:void 0;y(k,C,w,P,s,o,n)}else{var A=b(k),S=(k?k.layer:void 0)||c;if(!d(A)){e.error(f+" Received invalid data on the marker "+L+".");continue}if(D(A,i,L,c),d(k.message)&&A.bindPopup(k.message,k.popupOptions),d(k.group)){var T=d(k.groupOption)?k.groupOption:null;h(A,k.group,T,n)}if(p.LabelPlugin.isLoaded()&&d(k.label)&&d(k.label.message)&&A.bindLabel(k.label.message,k.label.options),d(k)&&(d(k.layer)||d(c))){var H=O(S,o,k,A,u.individual.doWatch,n);if(!H)continue}else d(k.group)||(n.addLayer(A),u.individual.doWatch||k.focus!==!0||A.openPopup());u.individual.doWatch&&v(A,P,s,o,n,u.individual.isDeep),m(A,k,s,u.individual.doWatch,n),l.bindEvents(t,A,P,k,s,S)}}else e.error('The marker can\'t use a "-" on his key name: "'+L+'".')},T=function(t,r,a,n,o){var i,l,s=!1,u=!1,c=d(r);for(var g in a)s||(e.debug(f+"[markers] destroy: "),s=!0),c&&(l=t[g],i=r[g],u=angular.equals(l,i)&&n),d(t)&&Object.keys(t).length&&d(t[g])&&Object.keys(t[g]).length&&!u||o&&p.isFunction(o)&&o(l,i,g)},H=function(t,r,a,n,o){T(t,r,a,!1,function(t,r,i){e.debug(f+"[marker] is deleting marker: "+i),k(a[i],n,o),delete a[i]})},E=function(t,r,a){var n={};return T(t,r,a,!0,function(t,r,a){e.debug(f+"[marker] is already rendered, marker: "+a),n[a]=t}),n};return{restrict:"A",scope:!1,replace:!1,require:["leaflet","?layers"],link:function(e,t,n,o){var i=o[0],l=i.getLeafletScope();i.getMap().then(function(e){var t,i={};t=d(o[1])?o[1].getLayers:function(){var e=r.defer();return e.resolve(),e.promise};var s=l.markersWatchOptions||w;d(n.watchMarkers)&&(s.doWatch=s.individual.doWatch=!d(n.watchMarkers)||p.isTruthy(n.watchMarkers));var u=d(n.markersNested)&&p.isTruthy(n.markersNested);t().then(function(t){var r=function(r,a){return u?void P.each(r,function(r,n){var o=d(o)?a[n]:void 0;H(r,o,i[n],e,t)}):void H(r,a,i,e,t)},o=function(a,o){r(a,o);var c=null;return u?void P.each(a,function(r,u){var f=d(f)?o[u]:void 0;c=E(a[u],f,i[u]),S(n.id,r,o,e,t,i,l,s,u,c)}):(c=E(a,o,i),void S(n.id,a,o,e,t,i,l,s,void 0,c))};A(n.id,"markers",o,r),a.setMarkers(i,n.id),C(l,"markers",s,function(e,t){o(e,t)})})})}}}]),angular.module("leaflet-directive").directive("maxbounds",["$log","leafletMapDefaults","leafletBoundsHelpers","leafletHelpers",function(e,t,r,a){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(e,t,n,o){var i=o.getLeafletScope(),l=r.isValidBounds,s=a.isNumber;o.getMap().then(function(e){i.$watch("maxbounds",function(t){if(!l(t))return void e.setMaxBounds();var a=r.createLeafletBounds(t);s(t.pad)&&(a=a.pad(t.pad)),e.setMaxBounds(a),n.center||n.lfCenter||e.fitBounds(a)})})}}}]),angular.module("leaflet-directive").directive("paths",["$log","$q","leafletData","leafletMapDefaults","leafletHelpers","leafletPathsHelpers","leafletPathEvents",function(e,t,r,a,n,o,i){return{restrict:"A",scope:!1,replace:!1,require:["leaflet","?layers"],link:function(l,s,u,c){var d=c[0],f=n.isDefined,p=n.isString,g=d.getLeafletScope(),v=g.paths,y=o.createPath,m=i.bindPathEvents,h=o.setPathOptions;d.getMap().then(function(o){var i,l=a.getDefaults(u.id);i=f(c[1])?c[1].getLayers:function(){var e=t.defer();return e.resolve(),e.promise},f(v)&&i().then(function(t){var a={};r.setPaths(a,u.id);var i=!f(u.watchPaths)||"true"===u.watchPaths,s=function(e,r){var a=g.$watch('paths["'+r+'"]',function(r,n){if(!f(r)){if(f(n.layer))for(var i in t.overlays){var l=t.overlays[i];l.removeLayer(e)}return o.removeLayer(e),void a()}h(e,r.type,r)},!0)};g.$watchCollection("paths",function(r){for(var c in a)f(r[c])||(o.removeLayer(a[c]),delete a[c]);for(var d in r)if(0!==d.search("\\$"))if(-1===d.search("-")){if(!f(a[d])){var v=r[d],b=y(d,r[d],l);if(f(b)&&f(v.message)&&b.bindPopup(v.message,v.popupOptions),n.LabelPlugin.isLoaded()&&f(v.label)&&f(v.label.message)&&b.bindLabel(v.label.message,v.label.options),f(v)&&f(v.layer)){if(!p(v.layer)){e.error("[AngularJS - Leaflet] A layername must be a string");continue}if(!f(t)){e.error("[AngularJS - Leaflet] You must add layers to the directive if the markers are going to use this functionality.");continue}if(!f(t.overlays)||!f(t.overlays[v.layer])){e.error('[AngularJS - Leaflet] A path can only be added to a layer of type "group"');continue}var k=t.overlays[v.layer];if(!(k instanceof L.LayerGroup||k instanceof L.FeatureGroup)){e.error('[AngularJS - Leaflet] Adding a path to an overlay needs a overlay of the type "group" or "featureGroup"');continue}a[d]=b,k.addLayer(b),i?s(b,d):h(b,v.type,v)}else f(b)&&(a[d]=b,o.addLayer(b),i?s(b,d):h(b,v.type,v));m(u.id,b,d,v,g)}}else e.error('[AngularJS - Leaflet] The path name "'+d+'" is not valid. It must not include "-" and a number.')})})})}}}]),angular.module("leaflet-directive").directive("tiles",["$log","leafletData","leafletMapDefaults","leafletHelpers",function(e,t,r,a){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(n,o,i,l){var s=a.isDefined,u=l.getLeafletScope(),c=u.tiles;return s(c)&&s(c.url)?void l.getMap().then(function(e){var a,n=r.getDefaults(i.id);u.$watch("tiles",function(r,o){var l=n.tileLayerOptions,u=n.tileLayer;return!s(r.url)&&s(a)?void e.removeLayer(a):s(a)?!s(r.url)||!s(r.options)||r.type===o.type&&angular.equals(r.options,l)?void(s(r.url)&&a.setUrl(r.url)):(e.removeLayer(a),l=n.tileLayerOptions,angular.copy(r.options,l),u=r.url,a="wms"===r.type?L.tileLayer.wms(u,l):L.tileLayer(u,l),a.addTo(e),void t.setTiles(a,i.id)):(s(r.options)&&angular.copy(r.options,l),s(r.url)&&(u=r.url),a="wms"===r.type?L.tileLayer.wms(u,l):L.tileLayer(u,l),a.addTo(e),void t.setTiles(a,i.id))},!0)}):void e.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.")}}}]),["markers","geojson"].forEach(function(e){angular.module("leaflet-directive").directive(e+"WatchOptions",["$log","$rootScope","$q","leafletData","leafletHelpers",function(t,r,a,n,o){var i=o.isDefined,l=o.errorHeader,s=o.isObject,u=o.watchOptions;return{restrict:"A",scope:!1,replace:!1,require:["leaflet"],link:function(r,a,n,o){var c=o[0],d=c.getLeafletScope();c.getMap().then(function(){i(r[e+"WatchOptions"])&&(s(r[e+"WatchOptions"])?angular.extend(u,r[e+"WatchOptions"]):t.error(l+"["+e+"WatchOptions] is not an object"),d[e+"WatchOptions"]=u)})}}}])}),angular.module("leaflet-directive").factory("LeafletEventsHelpersFactory",["$rootScope","$q","$log","leafletHelpers",function(e,t,r,a){var n=a.safeApply,o=a.isDefined,i=a.isObject,l=a.isArray,s=a.errorHeader,u=function(e,t){this.rootBroadcastName=e,r.debug("LeafletEventsHelpersFactory: lObjectType: "+t+"rootBroadcastName: "+e),this.lObjectType=t};return u.prototype.getAvailableEvents=function(){return[]},u.prototype.genDispatchEvent=function(e,t,a,n,o,i,l,s,u){var c=this;return e=e||"",e&&(e="."+e),function(d){var f=c.rootBroadcastName+e+"."+t;r.debug(f),c.fire(n,f,a,d,d.target||o,l,i,s,u)}},u.prototype.fire=function(t,r,a,i,l,s,u,c){n(t,function(){var n={leafletEvent:i,leafletObject:l,modelName:u,model:s};o(c)&&angular.extend(n,{layerName:c}),"emit"===a?t.$emit(r,n):e.$broadcast(r,n)})},u.prototype.bindEvents=function(e,t,a,n,u,c,d){var f=[],p="emit",g=this;if(o(u.eventBroadcast))if(i(u.eventBroadcast))if(o(u.eventBroadcast[g.lObjectType]))if(i(u.eventBroadcast[g.lObjectType])){o(u.eventBroadcast[this.lObjectType].logic)&&"emit"!==u.eventBroadcast[g.lObjectType].logic&&"broadcast"!==u.eventBroadcast[g.lObjectType].logic&&r.warn(s+"Available event propagation logic are: 'emit' or 'broadcast'.");var v=!1,y=!1;o(u.eventBroadcast[g.lObjectType].enable)&&l(u.eventBroadcast[g.lObjectType].enable)&&(v=!0),o(u.eventBroadcast[g.lObjectType].disable)&&l(u.eventBroadcast[g.lObjectType].disable)&&(y=!0),v&&y?r.warn(s+"can not enable and disable events at the same time"):v||y?v?u.eventBroadcast[this.lObjectType].enable.forEach(function(e){-1!==f.indexOf(e)?r.warn(s+"This event "+e+" is already enabled"):-1===g.getAvailableEvents().indexOf(e)?r.warn(s+"This event "+e+" does not exist"):f.push(e)}):(f=this.getAvailableEvents(),u.eventBroadcast[g.lObjectType].disable.forEach(function(e){var t=f.indexOf(e);-1===t?r.warn(s+"This event "+e+" does not exist or has been already disabled"):f.splice(t,1)})):r.warn(s+"must enable or disable events")}else r.warn(s+"event-broadcast."+[g.lObjectType]+" must be an object check your model.");else f=this.getAvailableEvents();else r.error(s+"event-broadcast must be an object check your model.");else f=this.getAvailableEvents();return f.forEach(function(r){t.on(r,g.genDispatchEvent(e,r,p,u,t,a,n,c,d))}),p},u}]).service("leafletEventsHelpers",["LeafletEventsHelpersFactory",function(e){return new e}]),angular.module("leaflet-directive").factory("leafletGeoJsonEvents",["$rootScope","$q","$log","leafletHelpers","LeafletEventsHelpersFactory","leafletData",function(e,t,r,a,n,o){var i=a.safeApply,l=n,s=function(){l.call(this,"leafletDirectiveGeoJson","geojson")};return s.prototype=new l,s.prototype.genDispatchEvent=function(t,r,a,n,s,u,c,d,f){var p=l.prototype.genDispatchEvent.call(this,t,r,a,n,s,u,c,d),g=this;return function(t){"mouseout"===r&&(f.resetStyleOnMouseout&&o.getGeoJSON(f.mapId).then(function(e){var r=d?e[d]:e;r.resetStyle(t.target)}),i(n,function(){e.$broadcast(g.rootBroadcastName+".mouseout",t)})),p(t)}},s.prototype.getAvailableEvents=function(){return["click","dblclick","mouseover","mouseout"]},new s}]),angular.module("leaflet-directive").factory("leafletLabelEvents",["$rootScope","$q","$log","leafletHelpers","LeafletEventsHelpersFactory",function(e,t,r,a,n){var o=a,i=n,l=function(){i.call(this,"leafletDirectiveLabel","markers")};return l.prototype=new i,l.prototype.genDispatchEvent=function(e,t,r,a,n,o,l,s){var u=o.replace("markers.","");return i.prototype.genDispatchEvent.call(this,e,t,r,a,n,u,l,s)},l.prototype.getAvailableEvents=function(){return["click","dblclick","mousedown","mouseover","mouseout","contextmenu"]},l.prototype.genEvents=function(e,t,r,a,n,i,l,s){var u=this,c=this.getAvailableEvents(),d=o.getObjectArrayPath("markers."+i);c.forEach(function(t){n.label.on(t,u.genDispatchEvent(e,t,r,a,n.label,d,l,s))})},l.prototype.bindEvents=function(){},new l}]),angular.module("leaflet-directive").factory("leafletMapEvents",["$rootScope","$q","$log","leafletHelpers","leafletEventsHelpers","leafletIterators",function(e,t,r,a,n,o){var i=a.isDefined,l=n.fire,s=function(){return["click","dblclick","mousedown","mouseup","mouseover","mouseout","mousemove","contextmenu","focus","blur","preclick","load","unload","viewreset","movestart","move","moveend","dragstart","drag","dragend","zoomstart","zoomanim","zoomend","zoomlevelschange","resize","autopanstart","layeradd","layerremove","baselayerchange","overlayadd","overlayremove","locationfound","locationerror","popupopen","popupclose","draw:created","draw:edited","draw:deleted","draw:drawstart","draw:drawstop","draw:editstart","draw:editstop","draw:deletestart","draw:deletestop"]},u=function(e,t,a,n){return n&&(n+="."),function(o){var i="leafletDirectiveMap."+n+t;r.debug(i),l(e,i,a,o,o.target,e)}},c=function(e){e.$broadcast("boundsChanged")},d=function(e,t,r,a){if(i(r.urlHashCenter)){var n=t.getCenter(),o=n.lat.toFixed(4)+":"+n.lng.toFixed(4)+":"+t.getZoom();i(a.c)&&a.c===o||e.$emit("centerUrlHash",o)}},f=function(e,t,r,a,n){o.each(t,function(t){var o={};o[r]=t,e.on(t,u(a,t,n,e._container.id||""),o)})};return{getAvailableMapEvents:s,genDispatchMapEvent:u,notifyCenterChangedToBounds:c,notifyCenterUrlHashChanged:d,addEvents:f}}]),angular.module("leaflet-directive").factory("leafletMarkerEvents",["$rootScope","$q","$log","leafletHelpers","LeafletEventsHelpersFactory","leafletLabelEvents",function(e,t,r,a,n,o){var i=a.safeApply,l=a.isDefined,s=a,u=o,c=n,d=function(){c.call(this,"leafletDirectiveMarker","markers")};return d.prototype=new c,d.prototype.genDispatchEvent=function(t,r,a,n,o,l,s,u){var d=c.prototype.genDispatchEvent.call(this,t,r,a,n,o,l,s,u);return function(t){"click"===r?i(n,function(){e.$broadcast("leafletDirectiveMarkersClick",l)}):"dragend"===r&&(i(n,function(){s.lat=o.getLatLng().lat,s.lng=o.getLatLng().lng}),s.message&&s.focus===!0&&o.openPopup()),d(t)}},d.prototype.getAvailableEvents=function(){return["click","dblclick","mousedown","mouseover","mouseout","contextmenu","dragstart","drag","dragend","move","remove","popupopen","popupclose","touchend","touchstart","touchmove","touchcancel","touchleave"]},d.prototype.bindEvents=function(e,t,r,a,n,o){var i=c.prototype.bindEvents.call(this,e,t,r,a,n,o);s.LabelPlugin.isLoaded()&&l(t.label)&&u.genEvents(e,r,i,n,t,a,o)},new d}]),angular.module("leaflet-directive").factory("leafletPathEvents",["$rootScope","$q","$log","leafletHelpers","leafletLabelEvents","leafletEventsHelpers",function(e,t,r,a,n,o){var i=a.isDefined,l=a.isObject,s=a,u=a.errorHeader,c=n,d=o.fire,f=function(e,t,a,n,o,i,l,s){return e=e||"",e&&(e="."+e),function(u){var c="leafletDirectivePath"+e+"."+t;r.debug(c),d(n,c,a,u,u.target||o,l,i,s)}},p=function(e,t,a,n,o){var d,p,v=[],y="broadcast";if(i(o.eventBroadcast))if(l(o.eventBroadcast))if(i(o.eventBroadcast.path))if(l(o.eventBroadcast.paths))r.warn(u+"event-broadcast.path must be an object check your model.");else{void 0!==o.eventBroadcast.path.logic&&null!==o.eventBroadcast.path.logic&&("emit"!==o.eventBroadcast.path.logic&&"broadcast"!==o.eventBroadcast.path.logic?r.warn(u+"Available event propagation logic are: 'emit' or 'broadcast'."):"emit"===o.eventBroadcast.path.logic&&(y="emit"));var m=!1,h=!1;if(void 0!==o.eventBroadcast.path.enable&&null!==o.eventBroadcast.path.enable&&"object"==typeof o.eventBroadcast.path.enable&&(m=!0),void 0!==o.eventBroadcast.path.disable&&null!==o.eventBroadcast.path.disable&&"object"==typeof o.eventBroadcast.path.disable&&(h=!0),m&&h)r.warn(u+"can not enable and disable events at the same time");else if(m||h)if(m)for(d=0;d<o.eventBroadcast.path.enable.length;d++)p=o.eventBroadcast.path.enable[d],-1!==v.indexOf(p)?r.warn(u+"This event "+p+" is already enabled"):-1===g().indexOf(p)?r.warn(u+"This event "+p+" does not exist"):v.push(p);else for(v=g(),d=0;d<o.eventBroadcast.path.disable.length;d++){p=o.eventBroadcast.path.disable[d];var L=v.indexOf(p);-1===L?r.warn(u+"This event "+p+" does not exist or has been already disabled"):v.splice(L,1)}else r.warn(u+"must enable or disable events")}else v=g();else r.error(u+"event-broadcast must be an object check your model.");else v=g();for(d=0;d<v.length;d++)p=v[d],t.on(p,f(e,p,y,o,v,a));s.LabelPlugin.isLoaded()&&i(t.label)&&c.genEvents(e,a,y,o,t,n)},g=function(){return["click","dblclick","mousedown","mouseover","mouseout","contextmenu","add","remove","popupopen","popupclose"]};return{getAvailablePathEvents:g,bindPathEvents:p}}])}(angular)}(angular),!function(e){"use strict";e.module("angulartics.piwik",["angulartics"]).config(["$analyticsProvider","$windowProvider",function(t,r){var a=r.$get();t.settings.pageTracking.trackRelativePath=!0,t.api.setCustomVariable=function(e,t,r,n){a._paq&&(n=n||"page",a._paq.push(["setCustomVariable",e,t,r,n]))},t.api.trackSiteSearch=function(t,r,n){if(a._paq&&t){var o=["trackSiteSearch",t,r||!1];e.isDefined(n)&&o.push(n),a._paq.push(o)}},t.api.trackGoal=function(e,t){a._paq&&_paq.push(["trackGoal",e,t||0])},t.registerSetUsername(function(e){a._paq&&a._paq.push(["setUserId",e])}),t.registerPageTrack(function(e,t){a._paq&&(a._paq.push(["setDocumentTitle",a.document.title]),a._paq.push(["setCustomUrl",e]),a._paq.push(["trackPageView"]))}),t.registerEventTrack(function(e,t){if(a._paq){if(t.value){var r=parseInt(t.value,10);t.value=isNaN(r)?0:r}a._paq.push(["trackEvent",t.category,e,t.label,t.value])}})}])}(angular),!function(e,t){"use strict";function r(){function t(e){return function(){c.waitForVendorCount&&(u[e]||(u[e]=[]),u[e].push(arguments))}}function r(t,r,a){return d[t]||(d[t]=[]),d[t].push(r),f[r]=a,function(){var r=Array.prototype.slice.apply(arguments);return this.$inject(["$q",e.bind(this,function(a){return a.all(d[t].map(function(t){var n=f[t]||{};if(n.async){var o=a.defer(),i=e.copy(r);return i.unshift(o.resolve),t.apply(this,i),o.promise}return a.when(t.apply(this,r))},this))})])}}function a(e,t){t?setTimeout(e,t):e()}function n(t,n,o){p[t]=r(t,n,o);var i=l[t],s=i?i.bufferFlushDelay:null,c=null!==s?s:l.bufferFlushDelay;e.forEach(u[t],function(e,t){a(function(){n.apply(this,e)},t*c)})}function o(e){return e.replace(/^./,function(e){return e.toUpperCase()})}function i(e){var a="register"+o(e);g[a]=function(t,r){n(e,t,r)},p[e]=r(e,t(e))}var l={pageTracking:{autoTrackFirstPage:!0,autoTrackVirtualPages:!0,trackRelativePath:!1,autoBasePath:!1,basePath:"",excludedRoutes:[]},eventTracking:{},bufferFlushDelay:1e3,trackExceptions:!1,developerMode:!1},s=["pageTrack","eventTrack","exceptionTrack","setAlias","setUsername","setUserProperties","setUserPropertiesOnce","setSuperProperties","setSuperPropertiesOnce","incrementProperty","userTimings"],u={},d={},f={},p={settings:l},g={$get:["$injector",function(e){return v(e)}],api:p,settings:l,virtualPageviews:function(e){this.settings.pageTracking.autoTrackVirtualPages=e},excludeRoutes:function(e){this.settings.pageTracking.excludedRoutes=e},firstPageview:function(e){this.settings.pageTracking.autoTrackFirstPage=e},withBase:function(t){this.settings.pageTracking.basePath=t?e.element(document).find("base").attr("href"):""},withAutoBase:function(e){this.settings.pageTracking.autoBasePath=e},trackExceptions:function(e){this.settings.trackExceptions=e},developerMode:function(e){this.settings.developerMode=e}},v=function(t){return e.extend(p,{$inject:t.invoke})};e.forEach(s,i);for(var y in g)this[y]=g[y]}function a(t,r,a,n){function o(e){for(var t=0;t<a.settings.pageTracking.excludedRoutes.length;t++){var r=a.settings.pageTracking.excludedRoutes[t];if(r instanceof RegExp&&r.test(e)||e.indexOf(r)>-1)return!0}return!1}function i(e,t){o(e)||a.pageTrack(e,t)}a.settings.pageTracking.autoTrackFirstPage&&n.invoke(["$location",function(e){var t=!0;if(n.has("$route")){var o=n.get("$route");if(o)for(var l in o.routes){t=!1;break}else null===o&&(t=!1)}else if(n.has("$state")){var s=n.get("$state");for(var u in s.get()){t=!1;break}}if(t)if(a.settings.pageTracking.autoBasePath&&(a.settings.pageTracking.basePath=r.location.pathname),a.settings.pageTracking.trackRelativePath){var c=a.settings.pageTracking.basePath+e.url();i(c,e)}else i(e.absUrl(),e)}]),a.settings.pageTracking.autoTrackVirtualPages&&n.invoke(["$location",function(e){a.settings.pageTracking.autoBasePath&&(a.settings.pageTracking.basePath=r.location.pathname+"#");var o=!0;if(n.has("$route")){var l=n.get("$route");if(l)for(var s in l.routes){o=!1;break}else null===l&&(o=!1);t.$on("$routeChangeSuccess",function(t,r){if(!r||!(r.$$route||r).redirectTo){var n=a.settings.pageTracking.basePath+e.url();i(n,e)}})}n.has("$state")&&!n.has("$transitions")&&(o=!1,t.$on("$stateChangeSuccess",function(t,r){var n=a.settings.pageTracking.basePath+e.url();i(n,e)})),n.has("$state")&&n.has("$transitions")&&(o=!1,n.invoke(["$transitions",function(t){t.onSuccess({},function(t){var r=t.options();if(r.notify){var n=a.settings.pageTracking.basePath+e.url();i(n,e)}})}])),o&&t.$on("$locationChangeSuccess",function(t,r){if(!r||!(r.$$route||r).redirectTo)if(a.settings.pageTracking.trackRelativePath){var n=a.settings.pageTracking.basePath+e.url();i(n,e)}else i(e.absUrl(),e)})}]),a.settings.developerMode&&e.forEach(a,function(e,t){"function"==typeof e&&(a[t]=function(){})})}function n(t){return{restrict:"A",link:function(r,a,n){var o=n.analyticsOn||"click",i={};e.forEach(n.$attr,function(e,t){s(t)&&(i[u(t)]=n[t],n.$observe(t,function(e){i[u(t)]=e}))}),e.element(a[0]).bind(o,function(o){var s=n.analyticsEvent||l(a[0]);i.eventType=o.type,(!n.analyticsIf||r.$eval(n.analyticsIf))&&(n.analyticsProperties&&e.extend(i,r.$eval(n.analyticsProperties)),t.eventTrack(s,i))})}}}function o(e){e.decorator("$exceptionHandler",["$delegate","$injector",function(e,t){}])}function i(e){return["a:","button:","button:button","button:submit","input:button","input:submit"].indexOf(e.tagName.toLowerCase()+":"+(e.type||""))>=0}function l(e){return i(e)?e.innerText||e.value:e.id||e.name||e.tagName}function s(e){return"analytics"===e.substr(0,9)&&-1===["On","Event","If","Properties","EventType"].indexOf(e.substr(9))}function u(e){var t=e.slice(9);return"undefined"!=typeof t&&null!==t&&t.length>0?t.substring(0,1).toLowerCase()+t.substring(1):t}var c=window.angulartics||(window.angulartics={});c.waitForVendorCount=0,c.waitForVendorApi=function(e,t,r,a,n){n||c.waitForVendorCount++,a||(a=r,r=void 0),!Object.prototype.hasOwnProperty.call(window,e)||void 0!==r&&void 0===window[e][r]?setTimeout(function(){c.waitForVendorApi(e,t,r,a,!0)},t):(c.waitForVendorCount--,a(window[e]))},e.module("angulartics",[]).provider("$analytics",r).run(["$rootScope","$window","$analytics","$injector",a]).directive("analyticsOn",["$analytics",n]).config(["$provide",o])}(angular);var w;L.TileLayer.LMUMaps=L.TileLayer.extend({options:{continuousWorld:!0,tolerance:.8},initialize:function(e,t){t=L.setOptions(this,t),this._url=e,w=t.w;L.point(t.width,t.height),t.tileSize;this._gridSize=[L.point(Math.ceil(.125*t.width/256),Math.ceil(.125*t.height/256)),L.point(Math.ceil(.25*t.width/256),Math.ceil(.25*t.height/256)),L.point(Math.ceil(.5*t.width/256),Math.ceil(.5*t.height/256)),L.point(Math.ceil(t.width/256),Math.ceil(t.height/256))],this._imageSize=[L.point(parseInt(.125*t.width),parseInt(.125*t.height)),L.point(parseInt(.25*t.width),parseInt(.25*t.height)),L.point(parseInt(.5*t.width),parseInt(.5*t.height)),L.point(parseInt(t.width),parseInt(t.height))],this.options.maxZoom=this._gridSize.length-1},onAdd:function(e){L.TileLayer.prototype.onAdd.call(this,e);var t=e.getSize(),r=this._getBestFitZoom(t),a=this._imageSize[r],n=e.options.crs.pointToLatLng(L.point(a.x/2,a.y/2),r);e.setView(n,r,!0)},_getGridSize:function(e){var t=this.options.tileSize;return L.point(Math.ceil(e.x/t),Math.ceil(e.y/t))},_getBestFitZoom:function(e){for(var t,r,a=this.options.tolerance,r=this._imageSize.length-1;r;){if(t=this._imageSize[r],t.x*a<e.x&&t.y*a<e.y)return r;r--}return r},_tileShouldBeLoaded:function(e){var t=this._gridSize[this._map.getZoom()];return e.x>=0&&e.x<t.x&&e.y>=0&&e.y<t.y},_addTile:function(e,t){var r=this._getTilePos(e),a=this._getTile(),n=this._map.getZoom(),o=this._imageSize[n],i=this._gridSize[n],l=this.options.tileSize,s=parseInt(o.x/256),u=parseInt(o.y/256);e.x>=s&&(a.style.width=o.x-l*(i.x-1)+"px"),e.y>=u&&(a.style.height=o.y-l*(i.y-1)+"px"),L.DomUtil.setPosition(a,r,L.Browser.chrome||L.Browser.android23),this._tiles[e.x+":"+e.y]=a,this._loadTile(a,e),a.parentNode!==this._tileContainer&&t.appendChild(a)},getTileUrl:function(e){var t=0;return this._map.getZoom()==0+t?this._url+"125/"+e.x+"/"+e.y+".png":this._map.getZoom()==1+t?this._url+"250/"+e.x+"/"+e.y+".png":this._map.getZoom()==2+t?this._url+"500/"+e.x+"/"+e.y+".png":this._map.getZoom()==3+t?this._url+"1000/"+e.x+"/"+e.y+".png":"error"},_getTileGroup:function(e){var t,r=this._map.getZoom(),a=0;for(z=0;z<r;z++)t=this._gridSize[z],a+=t.x*t.y;return a+=e.y*this._gridSize[r].x+e.x,Math.floor(a/256)},setUrl:function(e,t){return this._url=e,t||this.redraw(),this},redraw:function(){return this._map&&(this._reset({hard:!0}),this._update()),this}}),L.tileLayer.lmuMaps=function(e,t){return new L.TileLayer.LMUMaps(e,t)},angular.module("LMURaumfinder",["ngRoute","leaflet-directive","filter","angulartics","angulartics.piwik"]).config(["$logProvider","$routeProvider",function(e,t){"use strict";e.debugEnabled(!1),t.when("/kontakt",{controller:"impressumCtrl",templateUrl:"partials/kontakt.html"}).when("/building/:id",{controller:"buildingCtrl",controllerAs:"ctrl",templateUrl:"partials/buildingDetail.html",reloadOnSearch:!1}).when("/building/:id/map",{controller:"mapCtrl",controllerAs:"ctrl",reloadOnSearch:!1,templateUrl:"partials/buildingMap.html"}).when("/building/:id/map/search",{controller:"roomSearchCtrl",controllerAs:"ctrl",reloadOnSearch:!1,templateUrl:"partials/roomSearch.html"}).when("/part/:id/:map*",{redirectTo:function(e,t,r){var a=window.location.href.split("#")[1].toString();return a=a.replace("part","building"),a=a.replace(e.id,buildingsLookup[e.id]),a?a:"/404"}}).when("/",{controller:"MainCtrl",controllerAs:"main",templateUrl:"partials/cityMap.html"}).when("/404",{controller:"MainCtrl",controllerAs:"main",templateUrl:"partials/404.html"}).otherwise({redirectTo:"/"})}]).constant("MAP_DEFAULTS",{MAPTILES_URL:"https://api.tiles.mapbox.com/v4/maxmediapictures.o2e7pbh8/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWF4bWVkaWFwaWN0dXJlcyIsImEiOiJ2NXRBMGlFIn0.K9dbubXdaU77e0PdLGN7iw",MAP_CREDITS:"© <a href='https://www.mapbox.com/map-feedback/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"}).directive("topNavi",function(){"use strict";return{restrict:"AE",replace:"true",controller:"AdvertisementController",templateUrl:"partials/mobileTopMenu.html"}}),angular.module("filter",[]).filter("capitalize",function(){"use strict";return function(e,t){var r=/([^\W_]+[^\s-]*) */g;return void 0!==e&&(e=e.replace(/ - /g,"-")),e?e.replace(r,function(e){return e.charAt(0).toUpperCase()+e.substr(1).toLowerCase()}):""}}).filter("filterBuildings",function(){"use strict";return function(e,t){var r=[];return void 0===t||""===t?e:(t=t.toLowerCase(),angular.forEach(e,function(e,a){var n=e.displayName.toLowerCase(),o=e.city.toLowerCase();n.indexOf(t)===-1&&o.indexOf(t)===-1||r.push(e)}),r)}}).filter("findInObjects",function(){"use strict";return function(e,t){var r={};return angular.forEach(e,function(e,a){e.rName.indexOf(t)!==-1&&(r[a]=e)}),r}}).filter("stringInBrackets",function(){"use strict";return function(e,t){var r=/\(([^)]+)\)/,a=r.exec(e);return null===a||a.length<1?0:a[1]}}).filter("removeStringInBrackets",function(){"use strict";return function(e){return e.replace(/ *\([^)]*\) */g,"")}}),angular.module("LMURaumfinder").controller("buildingCtrl",["$scope","buildingManager","$routeParams","leafletData","$filter","$location","MAP_DEFAULTS",function(e,t,r,a,n,o,i){"use strict";function l(e){a.getMap().then(function(t){window.screen.width<=767&&(t.dragging.disable(),t.removeControl(t.zoomControl)),t.panTo([e.lat,e.lng]),L.marker([e.lat,e.lng]).addTo(t).bindPopup("<b>"+e.displayName+'</b></br> <a href="#/building/'+e.code+'/map">Raumplan anzeigen</a>').openPopup()})}var s=this;e.naviLink=" ",e.naviText="Gebäudesuche",t.getBuilding(r.id).then(function(e){s.building=e,l(e)},function(e){o.path("/404")}),angular.extend(e,{tiles:{url:i.MAPTILES_URL,type:"xyz",options:{attribution:i.MAP_CREDITS}},center:{lat:48.14,lng:11.58,zoom:18}})}]),angular.module("LMURaumfinder").controller("MainCtrl",["$scope","buildingManager","$filter","MAP_DEFAULTS",function(e,t,r,a){function n(t){var r={},a={};e.builingsCount=t.length,a=0==t.length?{southWest:{lat:48.0521683,lng:11.36503},northEast:{lat:48.2521683,lng:11.68137}}:{southWest:{lat:100,lng:100},northEast:{lat:0,lng:0}};for(var n=0;n<t.length;n++)r[t[n].code]={lat:parseFloat(t[n].lat),lng:parseFloat(t[n].lng),message:"<b>"+t[n].displayName+'</b></br><a href="#/building/'+t[n].code+'/map">Raumplan anzeigen &#62;</a>'},t[n].lat<a.southWest.lat&&(a.southWest.lat=t[n].lat-.001),t[n].lng>a.northEast.lng&&(a.northEast.lng=t[n].lng+.001),t[n].lat>a.northEast.lat&&(a.northEast.lat=t[n].lat+.001),t[n].lng<a.southWest.lng&&(a.southWest.lng=t[n].lng-.001);angular.extend(e,{cityMarkers:r,cityBounds:a})}e.naviLink="",e.naviText="Raumfinder",angular.extend(e,{cityCenter:{lat:48.145,lng:11.58,zoom:14},cityLayers:{url:a.MAPTILES_URL,type:"xyz",options:{attribution:a.MAP_CREDITS}},cityMarkers:{},events:{}}),t.getAllBuildings().then(function(t){e.buildings=t}),e.$watch("searchText",function(t){e.buildings&&n(r("filterBuildings")(e.buildings,e.searchText))})}]),angular.module("LMURaumfinder").controller("mapCtrl",["$scope","$routeParams","$location","$log","leafletData","leafletMapEvents","buildingManager","roomManager","buildingPartManager","$q","$analytics",function(e,t,r,a,n,o,i,l,s,u,c){"use strict";function d(){if(r.search().room)e.mapViaRoom(r.search().room);else if(r.search().level)e.mapViaLevel(r.search().level);else if(r.search().part)e.mapViaPart(r.search().part);else{var t=y.buildingParts[Object.keys(y.buildingParts)[0]];t?f(t):(c.eventTrack("Roomfinder Error!",{category:"ERROR",label:"Can't find building "+t}),r.path("/404"))}}function f(e){a.debug("Init Map"),e||r.path("/404"),n.getMap().then(function(t){m&&t.removeLayer(m),P&&t.removeControl(P),C&&t.removeControl(C),m=L.tileLayer.lmuMaps("https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/tiles/v2/"+e.mapUri.split(".")[0]+"/",{width:e.mapSizeX,height:e.mapSizeY,attribution:"© LMU München"}),m.addTo(t),v(t,e);var r=y.buildingParts.getStructure();P=new k(e.fCode,r[e.buildingPart]),t.addControl(P),y.buildingParts.isComplex()&&(a.debug("This Building has multiple building parts"),C=new w(e.buildingPart,r),t.addControl(C))})}function p(e,t){n.getMap().then(function(r){var a=null;b||(a=r.unproject([0,0],3),b=L.marker(a),r.addLayer(b)),a=r.unproject([e,t],3),b.setLatLng(a),r.panTo(a)})}function g(){n.getMap().then(function(e){b&&(e.removeLayer(b),b=null)})}function v(e,t){var r=e.unproject([0,t.mapSizeY],3),a=e.unproject([t.mapSizeX,0],3);
-return h=new L.LatLngBounds(r,a),e.setMaxBounds(h),h}var y=this;y.building=null,y.buildingCode=null,y.buildingParts=null,y.rooms=null,y.filteredRooms=null,e.naviText="Gebäudedetails",e.naviLink="building/"+t.id+"/",e.roomLimit=30;var m,h,b,k,P,w,C;angular.extend(e,{center:{zoom:3},defaults:{minZoom:0,maxZoom:3,crs:L.CRS.Simple,continuousWorld:!0},layers:{},events:{map:{enable:[],logic:"emit"}}});var A=function(){y.buildingCode=t.id,a.debug("Building code ",y.buildingCode);var n=i.getBuilding(y.buildingCode),o=l.getAllRooms(y.buildingCode),f=s.getBuildingPart(y.buildingCode),p=n.then(function(e){a.debug(e),y.building=e}),g=o.then(function(t){a.debug(t),y.rooms=t,y.filteredRooms=y.rooms.getRooms(void 0,e.roomLimit)}),v=f.then(function(e){a.debug(e),y.buildingParts=e,a.debug(e.getStructure(y.buildingCode))});u.all([p,g,v]).then(function(){a.debug("ALL PROMISES RESOLVED"),d()},function(e){c.eventTrack("Roomfinder Error!",{category:"ERROR",label:"Can't find building "+y.buildingCode}),r.path("/404")})};A(),e.mapViaRoom=function(e){try{var t=y.rooms.getRoom(e).floorCode;f(y.buildingParts[t]),p(y.rooms.getRoom(e).pX,y.rooms.getRoom(e).pY),c.pageTrack("/building/"+y.buildingCode+"/map?room="+e)}catch(t){c.eventTrack("Roomfinder Error!",{category:"ERROR",label:"Can't find room "+e+" in building "+y.buildingCode}),r.path("/404")}},e.mapViaLevel=function(e){g();var t=y.buildingParts[e];t?(f(t),c.pageTrack("/building/"+y.buildingCode+"/map?level="+e)):(c.eventTrack("Roomfinder Error!",{category:"ERROR",label:"Can't find level "+e+" of building "+y.buildingCode}),r.path("/404"))},e.mapViaPart=function(e){g();try{var t=y.buildingParts.getGroundFloor(e);f(t),c.pageTrack("/building/"+y.buildingCode+"/map?part="+e)}catch(t){c.eventTrack("Roomfinder Error!",{category:"ERROR",label:"Can't find building part "+e+" of building "+y.buildingCode}),r.path("/404")}},e.showMoreRooms=function(){e.roomLimit+=50,y.filteredRooms=y.rooms.getRooms(void 0,e.roomLimit)},e.$watch("searchRoom",function(t){y.filteredRooms&&(y.filteredRooms=y.rooms.getRooms(t,e.roomLimit))}),k=L.Control.extend({options:{position:"topright",activeLevelCode:"",activeBPartStructure:""},initialize:function(e,t){this.options.activeLevelCode=e,this.options.activeBPartStructure=t},onAdd:function(t){var r=L.DomUtil.create("div","leaflet-bar leaflet-control leaflet-control-custom"),a=this.options.activeBPartStructure.levels;for(var n in a){var o=L.DomUtil.create("a","");a[n].fCode;this.options.activeLevelCode==a[n].fCode&&o.setAttribute("class","active"),o.setAttribute("fCode",a[n].fCode),o.setAttribute("href","#/building/"+y.buildingCode+"/map?level="+a[n].fCode),o.innerHTML=a[n].level,o.onclick=function(t){e.mapViaLevel(t.target.attributes.fCode.nodeValue)},r.appendChild(o)}return r}}),w=L.Control.extend({options:{position:"bottomleft",activePart:""},initialize:function(e,t){this.options.activePart=e,this.options.structure=t},onAdd:function(t){var r=L.DomUtil.create("div","leaflet-bar leaflet-control leaflet-control-custom");a.debug(this.options.structure);for(var n in this.options.structure){var o=this.options.structure[n],i=L.DomUtil.create("a","");this.options.activePart==n&&i.setAttribute("class","active"),i.setAttribute("buildingPart",n),i.setAttribute("href","#/building/"+y.buildingCode+"/map?part="+n),i.innerHTML=o.name,i.onclick=function(t){e.mapViaPart(t.target.attributes.buildingPart.nodeValue)},r.appendChild(i)}return r}})}]),angular.module("LMURaumfinder").controller("roomSearchCtrl",["$scope","$routeParams","buildingManager","$filter","roomManager",function(e,t,r,a,n){"use strict";e.searchRoom="",e.naviText="LMU Roomfinder",e.naviLink="",e.roomLimit=30;var o=this;o.building=null,o.buildingCode=null,o.rooms=null,o.filteredRooms=null;var i=function(){o.buildingCode=t.id,e.naviLink="building/"+o.buildingCode+"/map";var a=r.getBuilding(o.buildingCode),i=n.getAllRooms(o.buildingCode);a.then(function(t){o.building=t,e.naviText=t.displayName}),i.then(function(t){o.rooms=t,o.filteredRooms=o.rooms.getRooms(void 0,e.roomLimit)})};i(),e.$watch("searchRoom",function(t){o.filteredRooms&&(o.filteredRooms=o.rooms.getRooms(t,e.roomLimit))}),e.showMoreRooms=function(){e.roomLimit+=50,o.filteredRooms=o.rooms.getRooms(void 0,e.roomLimit)}}]).controller("impressumCtrl",["$scope",function(e){"use strict";e.naviText="LMU Roomfinder",e.naviLink=!0}]).controller("AdvertisementController",["$scope",function(e){"use strict";function t(e,t,r){var a=new Date;a.setTime(a.getTime()+24*r*60*60*1e3);var n="expires="+a.toUTCString();document.cookie=e+"="+t+"; "+n}function r(e){for(var t=e+"=",r=document.cookie.split(";"),a=0;a<r.length;a++){for(var n=r[a];" "===n.charAt(0);)n=n.substring(1);if(0===n.indexOf(t))return n.substring(t.length,n.length)}return""}var a=navigator.userAgent.toLowerCase(),n=a.indexOf("android")>-1,o=r("adDismissed");n&&!o?e.showAd=!0:e.showAd=!1,e.dismiss=function(){e.showAd=!1,t("adDismissed",!0,365)}}]),angular.module("LMURaumfinder").factory("Building",["$http","$filter",function(e,t){"use strict";function r(e){e&&(e.displayName=t("capitalize",!0)(e.displayName),e.lat=parseFloat(e.lat),e.lng=parseFloat(e.lng),this.setData(e))}return r.prototype={setData:function(e){angular.extend(this,e)},getImageUrl:function(e){return e<=40?"1"===this.hasImage?"https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/thumbnails/"+this.code+".jpg":"img/houseIcon.png":e<=400?1===this.hasImage?"https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/medium/"+this.code+".jpg":"img/pattern.jpg":void 0}},r}]),angular.module("LMURaumfinder").factory("buildingManager",["$http","$q","Building",function(e,t,r){"use strict";var a={_poolArray:[],_pool:{},_retrieveInstance:function(e,t){var a=this._poolArray[e];return a?a.setData(t):(a=new r(t),this._pool[e]=a,this._poolArray.push(a)),a},_search:function(e){return this._pool[e]},_loadAll:function(e){var t=this;buildingsJSON.forEach(function(e){t._retrieveInstance(e.code,e)}),e.resolve(t._poolArray)},_load:function(e,t){var r=this;buildingsJSON.forEach(function(e){r._retrieveInstance(e.code,e)}),r._pool[t]?e.resolve(r._pool[t]):e.reject()},getBuilding:function(e){var r=t.defer(),a=this._search(e);return a?r.resolve(a):this._load(r,e),r.promise},getAllBuildings:function(){var e=t.defer();return this._poolArray.length>0?e.resolve(this._poolArray):this._loadAll(e),e.promise}};return a}]),angular.module("LMURaumfinder").factory("BuildingPart",["$http","$filter",function(e,t){"use strict";function r(e){if(e){this.setData(e);var r={},o={};for(var i in e)e[i].level=n(e[i].level),o=e[i],o.fCode=i,r[o.buildingPart]||(r[o.buildingPart]={},r[o.buildingPart].levels=[],r[o.buildingPart].name=t("stringInBrackets")(o.address)||"Y"),r[o.buildingPart].levels.push(o);for(var l in r)r[l].levels.sort(a);this.setData({structure:r})}}function a(e,t){var r=["OG8","OG7","OG6","OG5","OG4","ZG3","OG3","ZG2","OG2","ZG1","OG1","ZG","EG","UG1","UG2","UG3"],a=r.indexOf(e.level),n=r.indexOf(t.level);return a==n?0:a<n?-1:1}function n(e){return e=t("removeStringInBrackets")(e),e=rename[e]?rename[e]:e}return r.prototype={setData:function(e){angular.extend(this,e)},isComplex:function(){return Object.keys(this.structure).length>1},getStructure:function(){return this.structure},getFirstPart:function(){return this[Object.keys(this)[0]]},getGroundFloor:function(e){var t=this.structure[e];for(var r in t.levels)if("EG"==t.levels[r].level)return t.levels[r];return t.levels[0]},getPart:function(e){return this[e]}},r}]),angular.module("LMURaumfinder").factory("buildingPartManager",["$http","$q","BuildingPart",function(e,t,r){"use strict";var a={_pool:{},_retrieveInstance:function(e,t){var a=this._pool[e];return a?a.setData(t):(a=new r(t),this._pool[e]=a),a},_search:function(e){return this._pool[e]},_load:function(t,r){var a=this;e.get("json/uniqueBuildingParts/"+t+".json").success(function(e){var n=a._retrieveInstance(t,e);r.resolve(n)}).error(function(){r.reject()})},getBuildingPart:function(e){var r=t.defer(),a=this._search(e);return a?r.resolve(a):this._load(e,r),r.promise}};return a}]),angular.module("LMURaumfinder").factory("roomManager",["$http","$q","Room",function(e,t,r){"use strict";var a={_pool:{},_search:function(e){return this._pool[e]},_loadAll:function(t,a,n){var o=this;e.get("json/rooms/"+t+".json").success(function(e){var i=new r(e);o._pool[t]=i,a?n.resolve(i.getRoom(a)):n.resolve(i)}).error(function(){n.reject()})},getAllRooms:function(e){var r=t.defer(),a=this._search(e);return a?r.resolve(a):this._loadAll(e,!1,r),r.promise},getRoom:function(e,r){var a=t.defer(),n=this._search(e,r);return n?a.resolve(n):this._loadAll(e,r,a),a.promise}};return a}]),angular.module("LMURaumfinder").factory("Room",["$http",function(e){"use strict";function t(e){e&&this.setData({data:e})}return t.prototype={setData:function(e){angular.extend(this,e)},getRoomsCount:function(){return Object.keys(this.data).length},getRoom:function(e){return this.data[e]},getRooms:function(e,t){var r=[],a=!1,n=" ";void 0===e?a=!0:n=e.replace(/ /g,"").toLowerCase();for(var o in this.data)if((a||this.data[o].rName.replace(/ /g,"").toLowerCase().indexOf(n)>-1)&&(this.data[o].rCode=o,r.push(this.data[o])),r.length>t)break;return r}},t}]);
+
+/*!
+*  angular-leaflet-directive  2015-11-06
+*  angular-leaflet-directive - An AngularJS directive to easily interact with Leaflet maps
+*  git: https://github.com/tombatossals/angular-leaflet-directive
+*/
+(function(angular){
+'use strict';
+!function(angular){"use strict";angular.module("leaflet-directive",[]).directive("leaflet",["$q","leafletData","leafletMapDefaults","leafletHelpers","leafletMapEvents",function(a,b,c,d,e){return{restrict:"EA",replace:!0,scope:{center:"=",lfCenter:"=",defaults:"=",maxbounds:"=",bounds:"=",markers:"=",legend:"=",geojson:"=",paths:"=",tiles:"=",layers:"=",controls:"=",decorations:"=",eventBroadcast:"=",markersWatchOptions:"=",geojsonWatchOptions:"="},transclude:!0,template:'<div class="angular-leaflet-map"><div ng-transclude></div></div>',controller:["$scope",function(b){this._leafletMap=a.defer(),this.getMap=function(){return this._leafletMap.promise},this.getLeafletScope=function(){return b}}],link:function(a,f,g,h){function i(){isNaN(g.width)?f.css("width",g.width):f.css("width",g.width+"px")}function j(){isNaN(g.height)?f.css("height",g.height):f.css("height",g.height+"px")}var k=d.isDefined,l=c.setDefaults(a.defaults,g.id),m=e.getAvailableMapEvents(),n=e.addEvents;a.mapId=g.id,b.setDirectiveControls({},g.id),k(g.width)&&(i(),a.$watch(function(){return f[0].getAttribute("width")},function(){i(),o.invalidateSize()})),k(g.height)&&(j(),a.$watch(function(){return f[0].getAttribute("height")},function(){j(),o.invalidateSize()}));var o=new L.Map(f[0],c.getMapCreationDefaults(g.id));if(h._leafletMap.resolve(o),k(g.center)||k(g.lfCenter)||o.setView([l.center.lat,l.center.lng],l.center.zoom),!k(g.tiles)&&!k(g.layers)){var p=L.tileLayer(l.tileLayer,l.tileLayerOptions);p.addTo(o),b.setTiles(p,g.id)}if(k(o.zoomControl)&&k(l.zoomControlPosition)&&o.zoomControl.setPosition(l.zoomControlPosition),k(o.zoomControl)&&l.zoomControl===!1&&o.zoomControl.removeFrom(o),k(o.zoomsliderControl)&&k(l.zoomsliderControl)&&l.zoomsliderControl===!1&&o.zoomsliderControl.removeFrom(o),!k(g.eventBroadcast)){var q="broadcast";n(o,m,"eventName",a,q)}o.whenReady(function(){b.setMap(o,g.id)}),a.$on("$destroy",function(){c.reset(),o.remove(),b.unresolveMap(g.id)}),a.$on("invalidateSize",function(){o.invalidateSize()})}}}]),angular.module("leaflet-directive").factory("leafletBoundsHelpers",["$log","leafletHelpers",function(a,b){function c(a){return angular.isDefined(a)&&angular.isDefined(a.southWest)&&angular.isDefined(a.northEast)&&angular.isNumber(a.southWest.lat)&&angular.isNumber(a.southWest.lng)&&angular.isNumber(a.northEast.lat)&&angular.isNumber(a.northEast.lng)}var d=b.isArray,e=b.isNumber,f=b.isFunction,g=b.isDefined;return{createLeafletBounds:function(a){return c(a)?L.latLngBounds([a.southWest.lat,a.southWest.lng],[a.northEast.lat,a.northEast.lng]):void 0},isValidBounds:c,createBoundsFromArray:function(b){return d(b)&&2===b.length&&d(b[0])&&d(b[1])&&2===b[0].length&&2===b[1].length&&e(b[0][0])&&e(b[0][1])&&e(b[1][0])&&e(b[1][1])?{northEast:{lat:b[0][0],lng:b[0][1]},southWest:{lat:b[1][0],lng:b[1][1]}}:void a.error("[AngularJS - Leaflet] The bounds array is not valid.")},createBoundsFromLeaflet:function(b){if(!(g(b)&&f(b.getNorthEast)&&f(b.getSouthWest)))return void a.error("[AngularJS - Leaflet] The leaflet bounds is not valid object.");var c=b.getNorthEast(),d=b.getSouthWest();return{northEast:{lat:c.lat,lng:c.lng},southWest:{lat:d.lat,lng:d.lng}}}}}]),angular.module("leaflet-directive").factory("leafletControlHelpers",["$rootScope","$log","leafletHelpers","leafletLayerHelpers","leafletMapDefaults",function(a,b,c,d,e){var f=c.isDefined,g=c.isObject,h=d.createLayer,i={},j=c.errorHeader+" [Controls] ",k=function(a,b,c){var d=e.getDefaults(c);if(!d.controls.layers.visible)return!1;var h=!1;return g(a)&&Object.keys(a).forEach(function(b){var c=a[b];f(c.layerOptions)&&c.layerOptions.showOnSelector===!1||(h=!0)}),g(b)&&Object.keys(b).forEach(function(a){var c=b[a];f(c.layerParams)&&c.layerParams.showOnSelector===!1||(h=!0)}),h},l=function(a){var b=e.getDefaults(a),c={collapsed:b.controls.layers.collapsed,position:b.controls.layers.position,autoZIndex:!1};angular.extend(c,b.controls.layers.options);var d;return d=b.controls.layers&&f(b.controls.layers.control)?b.controls.layers.control.apply(this,[[],[],c]):new L.control.layers([],[],c)},m={draw:{isPluginLoaded:function(){return angular.isDefined(L.Control.Draw)?!0:(b.error(j+" Draw plugin is not loaded."),!1)},checkValidParams:function(){return!0},createControl:function(a){return new L.Control.Draw(a)}},scale:{isPluginLoaded:function(){return!0},checkValidParams:function(){return!0},createControl:function(a){return new L.control.scale(a)}},fullscreen:{isPluginLoaded:function(){return angular.isDefined(L.Control.Fullscreen)?!0:(b.error(j+" Fullscreen plugin is not loaded."),!1)},checkValidParams:function(){return!0},createControl:function(a){return new L.Control.Fullscreen(a)}},search:{isPluginLoaded:function(){return angular.isDefined(L.Control.Search)?!0:(b.error(j+" Search plugin is not loaded."),!1)},checkValidParams:function(){return!0},createControl:function(a){return new L.Control.Search(a)}},custom:{},minimap:{isPluginLoaded:function(){return angular.isDefined(L.Control.MiniMap)?!0:(b.error(j+" Minimap plugin is not loaded."),!1)},checkValidParams:function(a){return f(a.layer)?!0:(b.warn(j+' minimap "layer" option should be defined.'),!1)},createControl:function(a){var c=h(a.layer);return f(c)?new L.Control.MiniMap(c,a):void b.warn(j+' minimap control "layer" could not be created.')}}};return{layersControlMustBeVisible:k,isValidControlType:function(a){return-1!==Object.keys(m).indexOf(a)},createControl:function(a,b){return m[a].checkValidParams(b)?m[a].createControl(b):void 0},updateLayersControl:function(a,b,c,d,e,g){var h,j=i[b],m=k(d,e,b);if(f(j)&&c){for(h in g.baselayers)j.removeLayer(g.baselayers[h]);for(h in g.overlays)j.removeLayer(g.overlays[h]);a.removeControl(j),delete i[b]}if(m){j=l(b),i[b]=j;for(h in d){var n=f(d[h].layerOptions)&&d[h].layerOptions.showOnSelector===!1;!n&&f(g.baselayers[h])&&j.addBaseLayer(g.baselayers[h],d[h].name)}for(h in e){var o=f(e[h].layerParams)&&e[h].layerParams.showOnSelector===!1;!o&&f(g.overlays[h])&&j.addOverlay(g.overlays[h],e[h].name)}a.addControl(j)}return m}}}]),angular.module("leaflet-directive").service("leafletData",["$log","$q","leafletHelpers",function(a,b,c){var d=c.getDefer,e=c.getUnresolvedDefer,f=c.setResolvedDefer,g={},h=this,i=function(a){return a.charAt(0).toUpperCase()+a.slice(1)},j=["map","tiles","layers","paths","markers","geoJSON","UTFGrid","decorations","directiveControls"];j.forEach(function(a){g[a]={}}),this.unresolveMap=function(a){var b=c.obtainEffectiveMapId(g.map,a);j.forEach(function(a){g[a][b]=void 0})},j.forEach(function(a){var b=i(a);h["set"+b]=function(b,c){var d=e(g[a],c);d.resolve(b),f(g[a],c)},h["get"+b]=function(b){var c=d(g[a],b);return c.promise}})}]),angular.module("leaflet-directive").service("leafletDirectiveControlsHelpers",["$log","leafletData","leafletHelpers",function(a,b,c){var d=c.isDefined,e=c.isString,f=c.isObject,g=c.errorHeader,h=g+"[leafletDirectiveControlsHelpers",i=function(c,g,i,j){var k=h+".extend] ",l={};if(!d(g))return void a.error(k+"thingToAddName cannot be undefined");if(e(g)&&d(i)&&d(j))l[g]={create:i,clean:j};else{if(!f(g)||d(i)||d(j))return void a.error(k+"incorrect arguments");l=g}b.getDirectiveControls().then(function(a){angular.extend(a,l),b.setDirectiveControls(a,c)})};return{extend:i}}]),angular.module("leaflet-directive").service("leafletGeoJsonHelpers",["leafletHelpers","leafletIterators",function(a,b){var c=a,d=b,e=function(a,b){return this.lat=a,this.lng=b,this},f=function(a){return Array.isArray(a)&&2===a.length?a[1]:c.isDefined(a.type)&&"Point"===a.type?+a.coordinates[1]:+a.lat},g=function(a){return Array.isArray(a)&&2===a.length?a[0]:c.isDefined(a.type)&&"Point"===a.type?+a.coordinates[0]:+a.lng},h=function(a){if(c.isUndefined(a))return!1;if(c.isArray(a)){if(2===a.length&&c.isNumber(a[0])&&c.isNumber(a[1]))return!0}else if(c.isDefined(a.type)&&"Point"===a.type&&c.isArray(a.coordinates)&&2===a.coordinates.length&&c.isNumber(a.coordinates[0])&&c.isNumber(a.coordinates[1]))return!0;var b=d.all(["lat","lng"],function(b){return c.isDefined(a[b])&&c.isNumber(a[b])});return b},i=function(a){if(a&&h(a)){var b=null;if(Array.isArray(a)&&2===a.length)b=new e(a[1],a[0]);else{if(!c.isDefined(a.type)||"Point"!==a.type)return a;b=new e(a.coordinates[1],a.coordinates[0])}return angular.extend(a,b)}};return{getLat:f,getLng:g,validateCoords:h,getCoords:i}}]),angular.module("leaflet-directive").service("leafletHelpers",["$q","$log",function(a,b){function c(a,c){var d,f;if(angular.isDefined(c))d=c;else if(0===Object.keys(a).length)d="main";else if(Object.keys(a).length>=1)for(f in a)a.hasOwnProperty(f)&&(d=f);else b.error(e+"- You have more than 1 map on the DOM, you must provide the map ID to the leafletData.getXXX call");return d}function d(b,d){var e,f=c(b,d);return angular.isDefined(b[f])&&b[f].resolvedDefer!==!0?e=b[f].defer:(e=a.defer(),b[f]={defer:e,resolvedDefer:!1}),e}var e="[AngularJS - Leaflet] ",f=angular.copy,g=f,h=function(a,b){var c;if(a&&angular.isObject(a))return null!==b&&angular.isString(b)?(c=a,b.split(".").forEach(function(a){c&&(c=c[a])}),c):b},i=function(a){return a.split(".").reduce(function(a,b){return a+'["'+b+'"]'})},j=function(a){return a.reduce(function(a,b){return a+"."+b})},k=function(a){return angular.isDefined(a)&&null!==a},l=function(a){return!k(a)},m=/([\:\-\_]+(.))/g,n=/^moz([A-Z])/,o=/^((?:x|data)[\:\-_])/i,p=function(a){return a.replace(m,function(a,b,c,d){return d?c.toUpperCase():c}).replace(n,"Moz$1")},q=function(a){return p(a.replace(o,""))};return{camelCase:p,directiveNormalize:q,copy:f,clone:g,errorHeader:e,getObjectValue:h,getObjectArrayPath:i,getObjectDotPath:j,defaultTo:function(a,b){return k(a)?a:b},isTruthy:function(a){return"true"===a||a===!0},isEmpty:function(a){return 0===Object.keys(a).length},isUndefinedOrEmpty:function(a){return angular.isUndefined(a)||null===a||0===Object.keys(a).length},isDefined:k,isUndefined:l,isNumber:angular.isNumber,isString:angular.isString,isArray:angular.isArray,isObject:angular.isObject,isFunction:angular.isFunction,equals:angular.equals,isValidCenter:function(a){return angular.isDefined(a)&&angular.isNumber(a.lat)&&angular.isNumber(a.lng)&&angular.isNumber(a.zoom)},isValidPoint:function(a){return angular.isDefined(a)?angular.isArray(a)?2===a.length&&angular.isNumber(a[0])&&angular.isNumber(a[1]):angular.isNumber(a.lat)&&angular.isNumber(a.lng):!1},isSameCenterOnMap:function(a,b){var c=b.getCenter(),d=b.getZoom();return a.lat&&a.lng&&c.lat.toFixed(4)===a.lat.toFixed(4)&&c.lng.toFixed(4)===a.lng.toFixed(4)&&d===a.zoom?!0:!1},safeApply:function(a,b){var c=a.$root.$$phase;"$apply"===c||"$digest"===c?a.$eval(b):a.$evalAsync(b)},obtainEffectiveMapId:c,getDefer:function(a,b){var e,f=c(a,b);return e=angular.isDefined(a[f])&&a[f].resolvedDefer!==!1?a[f].defer:d(a,b)},getUnresolvedDefer:d,setResolvedDefer:function(a,b){var d=c(a,b);a[d].resolvedDefer=!0},rangeIsSupported:function(){var a=document.createElement("input");return a.setAttribute("type","range"),"range"===a.type},FullScreenControlPlugin:{isLoaded:function(){return angular.isDefined(L.Control.Fullscreen)}},MiniMapControlPlugin:{isLoaded:function(){return angular.isDefined(L.Control.MiniMap)}},AwesomeMarkersPlugin:{isLoaded:function(){return angular.isDefined(L.AwesomeMarkers)&&angular.isDefined(L.AwesomeMarkers.Icon)},is:function(a){return this.isLoaded()?a instanceof L.AwesomeMarkers.Icon:!1},equal:function(a,b){return this.isLoaded()&&this.is(a)?angular.equals(a,b):!1}},VectorMarkersPlugin:{isLoaded:function(){return angular.isDefined(L.VectorMarkers)&&angular.isDefined(L.VectorMarkers.Icon)},is:function(a){return this.isLoaded()?a instanceof L.VectorMarkers.Icon:!1},equal:function(a,b){return this.isLoaded()&&this.is(a)?angular.equals(a,b):!1}},DomMarkersPlugin:{isLoaded:function(){return angular.isDefined(L.DomMarkers)&&angular.isDefined(L.DomMarkers.Icon)?!0:!1},is:function(a){return this.isLoaded()?a instanceof L.DomMarkers.Icon:!1},equal:function(a,b){return this.isLoaded()&&this.is(a)?angular.equals(a,b):!1}},PolylineDecoratorPlugin:{isLoaded:function(){return angular.isDefined(L.PolylineDecorator)?!0:!1},is:function(a){return this.isLoaded()?a instanceof L.PolylineDecorator:!1},equal:function(a,b){return this.isLoaded()&&this.is(a)?angular.equals(a,b):!1}},MakiMarkersPlugin:{isLoaded:function(){return angular.isDefined(L.MakiMarkers)&&angular.isDefined(L.MakiMarkers.Icon)?!0:!1},is:function(a){return this.isLoaded()?a instanceof L.MakiMarkers.Icon:!1},equal:function(a,b){return this.isLoaded()&&this.is(a)?angular.equals(a,b):!1}},ExtraMarkersPlugin:{isLoaded:function(){return angular.isDefined(L.ExtraMarkers)&&angular.isDefined(L.ExtraMarkers.Icon)?!0:!1},is:function(a){return this.isLoaded()?a instanceof L.ExtraMarkers.Icon:!1},equal:function(a,b){return this.isLoaded()&&this.is(a)?angular.equals(a,b):!1}},LabelPlugin:{isLoaded:function(){return angular.isDefined(L.Label)},is:function(a){return this.isLoaded()?a instanceof L.MarkerClusterGroup:!1}},MarkerClusterPlugin:{isLoaded:function(){return angular.isDefined(L.MarkerClusterGroup)},is:function(a){return this.isLoaded()?a instanceof L.MarkerClusterGroup:!1}},GoogleLayerPlugin:{isLoaded:function(){return angular.isDefined(L.Google)},is:function(a){return this.isLoaded()?a instanceof L.Google:!1}},LeafletProviderPlugin:{isLoaded:function(){return angular.isDefined(L.TileLayer.Provider)},is:function(a){return this.isLoaded()?a instanceof L.TileLayer.Provider:!1}},ChinaLayerPlugin:{isLoaded:function(){return angular.isDefined(L.tileLayer.chinaProvider)}},HeatLayerPlugin:{isLoaded:function(){return angular.isDefined(L.heatLayer)}},WebGLHeatMapLayerPlugin:{isLoaded:function(){return angular.isDefined(L.TileLayer.WebGLHeatMap)}},BingLayerPlugin:{isLoaded:function(){return angular.isDefined(L.BingLayer)},is:function(a){return this.isLoaded()?a instanceof L.BingLayer:!1}},WFSLayerPlugin:{isLoaded:function(){return void 0!==L.GeoJSON.WFS},is:function(a){return this.isLoaded()?a instanceof L.GeoJSON.WFS:!1}},AGSBaseLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.basemapLayer},is:function(a){return this.isLoaded()?a instanceof L.esri.basemapLayer:!1}},AGSLayerPlugin:{isLoaded:function(){return void 0!==lvector&&void 0!==lvector.AGS},is:function(a){return this.isLoaded()?a instanceof lvector.AGS:!1}},AGSFeatureLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.featureLayer},is:function(a){return this.isLoaded()?a instanceof L.esri.featureLayer:!1}},AGSTiledMapLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.tiledMapLayer},is:function(a){return this.isLoaded()?a instanceof L.esri.tiledMapLayer:!1}},AGSDynamicMapLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.dynamicMapLayer},is:function(a){return this.isLoaded()?a instanceof L.esri.dynamicMapLayer:!1}},AGSImageMapLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.imageMapLayer},is:function(a){return this.isLoaded()?a instanceof L.esri.imageMapLayer:!1}},AGSClusteredLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.clusteredFeatureLayer},is:function(a){return this.isLoaded()?a instanceof L.esri.clusteredFeatureLayer:!1}},AGSHeatmapLayerPlugin:{isLoaded:function(){return void 0!==L.esri&&void 0!==L.esri.heatmapFeatureLayer},is:function(a){return this.isLoaded()?a instanceof L.esri.heatmapFeatureLayer:!1}},YandexLayerPlugin:{isLoaded:function(){return angular.isDefined(L.Yandex)},is:function(a){return this.isLoaded()?a instanceof L.Yandex:!1}},GeoJSONPlugin:{isLoaded:function(){return angular.isDefined(L.TileLayer.GeoJSON)},is:function(a){return this.isLoaded()?a instanceof L.TileLayer.GeoJSON:!1}},UTFGridPlugin:{isLoaded:function(){return angular.isDefined(L.UtfGrid)},is:function(a){return this.isLoaded()?a instanceof L.UtfGrid:(b.error("[AngularJS - Leaflet] No UtfGrid plugin found."),!1)}},CartoDB:{isLoaded:function(){return cartodb},is:function(){return!0}},Leaflet:{DivIcon:{is:function(a){return a instanceof L.DivIcon},equal:function(a,b){return this.is(a)?angular.equals(a,b):!1}},Icon:{is:function(a){return a instanceof L.Icon},equal:function(a,b){return this.is(a)?angular.equals(a,b):!1}}},watchOptions:{doWatch:!0,isDeep:!0,individual:{doWatch:!0,isDeep:!0}}}}]),angular.module("leaflet-directive").service("leafletIterators",["$log","leafletHelpers",function(a,b){var c,d=b,e=b.errorHeader+"leafletIterators: ",f=Object.keys,g=d.isFunction,h=d.isObject,i=Math.pow(2,53)-1,j=function(a){var b=null!==a&&a.length;return d.isNumber(b)&&b>=0&&i>=b},k=function(a){return a},l=function(a){return function(b){return null===b?void 0:b[a]}},m=function(a,b,c){if(void 0===b)return a;switch(null===c?3:c){case 1:return function(c){return a.call(b,c)};case 2:return function(c,d){return a.call(b,c,d)};case 3:return function(c,d,e){return a.call(b,c,d,e)};case 4:return function(c,d,e,f){return a.call(b,c,d,e,f)}}return function(){return a.apply(b,arguments)}},n=function(a,b){return function(c){var d=arguments.length;if(2>d||null===c)return c;for(var e=1;d>e;e++)for(var f=arguments[e],g=a(f),h=g.length,i=0;h>i;i++){var j=g[i];b&&void 0!==c[j]||(c[j]=f[j])}return c}},o=null;c=o=n(f);var p,q=function(a,b){var c=f(b),d=c.length;if(null===a)return!d;for(var e=Object(a),g=0;d>g;g++){var h=c[g];if(b[h]!==e[h]||!(h in e))return!1}return!0},r=null;p=r=function(a){return a=c({},a),function(b){return q(b,a)}};var s,t=function(a,b,c){return null===a?k:g(a)?m(a,b,c):h(a)?p(a):l(a)},u=null;s=u=function(a,b,c){b=t(b,c);for(var d=!j(a)&&f(a),e=(d||a).length,g=0;e>g;g++){var h=d?d[g]:g;if(!b(a[h],h,a))return!1}return!0};var v=function(b,c,f,g){return f||d.isDefined(b)&&d.isDefined(c)?d.isFunction(c)?!1:(g=d.defaultTo(c,"cb"),a.error(e+g+" is not a function"),!0):!0},w=function(a,b,c){if(!v(void 0,c,!0,"internalCb")&&!v(a,b))for(var d in a)a.hasOwnProperty(d)&&c(a[d],d)},x=function(a,b){w(a,b,function(a,c){b(a,c)})};return{each:x,forEach:x,every:s,all:u}}]),angular.module("leaflet-directive").factory("leafletLayerHelpers",["$rootScope","$log","$q","leafletHelpers","leafletIterators",function($rootScope,$log,$q,leafletHelpers,leafletIterators){function isValidLayerType(a){return isString(a.type)?-1===Object.keys(layerTypes).indexOf(a.type)?($log.error("[AngularJS - Leaflet] A layer must have a valid type: "+Object.keys(layerTypes)),!1):layerTypes[a.type].mustHaveUrl&&!isString(a.url)?($log.error("[AngularJS - Leaflet] A base layer must have an url"),!1):layerTypes[a.type].mustHaveData&&!isDefined(a.data)?($log.error('[AngularJS - Leaflet] The base layer must have a "data" array attribute'),!1):layerTypes[a.type].mustHaveLayer&&!isDefined(a.layer)?($log.error("[AngularJS - Leaflet] The type of layer "+a.type+" must have an layer defined"),!1):layerTypes[a.type].mustHaveBounds&&!isDefined(a.bounds)?($log.error("[AngularJS - Leaflet] The type of layer "+a.type+" must have bounds defined"),!1):layerTypes[a.type].mustHaveKey&&!isDefined(a.key)?($log.error("[AngularJS - Leaflet] The type of layer "+a.type+" must have key defined"),!1):!0:($log.error("[AngularJS - Leaflet] A layer must have a valid type defined."),!1)}function createLayer(a){if(isValidLayerType(a)){if(!isString(a.name))return void $log.error("[AngularJS - Leaflet] A base layer must have a name");isObject(a.layerParams)||(a.layerParams={}),isObject(a.layerOptions)||(a.layerOptions={});for(var b in a.layerParams)a.layerOptions[b]=a.layerParams[b];var c={url:a.url,data:a.data,options:a.layerOptions,layer:a.layer,icon:a.icon,type:a.layerType,bounds:a.bounds,key:a.key,apiKey:a.apiKey,pluginOptions:a.pluginOptions,user:a.user};return layerTypes[a.type].createLayer(c)}}function safeAddLayer(a,b){b&&"function"==typeof b.addTo?b.addTo(a):a.addLayer(b)}function safeRemoveLayer(a,b,c){if(isDefined(c)&&isDefined(c.loadedDefer))if(angular.isFunction(c.loadedDefer)){var d=c.loadedDefer();$log.debug("Loaded Deferred",d);var e=d.length;if(e>0)for(var f=function(){e--,0===e&&a.removeLayer(b)},g=0;g<d.length;g++)d[g].promise.then(f);else a.removeLayer(b)}else c.loadedDefer.promise.then(function(){a.removeLayer(b)});else a.removeLayer(b)}var Helpers=leafletHelpers,isString=leafletHelpers.isString,isObject=leafletHelpers.isObject,isArray=leafletHelpers.isArray,isDefined=leafletHelpers.isDefined,errorHeader=leafletHelpers.errorHeader,$it=leafletIterators,utfGridCreateLayer=function(a){if(!Helpers.UTFGridPlugin.isLoaded())return void $log.error("[AngularJS - Leaflet] The UTFGrid plugin is not loaded.");var b=new L.UtfGrid(a.url,a.pluginOptions);return b.on("mouseover",function(a){$rootScope.$broadcast("leafletDirectiveMap.utfgridMouseover",a)}),b.on("mouseout",function(a){$rootScope.$broadcast("leafletDirectiveMap.utfgridMouseout",a)}),b.on("click",function(a){$rootScope.$broadcast("leafletDirectiveMap.utfgridClick",a)}),b.on("mousemove",function(a){$rootScope.$broadcast("leafletDirectiveMap.utfgridMousemove",a)}),b},layerTypes={xyz:{mustHaveUrl:!0,createLayer:function(a){return L.tileLayer(a.url,a.options)}},mapbox:{mustHaveKey:!0,createLayer:function(a){var b=3;isDefined(a.options.version)&&4===a.options.version&&(b=a.options.version);var c=3===b?"//{s}.tiles.mapbox.com/v3/"+a.key+"/{z}/{x}/{y}.png":"//api.tiles.mapbox.com/v4/"+a.key+"/{z}/{x}/{y}.png?access_token="+a.apiKey;return L.tileLayer(c,a.options)}},geoJSON:{mustHaveUrl:!0,createLayer:function(a){return Helpers.GeoJSONPlugin.isLoaded()?new L.TileLayer.GeoJSON(a.url,a.pluginOptions,a.options):void 0}},geoJSONShape:{mustHaveUrl:!1,createLayer:function(a){return new L.GeoJSON(a.data,a.options)}},geoJSONAwesomeMarker:{mustHaveUrl:!1,createLayer:function(a){return new L.geoJson(a.data,{pointToLayer:function(b,c){return L.marker(c,{icon:L.AwesomeMarkers.icon(a.icon)})}})}},geoJSONVectorMarker:{mustHaveUrl:!1,createLayer:function(a){return new L.geoJson(a.data,{pointToLayer:function(b,c){return L.marker(c,{icon:L.VectorMarkers.icon(a.icon)})}})}},utfGrid:{mustHaveUrl:!0,createLayer:utfGridCreateLayer},cartodbTiles:{mustHaveKey:!0,createLayer:function(a){var b="//"+a.user+".cartodb.com/api/v1/map/"+a.key+"/{z}/{x}/{y}.png";return L.tileLayer(b,a.options)}},cartodbUTFGrid:{mustHaveKey:!0,mustHaveLayer:!0,createLayer:function(a){return a.url="//"+a.user+".cartodb.com/api/v1/map/"+a.key+"/"+a.layer+"/{z}/{x}/{y}.grid.json",utfGridCreateLayer(a)}},cartodbInteractive:{mustHaveKey:!0,mustHaveLayer:!0,createLayer:function(a){var b="//"+a.user+".cartodb.com/api/v1/map/"+a.key+"/{z}/{x}/{y}.png",c=L.tileLayer(b,a.options);a.url="//"+a.user+".cartodb.com/api/v1/map/"+a.key+"/"+a.layer+"/{z}/{x}/{y}.grid.json";var d=utfGridCreateLayer(a);return L.layerGroup([c,d])}},wms:{mustHaveUrl:!0,createLayer:function(a){return L.tileLayer.wms(a.url,a.options)}},wmts:{mustHaveUrl:!0,createLayer:function(a){return L.tileLayer.wmts(a.url,a.options)}},wfs:{mustHaveUrl:!0,mustHaveLayer:!0,createLayer:function(params){if(Helpers.WFSLayerPlugin.isLoaded()){var options=angular.copy(params.options);return options.crs&&"string"==typeof options.crs&&(options.crs=eval(options.crs)),new L.GeoJSON.WFS(params.url,params.layer,options)}}},group:{mustHaveUrl:!1,createLayer:function(a){var b=[];return $it.each(a.options.layers,function(a){b.push(createLayer(a))}),a.options.loadedDefer=function(){var b=[];if(isDefined(a.options.layers))for(var c=0;c<a.options.layers.length;c++){var d=a.options.layers[c].layerOptions.loadedDefer;isDefined(d)&&b.push(d)}return b},L.layerGroup(b)}},featureGroup:{mustHaveUrl:!1,createLayer:function(){return L.featureGroup()}},google:{mustHaveUrl:!1,createLayer:function(a){var b=a.type||"SATELLITE";if(Helpers.GoogleLayerPlugin.isLoaded())return new L.Google(b,a.options)}},here:{mustHaveUrl:!1,createLayer:function(a){var b=a.provider||"HERE.terrainDay";if(Helpers.LeafletProviderPlugin.isLoaded())return new L.TileLayer.Provider(b,a.options)}},china:{mustHaveUrl:!1,createLayer:function(a){var b=a.type||"";if(Helpers.ChinaLayerPlugin.isLoaded())return L.tileLayer.chinaProvider(b,a.options)}},agsBase:{mustHaveLayer:!0,createLayer:function(a){return Helpers.AGSBaseLayerPlugin.isLoaded()?L.esri.basemapLayer(a.layer,a.options):void 0}},ags:{mustHaveUrl:!0,createLayer:function(a){if(Helpers.AGSLayerPlugin.isLoaded()){var b=angular.copy(a.options);angular.extend(b,{url:a.url});var c=new lvector.AGS(b);return c.onAdd=function(a){this.setMap(a)},c.onRemove=function(){this.setMap(null)},c}}},agsFeature:{mustHaveUrl:!0,createLayer:function(a){if(!Helpers.AGSFeatureLayerPlugin.isLoaded())return void $log.warn(errorHeader+" The esri plugin is not loaded.");a.options.url=a.url;var b=L.esri.featureLayer(a.options),c=function(){isDefined(a.options.loadedDefer)&&a.options.loadedDefer.resolve()};return b.on("loading",function(){a.options.loadedDefer=$q.defer(),b.off("load",c),b.on("load",c)}),b}},agsTiled:{mustHaveUrl:!0,createLayer:function(a){return Helpers.AGSTiledMapLayerPlugin.isLoaded()?(a.options.url=a.url,L.esri.tiledMapLayer(a.options)):void $log.warn(errorHeader+" The esri plugin is not loaded.")}},agsDynamic:{mustHaveUrl:!0,createLayer:function(a){return Helpers.AGSDynamicMapLayerPlugin.isLoaded()?(a.options.url=a.url,L.esri.dynamicMapLayer(a.options)):void $log.warn(errorHeader+" The esri plugin is not loaded.")}},agsImage:{mustHaveUrl:!0,createLayer:function(a){return Helpers.AGSImageMapLayerPlugin.isLoaded()?(a.options.url=a.url,L.esri.imageMapLayer(a.options)):void $log.warn(errorHeader+" The esri plugin is not loaded.")}},agsClustered:{mustHaveUrl:!0,createLayer:function(a){return Helpers.AGSClusteredLayerPlugin.isLoaded()?Helpers.MarkerClusterPlugin.isLoaded()?L.esri.clusteredFeatureLayer(a.url,a.options):void $log.warn(errorHeader+" The markercluster plugin is not loaded."):void $log.warn(errorHeader+" The esri clustered layer plugin is not loaded.")}},agsHeatmap:{mustHaveUrl:!0,createLayer:function(a){return Helpers.AGSHeatmapLayerPlugin.isLoaded()?Helpers.HeatLayerPlugin.isLoaded()?L.esri.heatmapFeatureLayer(a.url,a.options):void $log.warn(errorHeader+" The heatlayer plugin is not loaded."):void $log.warn(errorHeader+" The esri heatmap layer plugin is not loaded.")}},markercluster:{mustHaveUrl:!1,createLayer:function(a){return Helpers.MarkerClusterPlugin.isLoaded()?new L.MarkerClusterGroup(a.options):void $log.warn(errorHeader+" The markercluster plugin is not loaded.")}},bing:{mustHaveUrl:!1,createLayer:function(a){return Helpers.BingLayerPlugin.isLoaded()?new L.BingLayer(a.key,a.options):void 0}},webGLHeatmap:{mustHaveUrl:!1,mustHaveData:!0,createLayer:function(a){if(Helpers.WebGLHeatMapLayerPlugin.isLoaded()){var b=new L.TileLayer.WebGLHeatMap(a.options);return isDefined(a.data)&&b.setData(a.data),b}}},heat:{mustHaveUrl:!1,mustHaveData:!0,createLayer:function(a){if(Helpers.HeatLayerPlugin.isLoaded()){var b=new L.heatLayer;return isArray(a.data)&&b.setLatLngs(a.data),isObject(a.options)&&b.setOptions(a.options),b}}},yandex:{mustHaveUrl:!1,createLayer:function(a){var b=a.type||"map";if(Helpers.YandexLayerPlugin.isLoaded())return new L.Yandex(b,a.options)}},imageOverlay:{mustHaveUrl:!0,mustHaveBounds:!0,createLayer:function(a){return L.imageOverlay(a.url,a.bounds,a.options)}},iip:{mustHaveUrl:!0,createLayer:function(a){return L.tileLayer.iip(a.url,a.options)}},custom:{createLayer:function(a){return a.layer instanceof L.Class?angular.copy(a.layer):void $log.error("[AngularJS - Leaflet] A custom layer must be a leaflet Class")}},cartodb:{mustHaveUrl:!0,createLayer:function(a){return cartodb.createLayer(a.map,a.url)}}};return{createLayer:createLayer,safeAddLayer:safeAddLayer,safeRemoveLayer:safeRemoveLayer}}]),angular.module("leaflet-directive").factory("leafletLegendHelpers",function(){var a=function(a,b,c,d){if(a.innerHTML="",b.error)a.innerHTML+='<div class="info-title alert alert-danger">'+b.error.message+"</div>";else if("arcgis"===c)for(var e=0;e<b.layers.length;e++){var f=b.layers[e];a.innerHTML+='<div class="info-title" data-layerid="'+f.layerId+'">'+f.layerName+"</div>";for(var g=0;g<f.legend.length;g++){var h=f.legend[g];a.innerHTML+='<div class="inline" data-layerid="'+f.layerId+'"><img src="data:'+h.contentType+";base64,"+h.imageData+'" /></div><div class="info-label" data-layerid="'+f.layerId+'">'+h.label+"</div>"}}else"image"===c&&(a.innerHTML='<img src="'+d+'"/>')},b=function(b,c,d,e){return function(){var f=L.DomUtil.create("div",c);return L.Browser.touch?L.DomEvent.on(f,"click",L.DomEvent.stopPropagation):(L.DomEvent.disableClickPropagation(f),L.DomEvent.on(f,"mousewheel",L.DomEvent.stopPropagation)),a(f,b,d,e),f}},c=function(a,b){return function(){for(var c=L.DomUtil.create("div",b),d=0;d<a.colors.length;d++)c.innerHTML+='<div class="outline"><i style="background:'+a.colors[d]+'"></i></div><div class="info-label">'+a.labels[d]+"</div>";return L.Browser.touch?L.DomEvent.on(c,"click",L.DomEvent.stopPropagation):(L.DomEvent.disableClickPropagation(c),L.DomEvent.on(c,"mousewheel",L.DomEvent.stopPropagation)),c}};return{getOnAddLegend:b,getOnAddArrayLegend:c,updateLegend:a}}),angular.module("leaflet-directive").factory("leafletMapDefaults",["$q","leafletHelpers",function(a,b){function c(){return{keyboard:!0,dragging:!0,worldCopyJump:!1,doubleClickZoom:!0,scrollWheelZoom:!0,tap:!0,touchZoom:!0,zoomControl:!0,zoomsliderControl:!1,zoomControlPosition:"topleft",attributionControl:!0,controls:{layers:{visible:!0,position:"topright",collapsed:!0}},nominatim:{server:" http://nominatim.openstreetmap.org/search"},crs:L.CRS.EPSG3857,tileLayer:"//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",tileLayerOptions:{attribution:'&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'},path:{weight:10,opacity:1,color:"#0000ff"},center:{lat:0,lng:0,zoom:1}}}var d=b.isDefined,e=b.isObject,f=b.obtainEffectiveMapId,g={};return{reset:function(){g={}},getDefaults:function(a){var b=f(g,a);return g[b]},getMapCreationDefaults:function(a){var b=f(g,a),c=g[b],e={maxZoom:c.maxZoom,keyboard:c.keyboard,dragging:c.dragging,zoomControl:c.zoomControl,doubleClickZoom:c.doubleClickZoom,scrollWheelZoom:c.scrollWheelZoom,tap:c.tap,touchZoom:c.touchZoom,attributionControl:c.attributionControl,worldCopyJump:c.worldCopyJump,crs:c.crs};if(d(c.minZoom)&&(e.minZoom=c.minZoom),d(c.zoomAnimation)&&(e.zoomAnimation=c.zoomAnimation),d(c.fadeAnimation)&&(e.fadeAnimation=c.fadeAnimation),d(c.markerZoomAnimation)&&(e.markerZoomAnimation=c.markerZoomAnimation),c.map)for(var h in c.map)e[h]=c.map[h];return e},setDefaults:function(a,b){var h=c();d(a)&&(h.doubleClickZoom=d(a.doubleClickZoom)?a.doubleClickZoom:h.doubleClickZoom,h.scrollWheelZoom=d(a.scrollWheelZoom)?a.scrollWheelZoom:h.doubleClickZoom,h.tap=d(a.tap)?a.tap:h.tap,h.touchZoom=d(a.touchZoom)?a.touchZoom:h.doubleClickZoom,h.zoomControl=d(a.zoomControl)?a.zoomControl:h.zoomControl,h.zoomsliderControl=d(a.zoomsliderControl)?a.zoomsliderControl:h.zoomsliderControl,h.attributionControl=d(a.attributionControl)?a.attributionControl:h.attributionControl,h.tileLayer=d(a.tileLayer)?a.tileLayer:h.tileLayer,h.zoomControlPosition=d(a.zoomControlPosition)?a.zoomControlPosition:h.zoomControlPosition,h.keyboard=d(a.keyboard)?a.keyboard:h.keyboard,h.dragging=d(a.dragging)?a.dragging:h.dragging,d(a.controls)&&angular.extend(h.controls,a.controls),e(a.crs)?h.crs=a.crs:d(L.CRS[a.crs])&&(h.crs=L.CRS[a.crs]),d(a.center)&&angular.copy(a.center,h.center),d(a.tileLayerOptions)&&angular.copy(a.tileLayerOptions,h.tileLayerOptions),d(a.maxZoom)&&(h.maxZoom=a.maxZoom),d(a.minZoom)&&(h.minZoom=a.minZoom),d(a.zoomAnimation)&&(h.zoomAnimation=a.zoomAnimation),d(a.fadeAnimation)&&(h.fadeAnimation=a.fadeAnimation),d(a.markerZoomAnimation)&&(h.markerZoomAnimation=a.markerZoomAnimation),d(a.worldCopyJump)&&(h.worldCopyJump=a.worldCopyJump),d(a.map)&&(h.map=a.map),d(a.path)&&(h.path=a.path));var i=f(g,b);return g[i]=h,h}}}]),angular.module("leaflet-directive").service("leafletMarkersHelpers",["$rootScope","$timeout","leafletHelpers","$log","$compile","leafletGeoJsonHelpers",function(a,b,c,d,e,f){var g=c.isDefined,h=c.defaultTo,i=c.MarkerClusterPlugin,j=c.AwesomeMarkersPlugin,k=c.VectorMarkersPlugin,l=c.MakiMarkersPlugin,m=c.ExtraMarkersPlugin,n=c.DomMarkersPlugin,o=c.safeApply,p=c,q=c.isString,r=c.isNumber,s=c.isObject,t={},u=f,v=c.errorHeader,w=function(a){
+var b="";return["_icon","_latlng","_leaflet_id","_map","_shadow"].forEach(function(c){b+=c+": "+h(a[c],"undefined")+" \n"}),"[leafletMarker] : \n"+b},x=function(a,b){var c=b?console:d;c.debug(w(a))},y=function(b){if(g(b)&&g(b.type)&&"awesomeMarker"===b.type)return j.isLoaded()||d.error(v+" The AwesomeMarkers Plugin is not loaded."),new L.AwesomeMarkers.icon(b);if(g(b)&&g(b.type)&&"vectorMarker"===b.type)return k.isLoaded()||d.error(v+" The VectorMarkers Plugin is not loaded."),new L.VectorMarkers.icon(b);if(g(b)&&g(b.type)&&"makiMarker"===b.type)return l.isLoaded()||d.error(v+"The MakiMarkers Plugin is not loaded."),new L.MakiMarkers.icon(b);if(g(b)&&g(b.type)&&"extraMarker"===b.type)return m.isLoaded()||d.error(v+"The ExtraMarkers Plugin is not loaded."),new L.ExtraMarkers.icon(b);if(g(b)&&g(b.type)&&"div"===b.type)return new L.divIcon(b);if(g(b)&&g(b.type)&&"dom"===b.type){n.isLoaded()||d.error(v+"The DomMarkers Plugin is not loaded.");var c=angular.isFunction(b.getMarkerScope)?b.getMarkerScope():a,f=e(b.template)(c),h=angular.copy(b);return h.element=f[0],new L.DomMarkers.icon(h)}if(g(b)&&g(b.type)&&"icon"===b.type)return b.icon;var i="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABkAAAApCAYAAADAk4LOAAAGmklEQVRYw7VXeUyTZxjvNnfELFuyIzOabermMZEeQC/OclkO49CpOHXOLJl/CAURuYbQi3KLgEhbrhZ1aDwmaoGqKII6odATmH/scDFbdC7LvFqOCc+e95s2VG50X/LLm/f4/Z7neY/ne18aANCmAr5E/xZf1uDOkTcGcWR6hl9247tT5U7Y6SNvWsKT63P58qbfeLJG8M5qcgTknrvvrdDbsT7Ml+tv82X6vVxJE33aRmgSyYtcWVMqX97Yv2JvW39UhRE2HuyBL+t+gK1116ly06EeWFNlAmHxlQE0OMiV6mQCScusKRlhS3QLeVJdl1+23h5dY4FNB3thrbYboqptEFlphTC1hSpJnbRvxP4NWgsE5Jyz86QNNi/5qSUTGuFk1gu54tN9wuK2wc3o+Wc13RCmsoBwEqzGcZsxsvCSy/9wJKf7UWf1mEY8JWfewc67UUoDbDjQC+FqK4QqLVMGGR9d2wurKzqBk3nqIT/9zLxRRjgZ9bqQgub+DdoeCC03Q8j+0QhFhBHR/eP3U/zCln7Uu+hihJ1+bBNffLIvmkyP0gpBZWYXhKussK6mBz5HT6M1Nqpcp+mBCPXosYQfrekGvrjewd59/GvKCE7TbK/04/ZV5QZYVWmDwH1mF3xa2Q3ra3DBC5vBT1oP7PTj4C0+CcL8c7C2CtejqhuCnuIQHaKHzvcRfZpnylFfXsYJx3pNLwhKzRAwAhEqG0SpusBHfAKkxw3w4627MPhoCH798z7s0ZnBJ/MEJbZSbXPhER2ih7p2ok/zSj2cEJDd4CAe+5WYnBCgR2uruyEw6zRoW6/DWJ/OeAP8pd/BGtzOZKpG8oke0SX6GMmRk6GFlyAc59K32OTEinILRJRchah8HQwND8N435Z9Z0FY1EqtxUg+0SO6RJ/mmXz4VuS+DpxXC3gXmZwIL7dBSH4zKE50wESf8qwVgrP1EIlTO5JP9Igu0aexdh28F1lmAEGJGfh7jE6ElyM5Rw/FDcYJjWhbeiBYoYNIpc2FT/SILivp0F1ipDWk4BIEo2VuodEJUifhbiltnNBIXPUFCMpthtAyqws/BPlEF/VbaIxErdxPphsU7rcCp8DohC+GvBIPJS/tW2jtvTmmAeuNO8BNOYQeG8G/2OzCJ3q+soYB5i6NhMaKr17FSal7GIHheuV3uSCY8qYVuEm1cOzqdWr7ku/R0BDoTT+DT+ohCM6/CCvKLKO4RI+dXPeAuaMqksaKrZ7L3FE5FIFbkIceeOZ2OcHO6wIhTkNo0ffgjRGxEqogXHYUPHfWAC/lADpwGcLRY3aeK4/oRGCKYcZXPVoeX/kelVYY8dUGf8V5EBRbgJXT5QIPhP9ePJi428JKOiEYhYXFBqou2Guh+p/mEB1/RfMw6rY7cxcjTrneI1FrDyuzUSRm9miwEJx8E/gUmqlyvHGkneiwErR21F3tNOK5Tf0yXaT+O7DgCvALTUBXdM4YhC/IawPU+2PduqMvuaR6eoxSwUk75ggqsYJ7VicsnwGIkZBSXKOUww73WGXyqP+J2/b9c+gi1YAg/xpwck3gJuucNrh5JvDPvQr0WFXf0piyt8f8/WI0hV4pRxxkQZdJDfDJNOAmM0Ag8jyT6hz0WGXWuP94Yh2jcfjmXAGvHCMslRimDHYuHuDsy2QtHuIavznhbYURq5R57KpzBBRZKPJi8eQg48h4j8SDdowifdIrEVdU+gbO6QNvRRt4ZBthUaZhUnjlYObNagV3keoeru3rU7rcuceqU1mJBxy+BWZYlNEBH+0eH4vRiB+OYybU2hnblYlTvkHinM4m54YnxSyaZYSF6R3jwgP7udKLGIX6r/lbNa9N6y5MFynjWDtrHd75ZvTYAPO/6RgF0k76mQla3FGq7dO+cH8sKn0Vo7nDllwAhqwLPkxrHwWmHJOo+AKJ4rab5OgrM7rVu8eWb2Pu0Dh4eDgXoOfvp7Y7QeqknRmvcTBEyq9m/HQQSCSz6LHq3z0yzsNySRfMS253wl2KyRDbcZPcfJKjZmSEOjcxyi+Y8dUOtsIEH6R2wNykdqrkYJ0RV92H0W58pkfQk7cKevsLK10Py8SdMGfXNXATY+pPbyJR/ET6n9nIfztNtZYRV9XniQu9IA2vOVgy4ir7GCLVmmd+zjkH0eAF9Po6K61pmCXHxU5rHMYd1ftc3owjwRSVRzLjKvqZEty6cRUD7jGqiOdu5HG6MdHjNcNYGqfDm5YRzLBBCCDl/2bk8a8gdbqcfwECu62Fg/HrggAAAABJRU5ErkJggg==",o="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACkAAAApCAYAAACoYAD2AAAC5ElEQVRYw+2YW4/TMBCF45S0S1luXZCABy5CgLQgwf//S4BYBLTdJLax0fFqmB07nnQfEGqkIydpVH85M+NLjPe++dcPc4Q8Qh4hj5D/AaQJx6H/4TMwB0PeBNwU7EGQAmAtsNfAzoZkgIa0ZgLMa4Aj6CxIAsjhjOCoL5z7Glg1JAOkaicgvQBXuncwJAWjksLtBTWZe04CnYRktUGdilALppZBOgHGZcBzL6OClABvMSVIzyBjazOgrvACf1ydC5mguqAVg6RhdkSWQFj2uxfaq/BrIZOLEWgZdALIDvcMcZLD8ZbLC9de4yR1sYMi4G20S4Q/PWeJYxTOZn5zJXANZHIxAd4JWhPIloTJZhzMQduM89WQ3MUVAE/RnhAXpTycqys3NZALOBbB7kFrgLesQl2h45Fcj8L1tTSohUwuxhy8H/Qg6K7gIs+3kkaigQCOcyEXCHN07wyQazhrmIulvKMQAwMcmLNqyCVyMAI+BuxSMeTk3OPikLY2J1uE+VHQk6ANrhds+tNARqBeaGc72cK550FP4WhXmFmcMGhTwAR1ifOe3EvPqIegFmF+C8gVy0OfAaWQPMR7gF1OQKqGoBjq90HPMP01BUjPOqGFksC4emE48tWQAH0YmvOgF3DST6xieJgHAWxPAHMuNhrImIdvoNOKNWIOcE+UXE0pYAnkX6uhWsgVXDxHdTfCmrEEmMB2zMFimLVOtiiajxiGWrbU52EeCdyOwPEQD8LqyPH9Ti2kgYMf4OhSKB7qYILbBv3CuVTJ11Y80oaseiMWOONc/Y7kJYe0xL2f0BaiFTxknHO5HaMGMublKwxFGzYdWsBF174H/QDknhTHmHHN39iWFnkZx8lPyM8WHfYELmlLKtgWNmFNzQcC1b47gJ4hL19i7o65dhH0Negbca8vONZoP7doIeOC9zXm8RjuL0Gf4d4OYaU5ljo3GYiqzrWQHfJxA6ALhDpVKv9qYeZA8eM3EhfPSCmpuD0AAAAASUVORK5CYII=";return g(b)&&g(b.iconUrl)?new L.Icon(b):new L.Icon.Default({iconUrl:i,shadowUrl:o,iconSize:[25,41],iconAnchor:[12,41],popupAnchor:[1,-34],shadowSize:[41,41]})},z=function(a){g(t[a])&&t.splice(a,1)},A=function(){t={}},B=function(a,b,c){if(a.closePopup(),g(c)&&g(c.overlays))for(var d in c.overlays)if((c.overlays[d]instanceof L.LayerGroup||c.overlays[d]instanceof L.FeatureGroup)&&c.overlays[d].hasLayer(a))return void c.overlays[d].removeLayer(a);if(g(t))for(var e in t)t[e].hasLayer(a)&&t[e].removeLayer(a);b.hasLayer(a)&&b.removeLayer(a)},C=function(a,b){var c=a._popup._container.offsetHeight,d=new L.Point(a._popup._containerLeft,-c-a._popup._containerBottom),e=b.layerPointToContainerPoint(d);null!==e&&a._popup._adjustPan()},D=function(a,b){e(a._popup._contentNode)(b)},E=function(a,c,d){var e=a._popup._contentNode.innerText||a._popup._contentNode.textContent;e.length<1&&b(function(){E(a,c,d)});var f=a._popup._contentNode.offsetWidth;return a._popup._updateLayout(),a._popup._updatePosition(),a._popup.options.autoPan&&C(a,d),f},F=function(b,c,e){var f=angular.isFunction(c.getMessageScope)?c.getMessageScope():a,h=g(c.compileMessage)?c.compileMessage:!0;if(h){if(!g(b._popup)||!g(b._popup._contentNode))return d.error(v+"Popup is invalid or does not have any content."),!1;D(b,f),E(b,c,e)}},G=function(b,c){var d=angular.isFunction(c.getMessageScope)?c.getMessageScope():a,f=angular.isFunction(c.getLabelScope)?c.getLabelScope():d,h=g(c.compileMessage)?c.compileMessage:!0;p.LabelPlugin.isLoaded()&&g(c.label)&&(g(c.label.options)&&c.label.options.noHide===!0&&b.showLabel(),h&&g(b.label)&&e(b.label._container)(f))},H=function(a,b,c,e,f,h,i){if(g(b)){if(!u.validateCoords(a))return d.warn("There are problems with lat-lng data, please verify your marker model"),void B(c,i,h);var j=a===b;if(g(a.iconAngle)&&b.iconAngle!==a.iconAngle&&c.setIconAngle(a.iconAngle),q(a.layer)||q(b.layer)&&(g(h.overlays[b.layer])&&h.overlays[b.layer].hasLayer(c)&&(h.overlays[b.layer].removeLayer(c),c.closePopup()),i.hasLayer(c)||i.addLayer(c)),(r(a.opacity)||r(parseFloat(a.opacity)))&&a.opacity!==b.opacity&&c.setOpacity(a.opacity),q(a.layer)&&b.layer!==a.layer){if(q(b.layer)&&g(h.overlays[b.layer])&&h.overlays[b.layer].hasLayer(c)&&h.overlays[b.layer].removeLayer(c),c.closePopup(),i.hasLayer(c)&&i.removeLayer(c),!g(h.overlays[a.layer]))return void d.error(v+"You must use a name of an existing layer");var k=h.overlays[a.layer];if(!(k instanceof L.LayerGroup||k instanceof L.FeatureGroup))return void d.error(v+'A marker can only be added to a layer of type "group" or "featureGroup"');k.addLayer(c),i.hasLayer(c)&&a.focus===!0&&c.openPopup()}if(a.draggable!==!0&&b.draggable===!0&&g(c.dragging)&&c.dragging.disable(),a.draggable===!0&&b.draggable!==!0&&(c.dragging?c.dragging.enable():L.Handler.MarkerDrag&&(c.dragging=new L.Handler.MarkerDrag(c),c.options.draggable=!0,c.dragging.enable())),s(a.icon)||s(b.icon)&&(c.setIcon(y()),c.closePopup(),c.unbindPopup(),q(a.message)&&c.bindPopup(a.message,a.popupOptions)),s(a.icon)&&s(b.icon)&&!angular.equals(a.icon,b.icon)){var l=!1;c.dragging&&(l=c.dragging.enabled()),c.setIcon(y(a.icon)),l&&c.dragging.enable(),c.closePopup(),c.unbindPopup(),q(a.message)&&(c.bindPopup(a.message,a.popupOptions),i.hasLayer(c)&&a.focus===!0&&c.openPopup())}!q(a.message)&&q(b.message)&&(c.closePopup(),c.unbindPopup()),p.LabelPlugin.isLoaded()&&(g(a.label)&&g(a.label.message)?"label"in b&&"message"in b.label&&!angular.equals(a.label.message,b.label.message)?c.updateLabelContent(a.label.message):!angular.isFunction(c.getLabel)||angular.isFunction(c.getLabel)&&!g(c.getLabel())?(c.bindLabel(a.label.message,a.label.options),G(c,a)):G(c,a):(!("label"in a)||"message"in a.label)&&angular.isFunction(c.unbindLabel)&&c.unbindLabel()),q(a.message)&&!q(b.message)&&c.bindPopup(a.message,a.popupOptions),q(a.message)&&q(b.message)&&a.message!==b.message&&c.setPopupContent(a.message);var m=!1;a.focus!==!0&&b.focus===!0&&(c.closePopup(),m=!0),(a.focus===!0&&(!g(b.focus)||b.focus===!1)||j&&a.focus===!0)&&(c.openPopup(),m=!0),b.zIndexOffset!==a.zIndexOffset&&c.setZIndexOffset(a.zIndexOffset);var n=c.getLatLng(),o=q(a.layer)&&p.MarkerClusterPlugin.is(h.overlays[a.layer]);o?m?(a.lat!==b.lat||a.lng!==b.lng)&&(h.overlays[a.layer].removeLayer(c),c.setLatLng([a.lat,a.lng]),h.overlays[a.layer].addLayer(c)):n.lat!==a.lat||n.lng!==a.lng?(h.overlays[a.layer].removeLayer(c),c.setLatLng([a.lat,a.lng]),h.overlays[a.layer].addLayer(c)):a.lat!==b.lat||a.lng!==b.lng?(h.overlays[a.layer].removeLayer(c),c.setLatLng([a.lat,a.lng]),h.overlays[a.layer].addLayer(c)):s(a.icon)&&s(b.icon)&&!angular.equals(a.icon,b.icon)&&(h.overlays[a.layer].removeLayer(c),h.overlays[a.layer].addLayer(c)):(n.lat!==a.lat||n.lng!==a.lng)&&c.setLatLng([a.lat,a.lng])}};return{resetMarkerGroup:z,resetMarkerGroups:A,deleteMarker:B,manageOpenPopup:F,manageOpenLabel:G,createMarker:function(a){if(!g(a)||!u.validateCoords(a))return void d.error(v+"The marker definition is not valid.");var b=u.getCoords(a);if(!g(b))return void d.error(v+"Unable to get coordinates from markerData.");var c={icon:y(a.icon),title:g(a.title)?a.title:"",draggable:g(a.draggable)?a.draggable:!1,clickable:g(a.clickable)?a.clickable:!0,riseOnHover:g(a.riseOnHover)?a.riseOnHover:!1,zIndexOffset:g(a.zIndexOffset)?a.zIndexOffset:0,iconAngle:g(a.iconAngle)?a.iconAngle:0};for(var e in a)a.hasOwnProperty(e)&&!c.hasOwnProperty(e)&&(c[e]=a[e]);var f=new L.marker(b,c);return q(a.message)||f.unbindPopup(),f},addMarkerToGroup:function(a,b,c,e){return q(b)?i.isLoaded()?(g(t[b])||(t[b]=new L.MarkerClusterGroup(c),e.addLayer(t[b])),void t[b].addLayer(a)):void d.error(v+"The MarkerCluster plugin is not loaded."):void d.error(v+"The marker group you have specified is invalid.")},listenMarkerEvents:function(a,b,c,d,e){a.on("popupopen",function(){o(c,function(){(g(a._popup)||g(a._popup._contentNode))&&(b.focus=!0,F(a,b,e))})}),a.on("popupclose",function(){o(c,function(){b.focus=!1})}),a.on("add",function(){o(c,function(){"label"in b&&G(a,b)})})},updateMarker:H,addMarkerWatcher:function(a,b,c,d,e,f){var i=p.getObjectArrayPath("markers."+b);f=h(f,!0);var j=c.$watch(i,function(f,h){return g(f)?void H(f,h,a,b,c,d,e):(B(a,e,d),void j())},f)},string:w,log:x}}]),angular.module("leaflet-directive").factory("leafletPathsHelpers",["$rootScope","$log","leafletHelpers",function(a,b,c){function d(a){return a.filter(function(a){return k(a)}).map(function(a){return e(a)})}function e(a){return i(a)?new L.LatLng(a[0],a[1]):new L.LatLng(a.lat,a.lng)}function f(a){return a.map(function(a){return d(a)})}function g(a,b){for(var c={},d=0;d<l.length;d++){var e=l[d];h(a[e])?c[e]=a[e]:h(b.path[e])&&(c[e]=b.path[e])}return c}var h=c.isDefined,i=c.isArray,j=c.isNumber,k=c.isValidPoint,l=["stroke","weight","color","opacity","fill","fillColor","fillOpacity","dashArray","lineCap","lineJoin","clickable","pointerEvents","className","smoothFactor","noClip"],m=function(a,b){for(var c={},d=0;d<l.length;d++){var e=l[d];h(b[e])&&(c[e]=b[e])}a.setStyle(b)},n=function(a){if(!i(a))return!1;for(var b=0;b<a.length;b++){var c=a[b];if(!k(c))return!1}return!0},o={polyline:{isValid:function(a){var b=a.latlngs;return n(b)},createPath:function(a){return new L.Polyline([],a)},setPath:function(a,b){a.setLatLngs(d(b.latlngs)),m(a,b)}},multiPolyline:{isValid:function(a){var b=a.latlngs;if(!i(b))return!1;for(var c in b){var d=b[c];if(!n(d))return!1}return!0},createPath:function(a){return new L.multiPolyline([[[0,0],[1,1]]],a)},setPath:function(a,b){a.setLatLngs(f(b.latlngs)),m(a,b)}},polygon:{isValid:function(a){var b=a.latlngs;return n(b)},createPath:function(a){return new L.Polygon([],a)},setPath:function(a,b){a.setLatLngs(d(b.latlngs)),m(a,b)}},multiPolygon:{isValid:function(a){var b=a.latlngs;if(!i(b))return!1;for(var c in b){var d=b[c];if(!n(d))return!1}return!0},createPath:function(a){return new L.MultiPolygon([[[0,0],[1,1],[0,1]]],a)},setPath:function(a,b){a.setLatLngs(f(b.latlngs)),m(a,b)}},rectangle:{isValid:function(a){var b=a.latlngs;if(!i(b)||2!==b.length)return!1;for(var c in b){var d=b[c];if(!k(d))return!1}return!0},createPath:function(a){return new L.Rectangle([[0,0],[1,1]],a)},setPath:function(a,b){a.setBounds(new L.LatLngBounds(d(b.latlngs))),m(a,b)}},circle:{isValid:function(a){var b=a.latlngs;return k(b)&&j(a.radius)},createPath:function(a){return new L.Circle([0,0],1,a)},setPath:function(a,b){a.setLatLng(e(b.latlngs)),h(b.radius)&&a.setRadius(b.radius),m(a,b)}},circleMarker:{isValid:function(a){var b=a.latlngs;return k(b)&&j(a.radius)},createPath:function(a){return new L.CircleMarker([0,0],a)},setPath:function(a,b){a.setLatLng(e(b.latlngs)),h(b.radius)&&a.setRadius(b.radius),m(a,b)}}},p=function(a){var b={};return a.latlngs&&(b.latlngs=a.latlngs),a.radius&&(b.radius=a.radius),b};return{setPathOptions:function(a,b,c){h(b)||(b="polyline"),o[b].setPath(a,c)},createPath:function(a,c,d){h(c.type)||(c.type="polyline");var e=g(c,d),f=p(c);return o[c.type].isValid(f)?o[c.type].createPath(e):void b.error("[AngularJS - Leaflet] Invalid data passed to the "+c.type+" path")}}}]),angular.module("leaflet-directive").service("leafletWatchHelpers",function(){var a=function(a,b,c,d,e){var f=a[b](c,function(a,b){e(a,b),d.doWatch||f()},d.isDeep);return f},b=function(b,c,d,e){return a(b,"$watch",c,d,e)},c=function(b,c,d,e){return a(b,"$watchCollection",c,d,e)};return{maybeWatch:b,maybeWatchCollection:c}}),angular.module("leaflet-directive").factory("nominatimService",["$q","$http","leafletHelpers","leafletMapDefaults",function(a,b,c,d){var e=c.isDefined;return{query:function(c,f){var g=d.getDefaults(f),h=g.nominatim.server,i=a.defer();return b.get(h,{params:{format:"json",limit:1,q:c}}).success(function(a){a.length>0&&e(a[0].boundingbox)?i.resolve(a[0]):i.reject("[Nominatim] Invalid address")}),i.promise}}}]),angular.module("leaflet-directive").directive("bounds",["$log","$timeout","$http","leafletHelpers","nominatimService","leafletBoundsHelpers",function(a,b,c,d,e,f){return{restrict:"A",scope:!1,replace:!1,require:["leaflet"],link:function(c,g,h,i){var j=d.isDefined,k=f.createLeafletBounds,l=i[0].getLeafletScope(),m=i[0],n=d.errorHeader+" [Bounds] ",o=function(a){return 0===a._southWest.lat&&0===a._southWest.lng&&0===a._northEast.lat&&0===a._northEast.lng};m.getMap().then(function(d){l.$on("boundsChanged",function(a){var c=a.currentScope,e=d.getBounds();if(!o(e)&&!c.settingBoundsFromScope){c.settingBoundsFromLeaflet=!0;var f={northEast:{lat:e._northEast.lat,lng:e._northEast.lng},southWest:{lat:e._southWest.lat,lng:e._southWest.lng},options:e.options};angular.equals(c.bounds,f)||(c.bounds=f),b(function(){c.settingBoundsFromLeaflet=!1})}});var f;l.$watch("bounds",function(g){if(!c.settingBoundsFromLeaflet){if(j(g.address)&&g.address!==f)return c.settingBoundsFromScope=!0,e.query(g.address,h.id).then(function(a){var b=a.boundingbox,c=[[b[0],b[2]],[b[1],b[3]]];d.fitBounds(c)},function(b){a.error(n+" "+b+".")}),f=g.address,void b(function(){c.settingBoundsFromScope=!1});var i=k(g);i&&!d.getBounds().equals(i)&&(c.settingBoundsFromScope=!0,d.fitBounds(i,g.options),b(function(){c.settingBoundsFromScope=!1}))}},!0)})}}}]);var centerDirectiveTypes=["center","lfCenter"],centerDirectives={};centerDirectiveTypes.forEach(function(a){centerDirectives[a]=["$log","$q","$location","$timeout","leafletMapDefaults","leafletHelpers","leafletBoundsHelpers","leafletMapEvents",function(b,c,d,e,f,g,h,i){var j,k=g.isDefined,l=g.isNumber,m=g.isSameCenterOnMap,n=g.safeApply,o=g.isValidCenter,p=h.isValidBounds,q=g.isUndefinedOrEmpty,r=g.errorHeader,s=function(a,b){return k(a)&&p(a)&&q(b)};return{restrict:"A",scope:!1,replace:!1,require:"leaflet",controller:function(){j=c.defer(),this.getCenter=function(){return j.promise}},link:function(c,g,p,q){var t=q.getLeafletScope(),u=t[a];q.getMap().then(function(c){var g=f.getDefaults(p.id);if(-1!==p[a].search("-"))return b.error(r+' The "center" variable can\'t use a "-" on its key name: "'+p[a]+'".'),void c.setView([g.center.lat,g.center.lng],g.center.zoom);if(s(t.bounds,u))c.fitBounds(h.createLeafletBounds(t.bounds),t.bounds.options),u=c.getCenter(),n(t,function(b){angular.extend(b[a],{lat:c.getCenter().lat,lng:c.getCenter().lng,zoom:c.getZoom(),autoDiscover:!1})}),n(t,function(a){var b=c.getBounds();a.bounds={northEast:{lat:b._northEast.lat,lng:b._northEast.lng},southWest:{lat:b._southWest.lat,lng:b._southWest.lng}}});else{if(!k(u))return b.error(r+' The "center" property is not defined in the main scope'),void c.setView([g.center.lat,g.center.lng],g.center.zoom);k(u.lat)&&k(u.lng)||k(u.autoDiscover)||angular.copy(g.center,u)}var q,v;if("yes"===p.urlHashCenter){var w=function(){var a,b=d.search();if(k(b.c)){var c=b.c.split(":");3===c.length&&(a={lat:parseFloat(c[0]),lng:parseFloat(c[1]),zoom:parseInt(c[2],10)})}return a};q=w(),t.$on("$locationChangeSuccess",function(b){var d=b.currentScope,e=w();k(e)&&!m(e,c)&&angular.extend(d[a],{lat:e.lat,lng:e.lng,zoom:e.zoom})})}t.$watch(a,function(a){return t.settingCenterFromLeaflet?void 0:(k(q)&&(angular.copy(q,a),q=void 0),o(a)||a.autoDiscover===!0?a.autoDiscover===!0?(l(a.zoom)||c.setView([g.center.lat,g.center.lng],g.center.zoom),void(l(a.zoom)&&a.zoom>g.center.zoom?c.locate({setView:!0,maxZoom:a.zoom}):k(g.maxZoom)?c.locate({setView:!0,maxZoom:g.maxZoom}):c.locate({setView:!0}))):void(v&&m(a,c)||(t.settingCenterFromScope=!0,c.setView([a.lat,a.lng],a.zoom),i.notifyCenterChangedToBounds(t,c),e(function(){t.settingCenterFromScope=!1}))):void b.warn(r+" invalid 'center'"))},!0),c.whenReady(function(){v=!0}),c.on("moveend",function(){j.resolve(),i.notifyCenterUrlHashChanged(t,c,p,d.search()),m(u,c)||t.settingCenterFromScope||(t.settingCenterFromLeaflet=!0,n(t,function(b){t.settingCenterFromScope||angular.extend(b[a],{lat:c.getCenter().lat,lng:c.getCenter().lng,zoom:c.getZoom(),autoDiscover:!1}),i.notifyCenterChangedToBounds(t,c),e(function(){t.settingCenterFromLeaflet=!1})}))}),u.autoDiscover===!0&&c.on("locationerror",function(){b.warn(r+" The Geolocation API is unauthorized on this page."),o(u)?(c.setView([u.lat,u.lng],u.zoom),i.notifyCenterChangedToBounds(t,c)):(c.setView([g.center.lat,g.center.lng],g.center.zoom),i.notifyCenterChangedToBounds(t,c))})})}}}]}),centerDirectiveTypes.forEach(function(a){angular.module("leaflet-directive").directive(a,centerDirectives[a])}),angular.module("leaflet-directive").directive("controls",["$log","leafletHelpers","leafletControlHelpers",function(a,b,c){return{restrict:"A",scope:!1,replace:!1,require:"?^leaflet",link:function(d,e,f,g){if(g){var h=c.createControl,i=c.isValidControlType,j=g.getLeafletScope(),k=b.isDefined,l=b.isArray,m={},n=b.errorHeader+" [Controls] ";g.getMap().then(function(b){j.$watchCollection("controls",function(c){for(var d in m)k(c[d])||(b.hasControl(m[d])&&b.removeControl(m[d]),delete m[d]);for(var e in c){var f,g=k(c[e].type)?c[e].type:e;if(!i(g))return void a.error(n+" Invalid control type: "+g+".");if("custom"!==g)f=h(g,c[e]),b.addControl(f),m[e]=f;else{var j=c[e];if(l(j))for(var o in j){var p=j[o];b.addControl(p),m[e]=k(m[e])?m[e].concat([p]):[p]}else b.addControl(j),m[e]=j}}})})}}}}]),angular.module("leaflet-directive").directive("decorations",["$log","leafletHelpers",function(a,b){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(c,d,e,f){function g(b){return k(b)&&k(b.coordinates)&&(j.isLoaded()||a.error("[AngularJS - Leaflet] The PolylineDecorator Plugin is not loaded.")),L.polylineDecorator(b.coordinates)}function h(a,b){return k(a)&&k(b)&&k(b.coordinates)&&k(b.patterns)?(a.setPaths(b.coordinates),a.setPatterns(b.patterns),a):void 0}var i=f.getLeafletScope(),j=b.PolylineDecoratorPlugin,k=b.isDefined,l={};f.getMap().then(function(a){i.$watch("decorations",function(b){for(var c in l)k(b[c])&&angular.equals(b[c],l)||(a.removeLayer(l[c]),delete l[c]);for(var d in b){var e=b[d],f=g(e);k(f)&&(l[d]=f,a.addLayer(f),h(f,e))}},!0)})}}}]),angular.module("leaflet-directive").directive("eventBroadcast",["$log","$rootScope","leafletHelpers","leafletMapEvents","leafletIterators",function(a,b,c,d,e){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(b,f,g,h){var i=c.isObject,j=c.isDefined,k=h.getLeafletScope(),l=k.eventBroadcast,m=d.getAvailableMapEvents(),n=d.addEvents;h.getMap().then(function(b){var c=[],d="broadcast";j(l.map)?i(l.map)?("emit"!==l.map.logic&&"broadcast"!==l.map.logic?a.warn("[AngularJS - Leaflet] Available event propagation logic are: 'emit' or 'broadcast'."):d=l.map.logic,i(l.map.enable)&&l.map.enable.length>=0?e.each(l.map.enable,function(a){-1===c.indexOf(a)&&-1!==m.indexOf(a)&&c.push(a)}):a.warn("[AngularJS - Leaflet] event-broadcast.map.enable must be an object check your model.")):a.warn("[AngularJS - Leaflet] event-broadcast.map must be an object check your model."):c=m,n(b,c,"eventName",k,d)})}}}]),angular.module("leaflet-directive").directive("geojson",["$log","$rootScope","leafletData","leafletHelpers","leafletWatchHelpers","leafletDirectiveControlsHelpers","leafletIterators","leafletGeoJsonEvents",function(a,b,c,d,e,f,g,h){var i=e.maybeWatch,j=d.watchOptions,k=f.extend,l=d,m=g;return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(a,b,e,f){var g=d.isDefined,n=f.getLeafletScope(),o={},p=!1;f.getMap().then(function(a){var b=n.geojsonWatchOptions||j,f=function(a,b){var c;return c=angular.isFunction(a.onEachFeature)?a.onEachFeature:function(c,f){d.LabelPlugin.isLoaded()&&g(c.properties.description)&&f.bindLabel(c.properties.description),h.bindEvents(e.id,f,null,c,n,b,{resetStyleOnMouseout:a.resetStyleOnMouseout,mapId:e.id})}},q=l.isDefined(e.geojsonNested)&&l.isTruthy(e.geojsonNested),r=function(){if(o){var b=function(b){g(b)&&a.hasLayer(b)&&a.removeLayer(b)};return q?void m.each(o,function(a){b(a)}):void b(o)}},s=function(b,d){var h=angular.copy(b);if(g(h)&&g(h.data)){var i=f(h,d);g(h.options)||(h.options={style:h.style,filter:h.filter,onEachFeature:i,pointToLayer:h.pointToLayer});var j=L.geoJson(h.data,h.options);d&&l.isString(d)?o[d]=j:o=j,j.addTo(a),p||(p=!0,c.setGeoJSON(o,e.id))}},t=function(a){if(r(),q){if(!a||!Object.keys(a).length)return;return void m.each(a,function(a,b){s(a,b)})}s(a)};k(e.id,"geojson",t,r),i(n,"geojson",b,function(a){t(a)})})}}}]),angular.module("leaflet-directive").directive("layercontrol",["$filter","$log","leafletData","leafletHelpers",function(a,b,c,d){return{restrict:"E",scope:{icons:"=?",autoHideOpacity:"=?",showGroups:"=?",title:"@",baseTitle:"@",overlaysTitle:"@"},replace:!0,transclude:!1,require:"^leaflet",controller:["$scope","$element","$sce",function(a,e,f){b.debug("[Angular Directive - Layers] layers",a,e);var g=d.safeApply,h=d.isDefined;angular.extend(a,{baselayer:"",oldGroup:"",layerProperties:{},groupProperties:{},rangeIsSupported:d.rangeIsSupported(),changeBaseLayer:function(b,e){d.safeApply(a,function(d){d.baselayer=b,c.getMap().then(function(e){c.getLayers().then(function(c){if(!e.hasLayer(c.baselayers[b])){for(var f in d.layers.baselayers)d.layers.baselayers[f].icon=d.icons.unradio,e.hasLayer(c.baselayers[f])&&e.removeLayer(c.baselayers[f]);e.addLayer(c.baselayers[b]),d.layers.baselayers[b].icon=a.icons.radio}})})}),e.preventDefault()},moveLayer:function(b,c,d){var e=Object.keys(a.layers.baselayers).length;if(c>=1+e&&c<=a.overlaysArray.length+e){var f;for(var h in a.layers.overlays)if(a.layers.overlays[h].index===c){f=a.layers.overlays[h];break}f&&g(a,function(){f.index=b.index,b.index=c})}d.stopPropagation(),d.preventDefault()},initIndex:function(b,c){var d=Object.keys(a.layers.baselayers).length;b.index=h(b.index)?b.index:c+d+1},initGroup:function(b){a.groupProperties[b]=a.groupProperties[b]?a.groupProperties[b]:{}},toggleOpacity:function(b,c){if(c.visible){if(a.autoHideOpacity&&!a.layerProperties[c.name].opacityControl)for(var d in a.layerProperties)a.layerProperties[d].opacityControl=!1;a.layerProperties[c.name].opacityControl=!a.layerProperties[c.name].opacityControl}b.stopPropagation(),b.preventDefault()},toggleLegend:function(b){a.layerProperties[b.name].showLegend=!a.layerProperties[b.name].showLegend},showLegend:function(b){return b.legend&&a.layerProperties[b.name].showLegend},unsafeHTML:function(a){return f.trustAsHtml(a)},getOpacityIcon:function(b){return b.visible&&a.layerProperties[b.name].opacityControl?a.icons.close:a.icons.open},getGroupIcon:function(b){return b.visible?a.icons.check:a.icons.uncheck},changeOpacity:function(b){var d=a.layerProperties[b.name].opacity;c.getMap().then(function(e){c.getLayers().then(function(c){var f;for(var g in a.layers.overlays)if(a.layers.overlays[g]===b){f=c.overlays[g];break}e.hasLayer(f)&&(f.setOpacity&&f.setOpacity(d/100),f.getLayers&&f.eachLayer&&f.eachLayer(function(a){a.setOpacity&&a.setOpacity(d/100)}))})})},changeGroupVisibility:function(b){if(h(a.groupProperties[b])){var c=a.groupProperties[b].visible;for(var d in a.layers.overlays){var e=a.layers.overlays[d];e.group===b&&(e.visible=c)}}}});var i=e.get(0);L.Browser.touch?L.DomEvent.on(i,"click",L.DomEvent.stopPropagation):(L.DomEvent.disableClickPropagation(i),L.DomEvent.on(i,"mousewheel",L.DomEvent.stopPropagation))}],template:'<div class="angular-leaflet-control-layers" ng-show="overlaysArray.length"><h4 ng-if="title">{{ title }}</h4><div class="lf-baselayers"><h5 class="lf-title" ng-if="baseTitle">{{ baseTitle }}</h5><div class="lf-row" ng-repeat="(key, layer) in baselayersArray"><label class="lf-icon-bl" ng-click="changeBaseLayer(key, $event)"><input class="leaflet-control-layers-selector" type="radio" name="lf-radio" ng-show="false" ng-checked="baselayer === key" ng-value="key" /> <i class="lf-icon lf-icon-radio" ng-class="layer.icon"></i><div class="lf-text">{{layer.name}}</div></label></div></div><div class="lf-overlays"><h5 class="lf-title" ng-if="overlaysTitle">{{ overlaysTitle }}</h5><div class="lf-container"><div class="lf-row" ng-repeat="layer in (o = (overlaysArray | orderBy:\'index\':order))" ng-init="initIndex(layer, $index)"><label class="lf-icon-ol-group" ng-if="showGroups &amp;&amp; layer.group &amp;&amp; layer.group != o[$index-1].group"><input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-change="changeGroupVisibility(layer.group)" ng-model="groupProperties[layer.group].visible"/> <i class="lf-icon lf-icon-check" ng-class="getGroupIcon(groupProperties[layer.group])"></i><div class="lf-text">{{ layer.group }}</div></label><label class="lf-icon-ol"><input class="lf-control-layers-selector" type="checkbox" ng-show="false" ng-model="layer.visible"/> <i class="lf-icon lf-icon-check" ng-class="layer.icon"></i><div class="lf-text">{{layer.name}}</div></label><div class="lf-icons"><i class="lf-icon lf-up" ng-class="icons.up" ng-click="moveLayer(layer, layer.index - orderNumber, $event)"></i> <i class="lf-icon lf-down" ng-class="icons.down" ng-click="moveLayer(layer, layer.index + orderNumber, $event)"></i> <i class="lf-icon lf-toggle-legend" ng-class="icons.toggleLegend" ng-if="layer.legend" ng-click="toggleLegend(layer)"></i> <i class="lf-icon lf-open" ng-class="getOpacityIcon(layer)" ng-click="toggleOpacity($event, layer)"></i></div><div class="lf-legend" ng-if="showLegend(layer)" ng-bind-html="unsafeHTML(layer.legend)"></div><div class="lf-opacity clearfix" ng-if="layer.visible &amp;&amp; layerProperties[layer.name].opacityControl"><label ng-if="rangeIsSupported" class="pull-left" style="width: 50%">0</label><label ng-if="rangeIsSupported" class="pull-left text-right" style="width: 50%">100</label><input ng-if="rangeIsSupported" class="clearfix" type="range" min="0" max="100" class="lf-opacity-control" ng-model="layerProperties[layer.name].opacity" ng-change="changeOpacity(layer)"/><h6 ng-if="!rangeIsSupported">Range is not supported in this browser</h6></div></div></div></div></div>',link:function(a,b,e,f){var g=d.isDefined,h=f.getLeafletScope(),i=h.layers;a.$watch("icons",function(){var b={uncheck:"fa fa-square-o",check:"fa fa-check-square-o",radio:"fa fa-dot-circle-o",unradio:"fa fa-circle-o",up:"fa fa-angle-up",down:"fa fa-angle-down",open:"fa fa-angle-double-down",close:"fa fa-angle-double-up",toggleLegend:"fa fa-pencil-square-o"};g(a.icons)?(angular.extend(b,a.icons),angular.extend(a.icons,b)):a.icons=b}),e.order=!g(e.order)||"normal"!==e.order&&"reverse"!==e.order?"normal":e.order,a.order="normal"===e.order,a.orderNumber="normal"===e.order?-1:1,a.layers=i,f.getMap().then(function(b){h.$watch("layers.baselayers",function(d){var e={};c.getLayers().then(function(c){var f;for(f in d){var g=d[f];g.icon=a.icons[b.hasLayer(c.baselayers[f])?"radio":"unradio"],e[f]=g}a.baselayersArray=e})}),h.$watch("layers.overlays",function(b){var d=[],e={};c.getLayers().then(function(c){var f;for(f in b){var h=b[f];h.icon=a.icons[h.visible?"check":"uncheck"],d.push(h),g(a.layerProperties[h.name])||(a.layerProperties[h.name]={opacity:g(h.layerOptions.opacity)?100*h.layerOptions.opacity:100,opacityControl:!1,showLegend:!0}),g(h.group)&&(g(a.groupProperties[h.group])||(a.groupProperties[h.group]={visible:!1}),e[h.group]=g(e[h.group])?e[h.group]:{count:0,visibles:0},e[h.group].count++,h.visible&&e[h.group].visibles++),g(h.index)&&c.overlays[f].setZIndex&&c.overlays[f].setZIndex(b[f].index)}for(f in e)a.groupProperties[f].visible=e[f].visibles===e[f].count;a.overlaysArray=d})},!0)})}}}]),angular.module("leaflet-directive").directive("layers",["$log","$q","leafletData","leafletHelpers","leafletLayerHelpers","leafletControlHelpers",function(a,b,c,d,e,f){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",controller:["$scope",function(a){a._leafletLayers=b.defer(),this.getLayers=function(){return a._leafletLayers.promise}}],link:function(a,b,g,h){var i=d.isDefined,j={},k=h.getLeafletScope(),l=k.layers,m=e.createLayer,n=e.safeAddLayer,o=e.safeRemoveLayer,p=f.updateLayersControl,q=!1;h.getMap().then(function(b){a._leafletLayers.resolve(j),c.setLayers(j,g.id),j.baselayers={},j.overlays={};var d=g.id,e=!1;for(var f in l.baselayers){var h=m(l.baselayers[f]);i(h)?(j.baselayers[f]=h,l.baselayers[f].top===!0&&(n(b,j.baselayers[f]),e=!0)):delete l.baselayers[f]}!e&&Object.keys(j.baselayers).length>0&&n(b,j.baselayers[Object.keys(l.baselayers)[0]]);for(f in l.overlays){var r=m(l.overlays[f]);i(r)?(j.overlays[f]=r,l.overlays[f].visible===!0&&n(b,j.overlays[f])):delete l.overlays[f]}k.$watch("layers.baselayers",function(a,c){if(angular.equals(a,c))return q=p(b,d,q,a,l.overlays,j),!0;for(var e in j.baselayers)(!i(a[e])||a[e].doRefresh)&&(b.hasLayer(j.baselayers[e])&&b.removeLayer(j.baselayers[e]),delete j.baselayers[e],a[e]&&a[e].doRefresh&&(a[e].doRefresh=!1));for(var f in a)if(i(j.baselayers[f]))a[f].top!==!0||b.hasLayer(j.baselayers[f])?a[f].top===!1&&b.hasLayer(j.baselayers[f])&&b.removeLayer(j.baselayers[f]):n(b,j.baselayers[f]);else{var g=m(a[f]);i(g)&&(j.baselayers[f]=g,a[f].top===!0&&n(b,j.baselayers[f]))}var h=!1;for(var k in j.baselayers)if(b.hasLayer(j.baselayers[k])){h=!0;break}!h&&Object.keys(j.baselayers).length>0&&n(b,j.baselayers[Object.keys(j.baselayers)[0]]),q=p(b,d,q,a,l.overlays,j)},!0),k.$watch("layers.overlays",function(a,c){if(angular.equals(a,c))return q=p(b,d,q,l.baselayers,a,j),!0;for(var e in j.overlays)if(!i(a[e])||a[e].doRefresh){if(b.hasLayer(j.overlays[e])){var f=i(a[e])?a[e].layerOptions:null;o(b,j.overlays[e],f)}delete j.overlays[e],a[e]&&a[e].doRefresh&&(a[e].doRefresh=!1)}for(var g in a){if(i(j.overlays[g]))a[g].visible&&!b.hasLayer(j.overlays[g])?n(b,j.overlays[g]):a[g].visible===!1&&b.hasLayer(j.overlays[g])&&o(b,j.overlays[g],a[g].layerOptions);else{
+var h=m(a[g]);if(!i(h))continue;j.overlays[g]=h,a[g].visible===!0&&n(b,j.overlays[g])}a[g].visible&&b._loaded&&a[g].data&&"heatmap"===a[g].type&&(j.overlays[g].setData(a[g].data),j.overlays[g].update())}q=p(b,d,q,l.baselayers,a,j)},!0)})}}}]),angular.module("leaflet-directive").directive("legend",["$log","$http","leafletHelpers","leafletLegendHelpers",function(a,b,c,d){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(e,f,g,h){var i,j,k,l,m=c.isArray,n=c.isDefined,o=c.isFunction,p=h.getLeafletScope(),q=p.legend;p.$watch("legend",function(a){n(a)&&(i=a.legendClass?a.legendClass:"legend",j=a.position||"bottomright",l=a.type||"arcgis")},!0),h.getMap().then(function(c){p.$watch("legend",function(b){return n(b)?n(b.url)||"arcgis"!==l||m(b.colors)&&m(b.labels)&&b.colors.length===b.labels.length?n(b.url)?void a.info("[AngularJS - Leaflet] loading legend service."):(n(k)&&(k.removeFrom(c),k=null),k=L.control({position:j}),"arcgis"===l&&(k.onAdd=d.getOnAddArrayLegend(b,i)),void k.addTo(c)):void a.warn("[AngularJS - Leaflet] legend.colors and legend.labels must be set."):void(n(k)&&(k.removeFrom(c),k=null))}),p.$watch("legend.url",function(e){n(e)&&b.get(e).success(function(a){n(k)?d.updateLegend(k.getContainer(),a,l,e):(k=L.control({position:j}),k.onAdd=d.getOnAddLegend(a,i,l,e),k.addTo(c)),n(q.loadedData)&&o(q.loadedData)&&q.loadedData()}).error(function(){a.warn("[AngularJS - Leaflet] legend.url not loaded.")})})})}}}]),angular.module("leaflet-directive").directive("markers",["$log","$rootScope","$q","leafletData","leafletHelpers","leafletMapDefaults","leafletMarkersHelpers","leafletMarkerEvents","leafletIterators","leafletWatchHelpers","leafletDirectiveControlsHelpers",function(a,b,c,d,e,f,g,h,i,j,k){var l=e.isDefined,m=e.errorHeader,n=e,o=e.isString,p=g.addMarkerWatcher,q=g.updateMarker,r=g.listenMarkerEvents,s=g.addMarkerToGroup,t=g.createMarker,u=g.deleteMarker,v=i,w=e.watchOptions,x=j.maybeWatch,y=k.extend,z=function(a,b,c){if(Object.keys(a).length){if(c&&o(c)){if(!a[c]||!Object.keys(a[c]).length)return;return a[c][b]}return a[b]}},A=function(a,b,c,d){return d&&o(d)?(l(b[d])||(b[d]={}),b[d][c]=a):b[c]=a,a},B=function(b,c,d,e,f,g){if(!o(b))return a.error(m+" A layername must be a string"),!1;if(!l(c))return a.error(m+" You must add layers to the directive if the markers are going to use this functionality."),!1;if(!l(c.overlays)||!l(c.overlays[b]))return a.error(m+' A marker can only be added to a layer of type "group"'),!1;var h=c.overlays[b];return h instanceof L.LayerGroup||h instanceof L.FeatureGroup?(h.addLayer(e),!f&&g.hasLayer(e)&&d.focus===!0&&e.openPopup(),!0):(a.error(m+' Adding a marker to an overlay needs a overlay of the type "group" or "featureGroup"'),!1)},C=function(b,c,d,e,f,g,i,j,k,o){for(var u in c)if(!o[u])if(-1===u.search("-")){var v=n.copy(c[u]),w=n.getObjectDotPath(k?[k,u]:[u]),x=z(g,u,k);if(l(x)){var y=l(y)?d[u]:void 0;q(v,y,x,w,i,f,e)}else{var C=t(v),D=(v?v.layer:void 0)||k;if(!l(C)){a.error(m+" Received invalid data on the marker "+u+".");continue}if(A(C,g,u,k),l(v.message)&&C.bindPopup(v.message,v.popupOptions),l(v.group)){var E=l(v.groupOption)?v.groupOption:null;s(C,v.group,E,e)}if(n.LabelPlugin.isLoaded()&&l(v.label)&&l(v.label.message)&&C.bindLabel(v.label.message,v.label.options),l(v)&&(l(v.layer)||l(k))){var F=B(D,f,v,C,j.individual.doWatch,e);if(!F)continue}else l(v.group)||(e.addLayer(C),j.individual.doWatch||v.focus!==!0||C.openPopup());j.individual.doWatch&&p(C,w,i,f,e,j.individual.isDeep),r(C,v,i,j.individual.doWatch,e),h.bindEvents(b,C,w,v,i,D)}}else a.error('The marker can\'t use a "-" on his key name: "'+u+'".')},D=function(b,c,d,e,f){var g,h,i=!1,j=!1,k=l(c);for(var o in d)i||(a.debug(m+"[markers] destroy: "),i=!0),k&&(h=b[o],g=c[o],j=angular.equals(h,g)&&e),l(b)&&Object.keys(b).length&&l(b[o])&&Object.keys(b[o]).length&&!j||f&&n.isFunction(f)&&f(h,g,o)},E=function(b,c,d,e,f){D(b,c,d,!1,function(b,c,g){a.debug(m+"[marker] is deleting marker: "+g),u(d[g],e,f),delete d[g]})},F=function(b,c,d){var e={};return D(b,c,d,!0,function(b,c,d){a.debug(m+"[marker] is already rendered, marker: "+d),e[d]=b}),e};return{restrict:"A",scope:!1,replace:!1,require:["leaflet","?layers"],link:function(a,b,e,f){var g=f[0],h=g.getLeafletScope();g.getMap().then(function(a){var b,g={};b=l(f[1])?f[1].getLayers:function(){var a=c.defer();return a.resolve(),a.promise};var i=h.markersWatchOptions||w;l(e.watchMarkers)&&(i.doWatch=i.individual.doWatch=!l(e.watchMarkers)||n.isTruthy(e.watchMarkers));var j=l(e.markersNested)&&n.isTruthy(e.markersNested);b().then(function(b){var c=function(c,d){return j?void v.each(c,function(c,e){var f=l(f)?d[e]:void 0;E(c,f,g[e],a,b)}):void E(c,d,g,a,b)},f=function(d,f){c(d,f);var k=null;return j?void v.each(d,function(c,j){var m=l(m)?f[j]:void 0;k=F(d[j],m,g[j]),C(e.id,c,f,a,b,g,h,i,j,k)}):(k=F(d,f,g),void C(e.id,d,f,a,b,g,h,i,void 0,k))};y(e.id,"markers",f,c),d.setMarkers(g,e.id),x(h,"markers",i,function(a,b){f(a,b)})})})}}}]),angular.module("leaflet-directive").directive("maxbounds",["$log","leafletMapDefaults","leafletBoundsHelpers","leafletHelpers",function(a,b,c,d){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(a,b,e,f){var g=f.getLeafletScope(),h=c.isValidBounds,i=d.isNumber;f.getMap().then(function(a){g.$watch("maxbounds",function(b){if(!h(b))return void a.setMaxBounds();var d=c.createLeafletBounds(b);i(b.pad)&&(d=d.pad(b.pad)),a.setMaxBounds(d),e.center||e.lfCenter||a.fitBounds(d)})})}}}]),angular.module("leaflet-directive").directive("paths",["$log","$q","leafletData","leafletMapDefaults","leafletHelpers","leafletPathsHelpers","leafletPathEvents",function(a,b,c,d,e,f,g){return{restrict:"A",scope:!1,replace:!1,require:["leaflet","?layers"],link:function(h,i,j,k){var l=k[0],m=e.isDefined,n=e.isString,o=l.getLeafletScope(),p=o.paths,q=f.createPath,r=g.bindPathEvents,s=f.setPathOptions;l.getMap().then(function(f){var g,h=d.getDefaults(j.id);g=m(k[1])?k[1].getLayers:function(){var a=b.defer();return a.resolve(),a.promise},m(p)&&g().then(function(b){var d={};c.setPaths(d,j.id);var g=!m(j.watchPaths)||"true"===j.watchPaths,i=function(a,c){var d=o.$watch('paths["'+c+'"]',function(c,e){if(!m(c)){if(m(e.layer))for(var g in b.overlays){var h=b.overlays[g];h.removeLayer(a)}return f.removeLayer(a),void d()}s(a,c.type,c)},!0)};o.$watchCollection("paths",function(c){for(var k in d)m(c[k])||(f.removeLayer(d[k]),delete d[k]);for(var l in c)if(0!==l.search("\\$"))if(-1===l.search("-")){if(!m(d[l])){var p=c[l],t=q(l,c[l],h);if(m(t)&&m(p.message)&&t.bindPopup(p.message,p.popupOptions),e.LabelPlugin.isLoaded()&&m(p.label)&&m(p.label.message)&&t.bindLabel(p.label.message,p.label.options),m(p)&&m(p.layer)){if(!n(p.layer)){a.error("[AngularJS - Leaflet] A layername must be a string");continue}if(!m(b)){a.error("[AngularJS - Leaflet] You must add layers to the directive if the markers are going to use this functionality.");continue}if(!m(b.overlays)||!m(b.overlays[p.layer])){a.error('[AngularJS - Leaflet] A path can only be added to a layer of type "group"');continue}var u=b.overlays[p.layer];if(!(u instanceof L.LayerGroup||u instanceof L.FeatureGroup)){a.error('[AngularJS - Leaflet] Adding a path to an overlay needs a overlay of the type "group" or "featureGroup"');continue}d[l]=t,u.addLayer(t),g?i(t,l):s(t,p.type,p)}else m(t)&&(d[l]=t,f.addLayer(t),g?i(t,l):s(t,p.type,p));r(j.id,t,l,p,o)}}else a.error('[AngularJS - Leaflet] The path name "'+l+'" is not valid. It must not include "-" and a number.')})})})}}}]),angular.module("leaflet-directive").directive("tiles",["$log","leafletData","leafletMapDefaults","leafletHelpers",function(a,b,c,d){return{restrict:"A",scope:!1,replace:!1,require:"leaflet",link:function(e,f,g,h){var i=d.isDefined,j=h.getLeafletScope(),k=j.tiles;return i(k)&&i(k.url)?void h.getMap().then(function(a){var d,e=c.getDefaults(g.id);j.$watch("tiles",function(c,f){var h=e.tileLayerOptions,j=e.tileLayer;return!i(c.url)&&i(d)?void a.removeLayer(d):i(d)?!i(c.url)||!i(c.options)||c.type===f.type&&angular.equals(c.options,h)?void(i(c.url)&&d.setUrl(c.url)):(a.removeLayer(d),h=e.tileLayerOptions,angular.copy(c.options,h),j=c.url,d="wms"===c.type?L.tileLayer.wms(j,h):L.tileLayer(j,h),d.addTo(a),void b.setTiles(d,g.id)):(i(c.options)&&angular.copy(c.options,h),i(c.url)&&(j=c.url),d="wms"===c.type?L.tileLayer.wms(j,h):L.tileLayer(j,h),d.addTo(a),void b.setTiles(d,g.id))},!0)}):void a.warn("[AngularJS - Leaflet] The 'tiles' definition doesn't have the 'url' property.")}}}]),["markers","geojson"].forEach(function(a){angular.module("leaflet-directive").directive(a+"WatchOptions",["$log","$rootScope","$q","leafletData","leafletHelpers",function(b,c,d,e,f){var g=f.isDefined,h=f.errorHeader,i=f.isObject,j=f.watchOptions;return{restrict:"A",scope:!1,replace:!1,require:["leaflet"],link:function(c,d,e,f){var k=f[0],l=k.getLeafletScope();k.getMap().then(function(){g(c[a+"WatchOptions"])&&(i(c[a+"WatchOptions"])?angular.extend(j,c[a+"WatchOptions"]):b.error(h+"["+a+"WatchOptions] is not an object"),l[a+"WatchOptions"]=j)})}}}])}),angular.module("leaflet-directive").factory("LeafletEventsHelpersFactory",["$rootScope","$q","$log","leafletHelpers",function(a,b,c,d){var e=d.safeApply,f=d.isDefined,g=d.isObject,h=d.isArray,i=d.errorHeader,j=function(a,b){this.rootBroadcastName=a,c.debug("LeafletEventsHelpersFactory: lObjectType: "+b+"rootBroadcastName: "+a),this.lObjectType=b};return j.prototype.getAvailableEvents=function(){return[]},j.prototype.genDispatchEvent=function(a,b,d,e,f,g,h,i,j){var k=this;return a=a||"",a&&(a="."+a),function(l){var m=k.rootBroadcastName+a+"."+b;c.debug(m),k.fire(e,m,d,l,l.target||f,h,g,i,j)}},j.prototype.fire=function(b,c,d,g,h,i,j,k){e(b,function(){var e={leafletEvent:g,leafletObject:h,modelName:j,model:i};f(k)&&angular.extend(e,{layerName:k}),"emit"===d?b.$emit(c,e):a.$broadcast(c,e)})},j.prototype.bindEvents=function(a,b,d,e,j,k,l){var m=[],n="emit",o=this;if(f(j.eventBroadcast))if(g(j.eventBroadcast))if(f(j.eventBroadcast[o.lObjectType]))if(g(j.eventBroadcast[o.lObjectType])){f(j.eventBroadcast[this.lObjectType].logic)&&"emit"!==j.eventBroadcast[o.lObjectType].logic&&"broadcast"!==j.eventBroadcast[o.lObjectType].logic&&c.warn(i+"Available event propagation logic are: 'emit' or 'broadcast'.");var p=!1,q=!1;f(j.eventBroadcast[o.lObjectType].enable)&&h(j.eventBroadcast[o.lObjectType].enable)&&(p=!0),f(j.eventBroadcast[o.lObjectType].disable)&&h(j.eventBroadcast[o.lObjectType].disable)&&(q=!0),p&&q?c.warn(i+"can not enable and disable events at the same time"):p||q?p?j.eventBroadcast[this.lObjectType].enable.forEach(function(a){-1!==m.indexOf(a)?c.warn(i+"This event "+a+" is already enabled"):-1===o.getAvailableEvents().indexOf(a)?c.warn(i+"This event "+a+" does not exist"):m.push(a)}):(m=this.getAvailableEvents(),j.eventBroadcast[o.lObjectType].disable.forEach(function(a){var b=m.indexOf(a);-1===b?c.warn(i+"This event "+a+" does not exist or has been already disabled"):m.splice(b,1)})):c.warn(i+"must enable or disable events")}else c.warn(i+"event-broadcast."+[o.lObjectType]+" must be an object check your model.");else m=this.getAvailableEvents();else c.error(i+"event-broadcast must be an object check your model.");else m=this.getAvailableEvents();return m.forEach(function(c){b.on(c,o.genDispatchEvent(a,c,n,j,b,d,e,k,l))}),n},j}]).service("leafletEventsHelpers",["LeafletEventsHelpersFactory",function(a){return new a}]),angular.module("leaflet-directive").factory("leafletGeoJsonEvents",["$rootScope","$q","$log","leafletHelpers","LeafletEventsHelpersFactory","leafletData",function(a,b,c,d,e,f){var g=d.safeApply,h=e,i=function(){h.call(this,"leafletDirectiveGeoJson","geojson")};return i.prototype=new h,i.prototype.genDispatchEvent=function(b,c,d,e,i,j,k,l,m){var n=h.prototype.genDispatchEvent.call(this,b,c,d,e,i,j,k,l),o=this;return function(b){"mouseout"===c&&(m.resetStyleOnMouseout&&f.getGeoJSON(m.mapId).then(function(a){var c=l?a[l]:a;c.resetStyle(b.target)}),g(e,function(){a.$broadcast(o.rootBroadcastName+".mouseout",b)})),n(b)}},i.prototype.getAvailableEvents=function(){return["click","dblclick","mouseover","mouseout"]},new i}]),angular.module("leaflet-directive").factory("leafletLabelEvents",["$rootScope","$q","$log","leafletHelpers","LeafletEventsHelpersFactory",function(a,b,c,d,e){var f=d,g=e,h=function(){g.call(this,"leafletDirectiveLabel","markers")};return h.prototype=new g,h.prototype.genDispatchEvent=function(a,b,c,d,e,f,h,i){var j=f.replace("markers.","");return g.prototype.genDispatchEvent.call(this,a,b,c,d,e,j,h,i)},h.prototype.getAvailableEvents=function(){return["click","dblclick","mousedown","mouseover","mouseout","contextmenu"]},h.prototype.genEvents=function(a,b,c,d,e,g,h,i){var j=this,k=this.getAvailableEvents(),l=f.getObjectArrayPath("markers."+g);k.forEach(function(b){e.label.on(b,j.genDispatchEvent(a,b,c,d,e.label,l,h,i))})},h.prototype.bindEvents=function(){},new h}]),angular.module("leaflet-directive").factory("leafletMapEvents",["$rootScope","$q","$log","leafletHelpers","leafletEventsHelpers","leafletIterators",function(a,b,c,d,e,f){var g=d.isDefined,h=e.fire,i=function(){return["click","dblclick","mousedown","mouseup","mouseover","mouseout","mousemove","contextmenu","focus","blur","preclick","load","unload","viewreset","movestart","move","moveend","dragstart","drag","dragend","zoomstart","zoomanim","zoomend","zoomlevelschange","resize","autopanstart","layeradd","layerremove","baselayerchange","overlayadd","overlayremove","locationfound","locationerror","popupopen","popupclose","draw:created","draw:edited","draw:deleted","draw:drawstart","draw:drawstop","draw:editstart","draw:editstop","draw:deletestart","draw:deletestop"]},j=function(a,b,d,e){return e&&(e+="."),function(f){var g="leafletDirectiveMap."+e+b;c.debug(g),h(a,g,d,f,f.target,a)}},k=function(a){a.$broadcast("boundsChanged")},l=function(a,b,c,d){if(g(c.urlHashCenter)){var e=b.getCenter(),f=e.lat.toFixed(4)+":"+e.lng.toFixed(4)+":"+b.getZoom();g(d.c)&&d.c===f||a.$emit("centerUrlHash",f)}},m=function(a,b,c,d,e){f.each(b,function(b){var f={};f[c]=b,a.on(b,j(d,b,e,a._container.id||""),f)})};return{getAvailableMapEvents:i,genDispatchMapEvent:j,notifyCenterChangedToBounds:k,notifyCenterUrlHashChanged:l,addEvents:m}}]),angular.module("leaflet-directive").factory("leafletMarkerEvents",["$rootScope","$q","$log","leafletHelpers","LeafletEventsHelpersFactory","leafletLabelEvents",function(a,b,c,d,e,f){var g=d.safeApply,h=d.isDefined,i=d,j=f,k=e,l=function(){k.call(this,"leafletDirectiveMarker","markers")};return l.prototype=new k,l.prototype.genDispatchEvent=function(b,c,d,e,f,h,i,j){var l=k.prototype.genDispatchEvent.call(this,b,c,d,e,f,h,i,j);return function(b){"click"===c?g(e,function(){a.$broadcast("leafletDirectiveMarkersClick",h)}):"dragend"===c&&(g(e,function(){i.lat=f.getLatLng().lat,i.lng=f.getLatLng().lng}),i.message&&i.focus===!0&&f.openPopup()),l(b)}},l.prototype.getAvailableEvents=function(){return["click","dblclick","mousedown","mouseover","mouseout","contextmenu","dragstart","drag","dragend","move","remove","popupopen","popupclose","touchend","touchstart","touchmove","touchcancel","touchleave"]},l.prototype.bindEvents=function(a,b,c,d,e,f){var g=k.prototype.bindEvents.call(this,a,b,c,d,e,f);i.LabelPlugin.isLoaded()&&h(b.label)&&j.genEvents(a,c,g,e,b,d,f)},new l}]),angular.module("leaflet-directive").factory("leafletPathEvents",["$rootScope","$q","$log","leafletHelpers","leafletLabelEvents","leafletEventsHelpers",function(a,b,c,d,e,f){var g=d.isDefined,h=d.isObject,i=d,j=d.errorHeader,k=e,l=f.fire,m=function(a,b,d,e,f,g,h,i){return a=a||"",a&&(a="."+a),function(j){var k="leafletDirectivePath"+a+"."+b;c.debug(k),l(e,k,d,j,j.target||f,h,g,i)}},n=function(a,b,d,e,f){var l,n,p=[],q="broadcast";if(g(f.eventBroadcast))if(h(f.eventBroadcast))if(g(f.eventBroadcast.path))if(h(f.eventBroadcast.paths))c.warn(j+"event-broadcast.path must be an object check your model.");else{void 0!==f.eventBroadcast.path.logic&&null!==f.eventBroadcast.path.logic&&("emit"!==f.eventBroadcast.path.logic&&"broadcast"!==f.eventBroadcast.path.logic?c.warn(j+"Available event propagation logic are: 'emit' or 'broadcast'."):"emit"===f.eventBroadcast.path.logic&&(q="emit"));var r=!1,s=!1;if(void 0!==f.eventBroadcast.path.enable&&null!==f.eventBroadcast.path.enable&&"object"==typeof f.eventBroadcast.path.enable&&(r=!0),void 0!==f.eventBroadcast.path.disable&&null!==f.eventBroadcast.path.disable&&"object"==typeof f.eventBroadcast.path.disable&&(s=!0),r&&s)c.warn(j+"can not enable and disable events at the same time");else if(r||s)if(r)for(l=0;l<f.eventBroadcast.path.enable.length;l++)n=f.eventBroadcast.path.enable[l],-1!==p.indexOf(n)?c.warn(j+"This event "+n+" is already enabled"):-1===o().indexOf(n)?c.warn(j+"This event "+n+" does not exist"):p.push(n);else for(p=o(),l=0;l<f.eventBroadcast.path.disable.length;l++){n=f.eventBroadcast.path.disable[l];var t=p.indexOf(n);-1===t?c.warn(j+"This event "+n+" does not exist or has been already disabled"):p.splice(t,1)}else c.warn(j+"must enable or disable events")}else p=o();else c.error(j+"event-broadcast must be an object check your model.");else p=o();for(l=0;l<p.length;l++)n=p[l],b.on(n,m(a,n,q,f,p,d));i.LabelPlugin.isLoaded()&&g(b.label)&&k.genEvents(a,d,q,f,b,e)},o=function(){return["click","dblclick","mousedown","mouseover","mouseout","contextmenu","add","remove","popupopen","popupclose"]};return{getAvailablePathEvents:o,bindPathEvents:n}}])}(angular);
+}(angular));
+/**
+ * @license Angulartics
+ * (c) 2013 Luis Farzati http://luisfarzati.github.io/angulartics
+ * Piwik 2.1.x update contributed by http://github.com/highskillz
+ * License: MIT
+ */
+/* global _paq */
+!function(a){"use strict";/**
+     * @ngdoc overview
+     * @name angulartics.piwik
+     * Enables analytics support for Piwik (http://piwik.org/docs/tracking-api/)
+     */
+a.module("angulartics.piwik",["angulartics"]).config(["$analyticsProvider","$windowProvider",function(b,c){var d=c.$get();b.settings.pageTracking.trackRelativePath=!0,
+// Add piwik specific trackers to angulartics API
+// scope: visit or page. Defaults to 'page'
+b.api.setCustomVariable=function(a,b,c,e){d._paq&&(e=e||"page",d._paq.push(["setCustomVariable",a,b,c,e]))},
+// trackSiteSearch(keyword, category, [searchCount])
+b.api.trackSiteSearch=function(b,c,e){
+// keyword is required
+if(d._paq&&b){var f=["trackSiteSearch",b,c||!1];
+// searchCount is optional
+a.isDefined(e)&&f.push(e),d._paq.push(f)}},
+// logs a conversion for goal 1. revenue is optional
+// trackGoal(goalID, [revenue]);
+b.api.trackGoal=function(a,b){d._paq&&_paq.push(["trackGoal",a,b||0])},
+// Set default angulartics page and event tracking
+// $analytics.setUsername(username)
+b.registerSetUsername(function(a){d._paq&&d._paq.push(["setUserId",a])}),
+// $analytics.setAlias(alias)
+// $analyticsProvider.registerSetAlias(function(param) {
+//     // TODO: No piwik corresponding function found. Use setCustomVariable instead
+// });
+// $analytics.setUserProperties(properties)
+// $analyticsProvider.registerSetUserProperties(function(param) {
+//     // TODO: No piwik corresponding function found. Use setCustomVariable instead
+// });
+// locationObj is the angular $location object
+b.registerPageTrack(function(a,b){d._paq&&(d._paq.push(["setDocumentTitle",d.document.title]),d._paq.push(["setCustomUrl",a]),d._paq.push(["trackPageView"]))}),
+// trackEvent(category, event, [name], [value])
+b.registerEventTrack(function(a,b){if(d._paq){
+// PAQ requires that eventValue be an integer, see: http://piwik.org/docs/event-tracking/
+if(b.value){var c=parseInt(b.value,10);b.value=isNaN(c)?0:c}d._paq.push(["trackEvent",b.category,a,b.label,b.value])}})}])}(angular);
+/**
+ * @license Angulartics
+ * (c) 2013 Luis Farzati http://luisfarzati.github.io/angulartics
+ * License: MIT
+ */
+!function(a,b){"use strict";function c(){
+// General buffering handler
+function b(a){return function(){k.waitForVendorCount&&(j[a]||(j[a]=[]),j[a].push(arguments))}}
+// As handlers are installed by plugins, they get pushed into a list and invoked in order.
+function c(b,c,d){return l[b]||(l[b]=[]),l[b].push(c),m[c]=d,function(){var c=Array.prototype.slice.apply(arguments);return this.$inject(["$q",a.bind(this,function(d){return d.all(l[b].map(function(b){var e=m[b]||{};if(e.async){var f=d.defer(),g=a.copy(c);return g.unshift(f.resolve),b.apply(this,g),f.promise}return d.when(b.apply(this,c))},this))})])}}
+// Will run setTimeout if delay is > 0
+// Runs immediately if no delay to make sure cache/buffer is flushed before anything else.
+// Plugins should take care to register handlers by order of precedence.
+function d(a,b){b?setTimeout(a,b):a()}
+// General function to register plugin handlers. Flushes buffers immediately upon registration according to the specified delay.
+function e(b,e,f){n[b]=c(b,e,f);var g=h[b],i=g?g.bufferFlushDelay:null,k=null!==i?i:h.bufferFlushDelay;a.forEach(j[b],function(a,b){d(function(){e.apply(this,a)},b*k)})}function f(a){return a.replace(/^./,function(a){return a.toUpperCase()})}
+// Adds to the provider a 'register#{handlerName}' function that manages multiple plugins and buffer flushing.
+function g(a){var d="register"+f(a);o[d]=function(b,c){e(a,b,c)},n[a]=c(a,b(a))}var h={pageTracking:{autoTrackFirstPage:!0,autoTrackVirtualPages:!0,trackRelativePath:!1,autoBasePath:!1,basePath:"",excludedRoutes:[]},eventTracking:{},bufferFlushDelay:1e3,// Support only one configuration for buffer flush delay to simplify buffering
+trackExceptions:!1,developerMode:!1},i=["pageTrack","eventTrack","exceptionTrack","setAlias","setUsername","setUserProperties","setUserPropertiesOnce","setSuperProperties","setSuperPropertiesOnce","incrementProperty","userTimings"],j={},l={},m={},n={settings:h},o={$get:["$injector",function(a){return p(a)}],api:n,settings:h,virtualPageviews:function(a){this.settings.pageTracking.autoTrackVirtualPages=a},excludeRoutes:function(a){this.settings.pageTracking.excludedRoutes=a},firstPageview:function(a){this.settings.pageTracking.autoTrackFirstPage=a},withBase:function(b){this.settings.pageTracking.basePath=b?a.element(document).find("base").attr("href"):""},withAutoBase:function(a){this.settings.pageTracking.autoBasePath=a},trackExceptions:function(a){this.settings.trackExceptions=a},developerMode:function(a){this.settings.developerMode=a}},p=function(b){return a.extend(n,{$inject:b.invoke})};
+// Set up register functions for each known handler
+a.forEach(i,g);for(var q in o)this[q]=o[q]}function d(b,c,d,e){function f(a){for(var b=0;b<d.settings.pageTracking.excludedRoutes.length;b++){var c=d.settings.pageTracking.excludedRoutes[b];if(c instanceof RegExp&&c.test(a)||a.indexOf(c)>-1)return!0}return!1}function g(a,b){f(a)||d.pageTrack(a,b)}d.settings.pageTracking.autoTrackFirstPage&&e.invoke(["$location",function(a){/* Only track the 'first page' if there are no routes or states on the page */
+var b=!0;if(e.has("$route")){var f=e.get("$route");if(f)for(var h in f.routes){b=!1;break}else null===f&&(b=!1)}else if(e.has("$state")){var i=e.get("$state");for(var j in i.get()){b=!1;break}}if(b)if(d.settings.pageTracking.autoBasePath&&(d.settings.pageTracking.basePath=c.location.pathname),d.settings.pageTracking.trackRelativePath){var k=d.settings.pageTracking.basePath+a.url();g(k,a)}else g(a.absUrl(),a)}]),d.settings.pageTracking.autoTrackVirtualPages&&e.invoke(["$location",function(a){d.settings.pageTracking.autoBasePath&&(/* Add the full route to the base. */
+d.settings.pageTracking.basePath=c.location.pathname+"#");var f=!0;if(e.has("$route")){var h=e.get("$route");if(h)for(var i in h.routes){f=!1;break}else null===h&&(f=!1);b.$on("$routeChangeSuccess",function(b,c){if(!c||!(c.$$route||c).redirectTo){var e=d.settings.pageTracking.basePath+a.url();g(e,a)}})}e.has("$state")&&!e.has("$transitions")&&(f=!1,b.$on("$stateChangeSuccess",function(b,c){var e=d.settings.pageTracking.basePath+a.url();g(e,a)})),e.has("$state")&&e.has("$transitions")&&(f=!1,e.invoke(["$transitions",function(b){b.onSuccess({},function(b){var c=b.options();if(c.notify){var e=d.settings.pageTracking.basePath+a.url();g(e,a)}})}])),f&&b.$on("$locationChangeSuccess",function(b,c){if(!c||!(c.$$route||c).redirectTo)if(d.settings.pageTracking.trackRelativePath){var e=d.settings.pageTracking.basePath+a.url();g(e,a)}else g(a.absUrl(),a)})}]),d.settings.developerMode&&a.forEach(d,function(a,b){"function"==typeof a&&(d[b]=function(){})})}function e(b){return{restrict:"A",link:function(c,d,e){var f=e.analyticsOn||"click",g={};a.forEach(e.$attr,function(a,b){i(b)&&(g[j(b)]=e[b],e.$observe(b,function(a){g[j(b)]=a}))}),a.element(d[0]).bind(f,function(f){var i=e.analyticsEvent||h(d[0]);g.eventType=f.type,(!e.analyticsIf||c.$eval(e.analyticsIf))&&(
+// Allow components to pass through an expression that gets merged on to the event properties
+// eg. analytics-properites='myComponentScope.someConfigExpression.$analyticsProperties'
+e.analyticsProperties&&a.extend(g,c.$eval(e.analyticsProperties)),b.eventTrack(i,g))})}}}function f(a){a.decorator("$exceptionHandler",["$delegate","$injector",function(a,b){}])}function g(a){return["a:","button:","button:button","button:submit","input:button","input:submit"].indexOf(a.tagName.toLowerCase()+":"+(a.type||""))>=0}function h(a){return g(a)?a.innerText||a.value:a.id||a.name||a.tagName}function i(a){return"analytics"===a.substr(0,9)&&-1===["On","Event","If","Properties","EventType"].indexOf(a.substr(9))}function j(a){var b=a.slice(9);// slice off the 'analytics' prefix
+// slice off the 'analytics' prefix
+return"undefined"!=typeof b&&null!==b&&b.length>0?b.substring(0,1).toLowerCase()+b.substring(1):b}var k=window.angulartics||(window.angulartics={});k.waitForVendorCount=0,k.waitForVendorApi=function(a,b,c,d,e){e||k.waitForVendorCount++,d||(d=c,c=void 0),!Object.prototype.hasOwnProperty.call(window,a)||void 0!==c&&void 0===window[a][c]?setTimeout(function(){k.waitForVendorApi(a,b,c,d,!0)},b):(k.waitForVendorCount--,d(window[a]))},/**
+ * @ngdoc overview
+ * @name angulartics
+ */
+a.module("angulartics",[]).provider("$analytics",c).run(["$rootScope","$window","$analytics","$injector",d]).directive("analyticsOn",["$analytics",e]).config(["$provide",f])}(angular);
+/*
+ * This is based on the L.TileLayer.Zoomify display Zoomify tiles with Leaflet by Bjørn Sandvik
+ */
+var w;
+L.TileLayer.LMUMaps = L.TileLayer.extend({
+    options: {
+        continuousWorld: true,
+
+        tolerance: 0.8
+    },
+
+    initialize: function (url, options) {
+        options = L.setOptions(this, options);
+        this._url = url;
+        w = options.w;
+        var imageSize = L.point(options.width, options.height),
+            tileSize = options.tileSize;
+
+        //        this._imageSize = [imageSize];
+        //        this._gridSize = [this._getGridSize(imageSize)];
+        //
+        //
+        //        while (parseInt(imageSize.x) > tileSize || parseInt(imageSize.y) > tileSize) {
+        //            imageSize = imageSize.divideBy(2).floor();
+        //            this._imageSize.push(imageSize);
+        //            this._gridSize.push(this._getGridSize(imageSize));
+        //            console.log(imageSize);
+        //        }
+
+        this._gridSize = [L.point(Math.ceil(options.width * 0.125 / 256), Math.ceil(options.height * 0.125 / 256)),
+                        L.point(Math.ceil(options.width * 0.25 / 256), Math.ceil(options.height * 0.25 / 256)),
+                        L.point(Math.ceil(options.width * 0.50 / 256), Math.ceil(options.height * 0.50 / 256)),
+                        L.point(Math.ceil(options.width / 256), Math.ceil(options.height / 256)),
+                       ];
+        this._imageSize = [L.point(parseInt(options.width * 0.125), parseInt(options.height * 0.125)),
+                        L.point(parseInt(options.width * 0.25), parseInt(options.height * 0.25)),
+                        L.point(parseInt(options.width * 0.50), parseInt(options.height * 0.50)),
+                        L.point(parseInt(options.width), parseInt(options.height)),
+                       ];
+
+        //        console.log('imageSize');
+        //        console.log(imageSize);
+        //        console.log(this._imageSize);
+        //
+        //        console.log('Gridsize');
+        //        console.log(this._gridSize);
+
+        //this._imageSize.reverse();
+        //this._gridSize.reverse();
+
+        this.options.maxZoom = this._gridSize.length - 1;
+    },
+
+    onAdd: function (map) {
+        L.TileLayer.prototype.onAdd.call(this, map);
+
+        var mapSize = map.getSize(),
+            zoom = this._getBestFitZoom(mapSize),
+            imageSize = this._imageSize[zoom],
+            center = map.options.crs.pointToLatLng(L.point(imageSize.x / 2, imageSize.y / 2), zoom);
+
+        map.setView(center, zoom, true);
+    },
+
+    _getGridSize: function (imageSize) {
+        var tileSize = this.options.tileSize;
+        return L.point(Math.ceil(imageSize.x / tileSize), Math.ceil(imageSize.y / tileSize));
+    },
+
+    _getBestFitZoom: function (mapSize) {
+        var tolerance = this.options.tolerance,
+            zoom = this._imageSize.length - 1,
+            imageSize, zoom;
+
+        while (zoom) {
+            imageSize = this._imageSize[zoom];
+            if (imageSize.x * tolerance < mapSize.x && imageSize.y * tolerance < mapSize.y) {
+                return zoom;
+            }
+            zoom--;
+        }
+
+        return zoom;
+    },
+
+    _tileShouldBeLoaded: function (tilePoint) {
+        var gridSize = this._gridSize[this._map.getZoom()];
+        return (tilePoint.x >= 0 && tilePoint.x < gridSize.x && tilePoint.y >= 0 && tilePoint.y < gridSize.y);
+    },
+
+    _addTile: function (tilePoint, container) {
+        var tilePos = this._getTilePos(tilePoint),
+            tile = this._getTile(),
+            zoom = this._map.getZoom(),
+            imageSize = this._imageSize[zoom],
+            gridSize = this._gridSize[zoom],
+            tileSize = this.options.tileSize,
+            myX = parseInt((imageSize.x / 256)),
+            myY = parseInt((imageSize.y / 256));
+
+        if (tilePoint.x >= myX) {
+            tile.style.width = imageSize.x - (tileSize * (gridSize.x - 1)) + 'px';
+        }
+
+        if (tilePoint.y >= myY) {
+            tile.style.height = imageSize.y - (tileSize * (gridSize.y - 1)) + 'px';
+        }
+
+        L.DomUtil.setPosition(tile, tilePos, L.Browser.chrome || L.Browser.android23);
+
+        this._tiles[tilePoint.x + ':' + tilePoint.y] = tile;
+        this._loadTile(tile, tilePoint);
+
+        if (tile.parentNode !== this._tileContainer) {
+            container.appendChild(tile);
+        }
+    },
+
+    getTileUrl: function (tilePoint) {
+        var i = 0;
+        if (this._map.getZoom() == 0 + i) {
+            return this._url + "125" + '/' + tilePoint.x + '/' + tilePoint.y + '.png';
+        } else if (this._map.getZoom() == 1 + i) {
+            return this._url + "250" + '/' + tilePoint.x + '/' + tilePoint.y + '.png';
+        } else if (this._map.getZoom() == 2 + i) {
+            return this._url + "500" + '/' + tilePoint.x + '/' + tilePoint.y + '.png';
+        } else if (this._map.getZoom() == 3 + i) {
+            return this._url + "1000" + '/' + tilePoint.x + '/' + tilePoint.y + '.png';
+        }
+        return 'error';
+    },
+
+    _getTileGroup: function (tilePoint) {
+        var zoom = this._map.getZoom(),
+            num = 0,
+            gridSize;
+
+        for (z = 0; z < zoom; z++) {
+            gridSize = this._gridSize[z];
+            num += gridSize.x * gridSize.y;
+        }
+
+        num += tilePoint.y * this._gridSize[zoom].x + tilePoint.x;
+        return Math.floor(num / 256);;
+    },
+
+    setUrl: function (url, noRedraw) {
+        this._url = url;
+
+        if (!noRedraw) {
+            this.redraw();
+        }
+
+        return this;
+    },
+
+    redraw: function () {
+        if (this._map) {
+            this._reset({
+                hard: true
+            });
+            this._update();
+        }
+        return this;
+    },
+
+});
+
+L.tileLayer.lmuMaps = function (url, options) {
+    return new L.TileLayer.LMUMaps(url, options);
+};
+/*global angular, buildingsLookup */
+/*jslint browser: true */
+
+// Declare app level module which depends on views, and components
+angular.module('LMURaumfinder', [
+    'ngRoute',
+    'leaflet-directive',
+    'filter',
+    'angulartics',
+    'angulartics.piwik'])
+
+    .config(['$logProvider', '$routeProvider', function ($logProvider, $routeProvider) {
+        'use strict';
+        
+        $logProvider.debugEnabled(false);
+        $routeProvider
+            .when('/kontakt', {
+                controller: 'impressumCtrl',
+                templateUrl: 'partials/kontakt.html'
+            })
+            .when('/building/:id', {
+                controller: 'buildingCtrl',
+                controllerAs: 'ctrl',
+                templateUrl: 'partials/buildingDetail.html',
+                reloadOnSearch: false
+            })
+            .when('/building/:id/map', {
+                controller: 'mapCtrl',
+                controllerAs: 'ctrl',
+                reloadOnSearch: false,
+                templateUrl: 'partials/buildingMap.html'
+            })
+            .when('/building/:id/map/search', {
+                controller: 'roomSearchCtrl',
+                controllerAs: 'ctrl',
+                reloadOnSearch: false,
+                templateUrl: 'partials/roomSearch.html'
+            })
+            // Weiterleitung für LSF
+            .when('/part/:id/:map*', {
+                redirectTo: function (params, path, search) {
+                    var url = window.location.href.split('#')[1].toString();
+                    url = url.replace("part", "building");
+                    // buildingsLookup is available in data.json
+                    url = url.replace(params.id, buildingsLookup[params.id]);
+
+                    if (url) {
+                        return url;
+                    }
+                    return "/404";
+                }
+            })
+            .when('/', {
+                controller: 'MainCtrl',
+                controllerAs: 'main',
+                templateUrl: 'partials/cityMap.html'
+            })
+            .when('/404', {
+                controller: 'MainCtrl',
+                controllerAs: 'main',
+                templateUrl: 'partials/404.html'
+            })
+            .otherwise({
+                redirectTo: '/'
+            });
+
+    }])
+    .constant("MAP_DEFAULTS", {
+        "MAPTILES_URL": "https://api.tiles.mapbox.com/v4/maxmediapictures.o2e7pbh8/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWF4bWVkaWFwaWN0dXJlcyIsImEiOiJ2NXRBMGlFIn0.K9dbubXdaU77e0PdLGN7iw",
+        "MAP_CREDITS": "© <a href='https://www.mapbox.com/map-feedback/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
+
+
+        // Alternative Karten Quelle. 
+        // Quelle und Infos: https://carto.com/location-data-services/basemaps/ (Kostenlos bis 75.000 Abrufe/Monat)
+
+        // 
+        // "MAPTILES_URL": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
+        // "MAP_CREDITS": "<a href='https://www.mapzen.com/rights'>Attribution.</a>. Data &copy;<a href='https://openstreetmap.org/copyright'>OSM</a> contributors."
+    })
+    .directive('topNavi', function () {
+        'use strict';
+        return {
+            restrict: 'AE',
+            replace: 'true',
+            controller: 'AdvertisementController',
+            templateUrl: 'partials/mobileTopMenu.html'
+        };
+    });
+/*global angular */
+angular.module('filter', [])
+
+    .filter('capitalize', function () {
+        'use strict';
+        return function (input, all) {
+            var reg = /([^\W_]+[^\s-]*) */g;
+            if (input !== undefined) {
+                input = input.replace(/ - /g, "-");
+            }
+
+            return (!!input) ? input.replace(reg, function (txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            }) : '';
+        };
+    })
+
+    .filter('filterBuildings', function () {
+        'use strict';
+        return function (input, str) {
+            var tmp = [];
+
+            if (str === undefined || str === "") {
+                return input;
+            }
+
+            str = str.toLowerCase();
+
+            angular.forEach(input, function (val, key) {
+                var street = val.displayName.toLowerCase();
+                var city = val.city.toLowerCase();
+
+                if (street.indexOf(str) !== -1 || city.indexOf(str) !== -1) {
+                    tmp.push(val);
+                }
+            });
+
+            return tmp;
+        };
+    })
+
+    .filter('findInObjects', function () {
+        'use strict';
+        return function (input, str) {
+            var tmp = {};
+
+            angular.forEach(input, function (val, key) {
+
+                //console.log(val + " " + key);
+                if (val.rName.indexOf(str) !== -1) {
+                    tmp[key] = val;
+                }
+            });
+            return tmp;
+        };
+    })
+
+    //get text in brackets 
+    .filter('stringInBrackets', function () {
+        'use strict';
+        return function (input, all) {
+
+            var regExp = /\(([^)]+)\)/;
+            var matches = regExp.exec(input);
+
+            if (matches === null || matches.length < 1) {
+                return 0;
+            }
+
+            return matches[1];
+        };
+    })
+
+    //remove text in brackets
+    .filter('removeStringInBrackets', function () {
+        'use strict';
+        return function (input) {
+            return input.replace(/ *\([^)]*\) */g, "");
+        };
+    });
+/*global angular, L, window */
+
+angular.module('LMURaumfinder').controller('buildingCtrl',
+        ['$scope',
+         'buildingManager',
+         '$routeParams',
+         'leafletData',
+         '$filter',
+         '$location',
+         'MAP_DEFAULTS',
+         function ($scope, buildingManager, $routeParams, leafletData, $filter, $location, MAP_DEFAULTS) {
+            'use strict';
+        
+            // Set up data objects
+            var ctrl = this;
+            $scope.naviLink = ' ';
+            $scope.naviText = "Gebäudesuche";
+
+            function setMarker(building) {
+                leafletData.getMap().then(function (map) {
+
+                    // Disable map zoom on mobile phones
+                    if (window.screen.width <= 767) {
+                        map.dragging.disable();
+                        map.removeControl(map.zoomControl);
+                    }
+
+                    // Create marker
+                    map.panTo([building.lat, building.lng]);
+                    L.marker([building.lat, building.lng])
+                        .addTo(map)
+                        .bindPopup('<b>' + building.displayName + '</b>' +
+                            '</br> <a href="#/building/' + building.code + '/map">Raumplan anzeigen</a>')
+                        .openPopup();
+                });
+            }
+
+            // Get the building code from URI and load building data
+            buildingManager.getBuilding($routeParams.id)
+                // If promise is fullfilled
+                .then(function (building) {
+
+                    ctrl.building = building;
+                    setMarker(building);
+
+                }, function (err) {
+                    // Building could not be found 
+                    $location.path("/404");
+                });
+
+            //Init map
+            angular.extend($scope, {
+                tiles: {
+                    url: MAP_DEFAULTS.MAPTILES_URL,
+                    type: 'xyz',
+                    options: {
+                        attribution: MAP_DEFAULTS.MAP_CREDITS
+                    }
+                },
+                center: {
+                    lat: 48.14,
+                    lng: 11.58,
+                    zoom: 18
+                }
+            });
+        }
+        ]);
+'use strict';
+angular.module('LMURaumfinder').
+controller('MainCtrl', ['$scope', 'buildingManager', '$filter', 'MAP_DEFAULTS',
+                        function ($scope, buildingManager, $filter, MAP_DEFAULTS) {
+
+        // Setup mobile top menu
+        $scope.naviLink = '';
+        $scope.naviText = "Raumfinder";
+
+
+        // Initialize map object
+        angular.extend($scope, {
+            cityCenter: {
+                lat: 48.145,
+                lng: 11.58,
+                zoom: 14
+            },
+            cityLayers: {
+                url: MAP_DEFAULTS.MAPTILES_URL,
+                type: 'xyz',
+                options: {
+                    attribution: MAP_DEFAULTS.MAP_CREDITS
+                }
+            },
+            cityMarkers: {},
+            events: {}
+        });
+
+        // Load Buildings     
+        buildingManager.getAllBuildings().then(function (buildings) {
+            $scope.buildings = buildings;
+        });
+
+
+        // Watch search input and update visible markers
+        $scope.$watch('searchText', function (value) {
+            if ($scope.buildings) setMarker($filter('filterBuildings')($scope.buildings, $scope.searchText));
+        });
+
+                            
+        // Create marker on map and zoom map
+        function setMarker(buildings) {
+            var tempMarkers = {};
+            var bounds = {};
+            
+            // In order to show "no builings" instead of list
+            $scope.builingsCount = buildings.length;
+
+            // If no buldings are selected, show this part of map
+            if (buildings.length == 0) {
+                bounds = {
+                    southWest: {
+                        lat: 48.0521683,
+                        lng: 11.36503
+                    },
+                    northEast: {
+                        lat: 48.2521683,
+                        lng: 11.68137
+                    }
+                }
+            } 
+            
+            // Else expand bounds to maximum and then narrow the area down
+            else {
+                bounds = {
+                    southWest: {
+                        lat: 100.0,
+                        lng: 100.0
+                    },
+                    northEast: {
+                        lat: 0.0,
+                        lng: 0.0
+                    }
+                }
+            };
+
+            // For all selected buildings create marker and shrinks bounds
+            for (var i = 0; i < buildings.length; i++) {
+
+                tempMarkers[buildings[i].code] = {
+                    lat: parseFloat(buildings[i].lat),
+                    lng: parseFloat(buildings[i].lng),
+                    message: '<b>' + buildings[i].displayName + '</b></br>' +
+                        '<a href="#/building/' + buildings[i].code + '/map">Raumplan anzeigen &#62;</a>' 
+                        
+                }
+
+                if (buildings[i].lat < bounds.southWest.lat) bounds.southWest.lat = buildings[i].lat - 0.001;
+                if (buildings[i].lng > bounds.northEast.lng) bounds.northEast.lng = buildings[i].lng + 0.001;
+                if (buildings[i].lat > bounds.northEast.lat) bounds.northEast.lat = buildings[i].lat + 0.001;
+                if (buildings[i].lng < bounds.southWest.lng) bounds.southWest.lng = buildings[i].lng - 0.001;
+
+            }
+
+            //Set maxbounds and markers to scope
+            angular.extend($scope, {
+                cityMarkers: tempMarkers,
+                cityBounds: bounds
+            });
+        };
+
+}]);
+/*global angular, L */
+angular.module('LMURaumfinder').controller('mapCtrl', ['$scope',
+                                    '$routeParams',
+                                    '$location',
+                                    '$log',
+                                    'leafletData',
+                                    'leafletMapEvents',
+                                    'buildingManager',
+                                    'roomManager',
+                                    'buildingPartManager',
+                                    '$q',
+                                    '$analytics',
+    function ($scope,
+        $routeParams,
+        $location,
+        $log,
+        leafletData,
+        leafletMapEvents,
+        buildingManager,
+        roomManager,
+        buildingPartManager,
+        $q,
+        $analytics) {
+
+        'use strict';
+
+        // Set up all variables
+        var ctrl = this;
+        ctrl.building = null;
+        ctrl.buildingCode = null;
+        ctrl.buildingParts = null;
+        ctrl.rooms = null;
+        ctrl.filteredRooms = null;
+
+        $scope.naviText = "Gebäudedetails";
+        $scope.naviLink = 'building/' + $routeParams.id + '/';
+        $scope.roomLimit = 30;
+
+      
+        // Map variables
+        var map,
+            tileLayer,
+            bounds,
+            marker,
+            initLevelControl,
+            levelControl,
+            initBPartControl,
+            BPartControl,
+            showImageBtn;
+
+
+        angular.extend($scope, {
+            center: {
+                zoom: 3
+            },
+            defaults: {
+                minZoom: 0,
+                maxZoom: 3,
+                crs: L.CRS.Simple,
+                continuousWorld: true
+            },
+            layers: {},
+            events: {
+                map: {
+                    enable: [],
+                    logic: 'emit'
+                }
+            }
+        });
+
+
+        var init = function () {
+            ctrl.buildingCode = $routeParams.id;
+            $log.debug('Building code ', ctrl.buildingCode);
+
+            var loadBuildig = buildingManager.getBuilding(ctrl.buildingCode),
+                loadRooms = roomManager.getAllRooms(ctrl.buildingCode),
+                loadBuildingParts = buildingPartManager.getBuildingPart(ctrl.buildingCode);
+
+            var onechain = loadBuildig.then(function (building) {
+                $log.debug(building);
+                ctrl.building = building;
+            });
+            var twochain = loadRooms.then(function (rooms) {
+                $log.debug(rooms);
+                ctrl.rooms = rooms;
+                // Show List with rooms by running filter 
+                ctrl.filteredRooms = ctrl.rooms.getRooms(undefined, $scope.roomLimit);
+            });
+            var threechain = loadBuildingParts.then(function (buildingParts) {
+                $log.debug(buildingParts);
+                ctrl.buildingParts = buildingParts;
+                $log.debug(buildingParts.getStructure(ctrl.buildingCode));
+            });
+
+            $q.all([onechain, twochain, threechain]).then(function () {
+                $log.debug("ALL PROMISES RESOLVED");
+                // Watch search input and update visible marker
+                mapViaUrl();
+            }, function (err) {
+                // Building could not be found 
+                $analytics.eventTrack('Roomfinder Error!', {  category: 'ERROR', label: "Can't find building " + ctrl.buildingCode });
+                $location.path("/404");
+            });
+
+        };
+        init();
+
+
+        // Get set room / level / building part from url and update map 
+        function mapViaUrl() {
+
+            // The order of the follwing ifs is from specific to less specific location given in uri
+            // If search query contains room -> show it on map
+            if ($location.search().room) {
+                // $log.debug('Show map via url room', $location.search());
+                $scope.mapViaRoom($location.search().room);
+
+            // If search query contains level (aka mapUri) -> show it on map
+            } else if ($location.search().level) {
+                //$log.debug('Show map via url mapUri', $location.search().level);
+                $scope.mapViaLevel($location.search().level);
+            
+            // If search query contains level (aka mapUri) -> show it on map
+            } else if ($location.search().part) {
+                //$log.debug('Show map via url part', $location.search().part);
+                $scope.mapViaPart($location.search().part);
+            
+            // Else init with first building part
+            } else {
+                var thisBuildingPart = ctrl.buildingParts[Object.keys(ctrl.buildingParts)[0]];
+
+                if (thisBuildingPart) {
+                    initMap(thisBuildingPart);
+                } else {
+                    $analytics.eventTrack('Roomfinder Error!', {  category: 'ERROR', label: "Can't find building " + thisBuildingPart});
+                    $location.path("/404");
+                }
+            }
+        }
+
+
+        //--------------------------- Map ----------------------------//
+        //------------------------------------------------------------//
+
+        // Set up map
+        // Create map object with tile layer, control panels and bounds
+        function initMap(buildingPart) {
+            $log.debug("Init Map");
+          
+            if (!buildingPart) {
+                // Building could not be found 
+
+                $location.path("/404");
+            }
+
+            leafletData.getMap().then(function (map) {
+                // If tile layer, level control panel or building part control level exist -> remove so they can be updated and loaded again
+                if (tileLayer) { map.removeLayer(tileLayer); }
+                if (levelControl) { map.removeControl(levelControl); }
+                if (BPartControl) { map.removeControl(BPartControl); }
+
+                // Set up tile layer
+                tileLayer = L.tileLayer.lmuMaps('https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/tiles/v2/' + buildingPart.mapUri.split(".")[0] + '/', {
+                    width: buildingPart.mapSizeX,
+                    height: buildingPart.mapSizeY,
+                    attribution: '© LMU München'
+                });
+                tileLayer.addTo(map);
+
+                //Set bounds
+                calcBounds(map, buildingPart);
+
+                // Create and add level control
+                var BPartStructure = ctrl.buildingParts.getStructure();
+
+                levelControl = new initLevelControl(buildingPart.fCode, BPartStructure[buildingPart.buildingPart]);
+                map.addControl(levelControl);
+                
+
+                //Check if complex building -> create Building Control
+                if (ctrl.buildingParts.isComplex()) {
+                    $log.debug('This Building has multiple building parts');
+                    BPartControl = new initBPartControl(buildingPart.buildingPart, BPartStructure);
+                    map.addControl(BPartControl);
+                }
+            });
+        }
+
+
+
+        // --------- Front end functions --------- //
+
+        // Function for front end to select a room
+        $scope.mapViaRoom = function (roomId) {
+
+            try {
+                var floorCode = ctrl.rooms.getRoom(roomId).floorCode;
+                initMap(ctrl.buildingParts[floorCode]);
+                updateMarker(ctrl.rooms.getRoom(roomId).pX, ctrl.rooms.getRoom(roomId).pY);
+                // Track user interaction
+                $analytics.pageTrack('/building/' + ctrl.buildingCode + '/map?room=' + roomId);
+            } catch (err) {
+                $analytics.eventTrack('Roomfinder Error!', {  category: 'ERROR', label: "Can't find room " + roomId + " in building " + ctrl.buildingCode });
+                $location.path("/404");
+            }
+        };
+
+        // Function for front end to select a level
+        $scope.mapViaLevel = function (floorCode) {
+            removeMarker(); // Remove old marker as it belongs to another map 
+            var buildingPart = ctrl.buildingParts[floorCode];
+            
+            if (buildingPart) {
+                initMap(buildingPart);
+                // Track user interaction
+                $analytics.pageTrack('/building/' + ctrl.buildingCode + '/map?level=' + floorCode);
+            } else {
+                $analytics.eventTrack('Roomfinder Error!', {  category: 'ERROR', label: "Can't find level " + floorCode + " of building " + ctrl.buildingCode });
+                $location.path("/404");
+            }
+        };
+
+        // Function for front end to select a building part
+        $scope.mapViaPart = function (part) {
+            removeMarker(); // Remove old marker as it belongs to another map 
+            try {
+                var floor = ctrl.buildingParts.getGroundFloor(part);
+                initMap(floor);
+                // Track user interaction
+                $analytics.pageTrack('/building/' + ctrl.buildingCode + '/map?part=' + part);
+            } catch (err) {
+                $analytics.eventTrack('Roomfinder Error!', {  category: 'ERROR', label: "Can't find building part " + part + " of building " + ctrl.buildingCode });
+                $location.path("/404");
+            }
+        };
+
+        // Function for extending list of rooms
+        $scope.showMoreRooms = function () {
+            $scope.roomLimit += 50;
+            ctrl.filteredRooms = ctrl.rooms.getRooms(undefined, $scope.roomLimit);
+        };
+
+
+        // Set up watcher for rooms
+        $scope.$watch('searchRoom', function (value) {
+            if (ctrl.filteredRooms) {ctrl.filteredRooms = ctrl.rooms.getRooms(value, $scope.roomLimit); }
+        });
+
+
+
+        // --------- Helper functions --------- //
+
+        // Update the position of a marker
+        function updateMarker(x, y) {
+            leafletData.getMap().then(function (map) {
+                var mapPoint = null;
+                if (!marker) {
+                    mapPoint = map.unproject([0, 0], 3);
+                    marker = L.marker(mapPoint);
+                    map.addLayer(marker);
+                }
+
+                mapPoint = map.unproject([x, y], 3);
+                marker.setLatLng(mapPoint);
+                map.panTo(mapPoint);
+            });
+        }
+
+        function removeMarker() {
+            leafletData.getMap().then(function (map) {
+                if (marker) {
+                    map.removeLayer(marker);
+                    marker = null;
+                }
+            });
+        }
+
+        function calcBounds(map, buildingPart) {
+
+            //Setup bounds for map image
+            var southWest = map.unproject([0, buildingPart.mapSizeY], 3),
+                northEast = map.unproject([buildingPart.mapSizeX, 0], 3);
+            bounds = new L.LatLngBounds(southWest, northEast);
+            map.setMaxBounds(bounds);
+            return bounds;
+
+        }
+
+
+        // --------- Definiton of control panels --------- //
+
+        initLevelControl = L.Control.extend({
+            options: {
+                position: 'topright',
+                activeLevelCode: '',
+                activeBPartStructure: ''
+            },
+            initialize: function (activeFloorCode, activeBPartStructure) {
+                this.options.activeLevelCode = activeFloorCode;
+                this.options.activeBPartStructure = activeBPartStructure;
+            },
+            onAdd: function (map) {
+                var container = L.DomUtil.create('div',
+                    'leaflet-bar leaflet-control leaflet-control-custom'),
+                    levels = this.options.activeBPartStructure.levels;
+
+
+                for (var l in levels) {
+                    var a = L.DomUtil.create('a', '');
+                    var fCode = levels[l].fCode;
+
+                    if (this.options.activeLevelCode == levels[l].fCode) {
+                        a.setAttribute('class', 'active');
+                    }
+
+                    a.setAttribute('fCode', levels[l].fCode);
+                    a.setAttribute('href', '#/building/' + ctrl.buildingCode + '/map?level=' + levels[l].fCode);
+
+                    a.innerHTML = levels[l].level;
+
+                    a.onclick = function (e) {
+                        $scope.mapViaLevel(e.target.attributes.fCode.nodeValue);
+                    };
+                    container.appendChild(a);
+                }
+
+
+                return container;
+            }
+        });
+
+        initBPartControl = L.Control.extend({
+            options: {
+                position: 'bottomleft',
+                activePart: ''
+            },
+            initialize: function (activePart, buildingStructure) {
+                this.options.activePart = activePart;
+                this.options.structure = buildingStructure;
+            },
+            onAdd: function (map) {
+                var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+                $log.debug(this.options.structure);
+
+                for (var part in this.options.structure) {
+                    var thisPart = this.options.structure[part];
+                    var a = L.DomUtil.create('a', '');
+
+                    if (this.options.activePart == part) {
+                        a.setAttribute('class', 'active');
+                    }
+
+                    a.setAttribute('buildingPart', part);
+                    a.setAttribute('href', '#/building/' + ctrl.buildingCode + '/map?part=' + part);
+                    a.innerHTML = thisPart.name;
+
+
+                    a.onclick = function (e) {
+                        $scope.mapViaPart(e.target.attributes.buildingPart.nodeValue);
+                    };
+                    container.appendChild(a);
+                }
+
+
+                return container;
+            }
+        }); 
+    }]);
+/*global angular, navigator, document */
+angular.module('LMURaumfinder').controller('roomSearchCtrl', ['$scope',
+                                    '$routeParams',
+                                    'buildingManager',
+                                    '$filter',
+                                    'roomManager',
+
+
+    function ($scope,
+            $routeParams,
+            buildingManager,
+            $filter,
+            roomManager) {
+        
+        'use strict';
+
+        $scope.searchRoom = "";
+        $scope.naviText = "LMU Roomfinder";
+        $scope.naviLink = '';
+        $scope.roomLimit = 30;
+
+        // Set up all variables
+        var ctrl = this;
+        ctrl.building = null;
+        ctrl.buildingCode = null;
+        ctrl.rooms = null;
+        ctrl.filteredRooms = null;
+
+
+        var init = function () {
+            ctrl.buildingCode = $routeParams.id;
+            $scope.naviLink = "building/" + ctrl.buildingCode + '/map';
+
+
+            var loadBuildig = buildingManager.getBuilding(ctrl.buildingCode);
+            var loadRooms = roomManager.getAllRooms(ctrl.buildingCode);
+
+            var onechain = loadBuildig.then(function (building) {
+                ctrl.building = building;
+                $scope.naviText = building.displayName;
+            });
+            var twochain = loadRooms.then(function (rooms) {
+                ctrl.rooms = rooms;
+                ctrl.filteredRooms = ctrl.rooms.getRooms(undefined, $scope.roomLimit);
+            });
+        };
+        init();
+
+        // Set up watcher for rooms
+        $scope.$watch('searchRoom', function (value) {
+            if (ctrl.filteredRooms) {ctrl.filteredRooms = ctrl.rooms.getRooms(value, $scope.roomLimit); }
+        });
+
+        // Function for extending list of rooms
+        $scope.showMoreRooms = function () {
+            $scope.roomLimit += 50;
+            ctrl.filteredRooms = ctrl.rooms.getRooms(undefined, $scope.roomLimit);
+        };
+
+
+    }]).controller('impressumCtrl', ['$scope', function ($scope) {
+        'use strict';
+
+        $scope.naviText = "LMU Roomfinder";
+        $scope.naviLink = true;
+
+    }]).controller('AdvertisementController', ['$scope', function ($scope) {
+        'use strict';
+
+        var ua = navigator.userAgent.toLowerCase();
+        var isAndroid = ua.indexOf("android") > -1;
+
+        var adDismissed = getCookie("adDismissed");
+
+        if (isAndroid && !adDismissed) {
+            $scope.showAd = true;
+        } else {
+            $scope.showAd = false;
+        }
+
+        // Function to remove ad
+        $scope.dismiss = function () {
+            $scope.showAd = false;
+            setCookie("adDismissed", true, 365);
+        };
+
+        function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+            var expires = "expires=" + d.toUTCString();
+            document.cookie = cname + "=" + cvalue + "; " + expires;
+        }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) === ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) === 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+
+}]);
+/*global angular */
+angular.module('LMURaumfinder')
+    .factory('Building', ['$http', '$filter', function ($http, $filter) {
+        'use strict';
+        
+        function Building(buildingData) {
+            if (buildingData) {
+                buildingData.displayName = $filter('capitalize', true)(buildingData.displayName);
+                buildingData.lat = parseFloat(buildingData.lat);
+                buildingData.lng = parseFloat(buildingData.lng);
+                this.setData(buildingData);
+            }
+            // Some other initializations related to Building
+        }
+        
+        Building.prototype = {
+            setData: function (buildingData) {
+                angular.extend(this, buildingData);
+            },
+            getImageUrl: function (width) {
+                
+                //List-Icon
+                if (width <= 40) {
+                    if (this.hasImage === '1') {
+                        return 'https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/thumbnails/' + this.code + '.jpg';
+                    } else {
+                        return 'img/houseIcon.png';
+                    }
+                    //Medium Sized
+                } else if (width <= 400) {
+                    if (this.hasImage === 1) {
+                        return 'https://cms-static.uni-muenchen.de/lmu-roomfinder-4b38a548/photos/medium/' + this.code + '.jpg';
+                    } else {
+                        return 'img/pattern.jpg';
+                    }
+                }
+
+            }
+        };
+        return Building;
+    }]);
+
+
+/*global angular, buildingsJSON */
+angular.module('LMURaumfinder')
+    .factory('buildingManager', ['$http', '$q', 'Building', function ($http, $q, Building) {
+        'use strict';
+
+        var buildingManager = {
+
+            _poolArray: [], // If all objects are needed (array form is better for angular.js)
+            _pool: {}, // If a specific object is needed
+
+            _retrieveInstance: function (buildingId, buildingData) {
+                var instance = this._poolArray[buildingId];
+
+                if (instance) {
+                    instance.setData(buildingData);
+                } else {
+                    instance = new Building(buildingData);
+                    this._pool[buildingId] = instance;
+                    this._poolArray.push(instance);
+                }
+
+                return instance;
+            },
+
+            _search: function (buildingId) {
+                // Use associative array '_pool' to find building and return it
+                return this._pool[buildingId];
+            },
+
+            _loadAll: function (deferred) {
+                var scope = this;
+
+                // Data is directly referenced (-> index.html), no ajax necessary
+                // Create objects for all buildings and return array 
+                buildingsJSON.forEach(function (buildingData) {
+                    scope._retrieveInstance(buildingData.code, buildingData);
+                });
+
+                deferred.resolve(scope._poolArray);
+            },
+
+            _load: function (deferred, id) {
+                var scope = this;
+
+                // Data is directly referenced (-> index.html), no ajax necessary 
+                // Buildings can't be accessed individually
+                buildingsJSON.forEach(function (buildingData) {
+                    scope._retrieveInstance(buildingData.code, buildingData);
+                });
+
+                // Check if building with given ID exists and return it, else reject promise
+                if (scope._pool[id]) {
+                    deferred.resolve(scope._pool[id]);
+                } else {
+                    deferred.reject();
+                }
+
+            },
+
+            /* Public Methods */
+            /* Use this function in order to get a building instance by it's id */
+            getBuilding: function (buildingId) {
+                var deferred = $q.defer(),
+                    building = this._search(buildingId);
+                if (building) {
+                    deferred.resolve(building);
+                } else {
+                    this._load(deferred, buildingId);
+                }
+                return deferred.promise;
+            },
+
+            /* Use this function in order to get instances of all the books */
+            getAllBuildings: function () {
+                var deferred = $q.defer();
+
+                if (this._poolArray.length > 0) {
+                    //  console.log(this._poolArray);
+                    deferred.resolve(this._poolArray);
+                } else {
+                    this._loadAll(deferred);
+                }
+                return deferred.promise;
+            }
+        };
+        return buildingManager;
+    }]);
+
+/*global angular, rename */
+angular.module('LMURaumfinder')
+    .factory('BuildingPart', ['$http', '$filter', function ($http, $filter) {
+        'use strict';
+        
+        function BuildingPart(buildingPartData) {
+            if (buildingPartData) {
+                this.setData(buildingPartData);
+
+                // Object to return with building structure
+                var structure = {},
+                    thisFloor = {};
+              
+                // For all floors provided in json
+                for (var floor in buildingPartData) {
+          
+                    //Correct the floor name
+                    buildingPartData[floor].level = renameFloorNames(buildingPartData[floor].level);
+
+                    thisFloor = buildingPartData[floor];
+                    thisFloor.fCode = floor; //So we have the floor code in the object
+
+                    // Check if building part already exists in structure object
+                    // If not create it and add name and sorted array of levels
+                    if (!structure[thisFloor.buildingPart]) {
+                        structure[thisFloor.buildingPart] = {};
+                        structure[thisFloor.buildingPart].levels = [];
+                        structure[thisFloor.buildingPart].name = $filter('stringInBrackets')(thisFloor.address) || 'Y';
+                    }
+
+                    // Add this floor to level
+                    structure[thisFloor.buildingPart].levels.push(thisFloor);
+                }
+
+                // Sort levels (descending: OG1, EG, UG)
+                for (var part in structure) {
+                    structure[part].levels.sort(sortLevels);
+                }
+
+
+                this.setData({
+                    "structure": structure
+                });
+
+            }
+        }
+ 
+        // Level sorting function
+        function sortLevels(a, b) {
+            var levels = ["OG8", "OG7", "OG6", "OG5", "OG4", "ZG3", "OG3", "ZG2", "OG2", "ZG1", "OG1", "ZG", "EG", "UG1", "UG2", "UG3"];
+            var aPos = levels.indexOf(a.level);
+            var bPos = levels.indexOf(b.level);
+
+            if (aPos == bPos)
+                return 0;
+            if (aPos < bPos)
+                return -1;
+
+            return 1;
+        }
+
+        function renameFloorNames(level) {
+            var temp = level;
+            //Remove everything in brackets
+            level = $filter('removeStringInBrackets')(level);
+            //If entry in rename.json exists, use it
+            level = (rename[level] ? rename[level] : level);
+            return level;
+
+        }
+
+
+        BuildingPart.prototype = {
+            setData: function (buildingPartData) {
+                angular.extend(this, buildingPartData);
+            },
+
+            // Find out if builiding has complex structure (= multiple building parts)
+            isComplex: function () {
+                if (Object.keys(this.structure).length > 1) return true;
+
+                return false;
+            },
+
+            getStructure: function () {
+                return this.structure;
+            },
+
+            getFirstPart: function () {
+                return this[Object.keys(this)[0]];
+            },
+
+            getGroundFloor: function (buildingPartCode) {
+                var thisPart = this.structure[buildingPartCode];
+                for (var floor in thisPart.levels) {
+                    if (thisPart.levels[floor].level == 'EG') {
+                        return thisPart.levels[floor];
+                    }
+                }
+                return thisPart.levels[0];
+            },
+
+            getPart: function (code) {
+                return this[code];
+            }
+
+        };
+        return BuildingPart;
+}]);
+/*global angular */
+angular.module('LMURaumfinder').factory('buildingPartManager', ['$http', '$q', 'BuildingPart', function ($http, $q, BuildingPart) {
+    'use strict';
+    
+    var buildingPartManager = {
+        _pool: {},
+        _retrieveInstance: function (buildingCode, buildingData) {
+    
+            var instance = this._pool[buildingCode];
+
+            if (instance) {
+                instance.setData(buildingData);
+            } else {
+                instance = new BuildingPart(buildingData);
+                this._pool[buildingCode] = instance;
+            }
+
+            return instance;
+        },
+        _search: function (buildingCode) {
+            return this._pool[buildingCode];
+        },
+        _load: function (buildingCode, deferred) {
+            var scope = this;
+
+            $http.get('json/uniqueBuildingParts/' + buildingCode + '.json')
+                .success(function (buildingPartData) {
+                    var buildingPart = scope._retrieveInstance(buildingCode, buildingPartData);
+                    deferred.resolve(buildingPart);
+                })
+                .error(function () {
+                    deferred.reject();
+                });
+        },
+        /* Public Methods */
+        /* Use this function in order to get a building part instance by it's id */
+        getBuildingPart: function (buildingCode) {
+            var deferred = $q.defer(),
+                buildingPart = this._search(buildingCode);
+            if (buildingPart) {
+                deferred.resolve(buildingPart);
+            } else {
+                this._load(buildingCode, deferred);
+            }
+            return deferred.promise;
+        }
+        
+    };
+    return buildingPartManager;
+}]);
+/*global angular */
+angular.module('LMURaumfinder').factory('roomManager', ['$http', '$q', 'Room', function ($http, $q, Room) {
+    'use strict';
+    
+    var roomManager = {
+        _pool: {},
+        _search: function (buildingCode) {
+            return this._pool[buildingCode];
+        },
+        _loadAll: function (buildingCode, roomCode, deferred) {
+            var scope = this;
+            $http.get('json/rooms/' + buildingCode + '.json')
+                .success(function (roomData) {
+                    var newRoom = new Room(roomData);
+                    scope._pool[buildingCode] = newRoom;
+
+                    if (roomCode) {
+                        deferred.resolve(newRoom.getRoom(roomCode));
+                    } else {
+                        deferred.resolve(newRoom);
+                    }
+                })
+                .error(function () {
+                    deferred.reject();
+                });
+        },
+
+        /* Public Methods */
+        /* Use this function in order to get all rooms of a building */
+        getAllRooms: function (buildingCode) {
+            var deferred = $q.defer(),
+                rooms = this._search(buildingCode);
+            if (rooms) {
+                deferred.resolve(rooms);
+            } else {
+                this._loadAll(buildingCode, false, deferred);
+            }
+
+            return deferred.promise;
+        },
+
+        getRoom: function (buildingCode, roomCode) {
+            var deferred = $q.defer(),
+                room = this._search(buildingCode, roomCode);
+            if (room) {
+                deferred.resolve(room);
+            } else {
+                this._loadAll(buildingCode, roomCode, deferred);
+            }
+
+            return deferred.promise;
+        }
+
+    };
+    return roomManager;
+}]);
+
+
+angular.module('LMURaumfinder')
+    .factory('Room', ['$http', function ($http) {
+        'use strict';
+        
+        function Room(RoomList) {
+            if (RoomList) {
+                this.setData({
+                    data: RoomList
+                });
+
+                //this.data.setData(RoomList);
+            }
+            // Some other initializations related to Building
+        }
+        
+        Room.prototype = {
+            setData: function (buildingData) {
+                angular.extend(this, buildingData);
+            },
+            getRoomsCount: function () {
+                return Object.keys(this.data).length;
+            },
+            getRoom: function (code) {
+                return this.data[code];
+            },
+            getRooms: function (query, limit) {
+                var filtered = [],
+                    showAll = false,
+                    query_l = " ";
+
+                if (query === undefined) {
+                    showAll = true;
+                } else {
+                    query_l = query.replace(/ /g, '').toLowerCase();
+                }
+
+                for (var room in this.data) {
+                    if (showAll ||
+                        this.data[room].rName.replace(/ /g, '').toLowerCase().indexOf(query_l) > -1) {
+
+                        this.data[room].rCode = room;
+                        filtered.push(this.data[room]);
+                    }
+                    if (filtered.length > limit) break;
+                }
+
+                //console.log('Filter Räume');
+                return filtered;
+            }
+        };
+        return Room;
+}]);

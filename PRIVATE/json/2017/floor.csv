@@ -1,0 +1,470 @@
+code,buildingPart,level,name,mapUri,mapSizeX,mapSizeY
+g003000,bt0030,EG,Erdgeschoss,0000_d_00.pdf,7017,4963
+g003091,bt0030,"EG Z",Zwischengeschoss,0000_d_00z.pdf,7017,4963
+g003001,bt0030,"OG 01",1.Obergeschoss,0000_d_01.pdf,7017,4963
+g003092,bt0030,"OG 01 Z",1.Zwischengeschoss,0000_d_01z.pdf,7017,4963
+g003002,bt0030,"OG 02",2.Obergeschoss,0000_d_02.pdf,7017,4963
+g003093,bt0030,"OG 02 Z",2.Zwischengeschoss,0000_d_02z.pdf,7017,4963
+g003003,bt0030,"OG 03",3.Obergeschoss,0000_d_03.pdf,7017,4963
+g0030-1,bt0030,"UG 01",1.Untergeschoss,0000_d_u1.pdf,7017,4963
+g004000,bt0040,EG,Erdgeschoss,0000_d_00.pdf,7017,4963
+g004091,bt0040,"EG Z",Zwischengeschoss,0000_d_00z.pdf,7017,4963
+g004001,bt0040,"OG 01",1.Obergeschoss,0000_d_01.pdf,7017,4963
+g004092,bt0040,"OG 01 Z",1.Zwischengeschoss,0000_d_01z.pdf,7017,4963
+g004002,bt0040,"OG 02",2.Obergeschoss,0000_d_02.pdf,7017,4963
+g004003,bt0040,"OG 03",3.Obergeschoss,0000_d_03.pdf,7017,4963
+g0040-1,bt0040,"UG 01",1.Untergeschoss,0000_d_u1.pdf,7017,4963
+g005000,bt0050,EG,Erdgeschoss,0050_d_00.pdf,4963,3508
+g005001,bt0050,"OG 01",1.Obergeschoss,0050_d_01.pdf,4963,3508
+g005002,bt0050,"OG 02",2.Obergeschoss,0050_d_02.pdf,4963,3508
+g005003,bt0050,"OG 03",3.Obergeschoss,0050_d_03.pdf,4963,3508
+g005004,bt0050,"OG 04",4.Obergeschoss,0050_d_04.pdf,4963,3508
+g005005,bt0050,"OG 05",5.Obergeschoss,0050_d_05.pdf,4963,3508
+g0050-1,bt0050,"UG 01",1.Untergeschoss,0050_d_u1.pdf,4963,3508
+g006004,bt0060,"OG 04",4.Obergeschoss,0060_d_04.pdf,3508,2479
+g007000,bt0070,EG,Erdgeschoss,0070_d_00.pdf,3508,4963
+g007001,bt0070,"OG 01",1.Obergeschoss,0070_d_01.pdf,3508,4963
+g007002,bt0070,"OG 02",2.Obergeschoss,0070_d_02.pdf,3508,4963
+g007003,bt0070,"OG 03",3.Obergeschoss,0070_d_03.pdf,3508,4963
+g007004,bt0070,"OG 04",4.Obergeschoss,0070_d_04.pdf,3508,4963
+g007005,bt0070,"OG 05",5.Obergeschoss,0070_d_05.pdf,3508,4963
+g0070-1,bt0070,"UG 01",1.Untergeschoss,0070_d_u1.pdf,3508,4963
+g007300,bt0073,EG,Erdgeschoss,0070_d_00.pdf,3508,4963
+g007301,bt0073,"OG 01",1.Obergeschoss,0070_d_01.pdf,3508,4963
+g007302,bt0073,"OG 02",2.Obergeschoss,0070_d_02.pdf,3508,4963
+g007303,bt0073,"OG 03",3.Obergeschoss,0070_d_03.pdf,3508,4963
+g007304,bt0073,"OG 04",4.Obergeschoss,0070_d_04.pdf,3508,4963
+g007305,bt0073,"OG 05",5.Obergeschoss,0070_d_05.pdf,3508,4963
+g0073-1,bt0073,"UG 01",1.Untergeschoss,0070_d_u1.pdf,3508,4963
+g009000,bt0090,EG,Erdgeschoss,0090_d_00.pdf,2479,3508
+g009001,bt0090,"OG 01",1.Obergeschoss,0090_d_01.pdf,3508,2479
+g009002,bt0090,"OG 02",2.Obergeschoss,0090_d_02.pdf,3508,2479
+g009003,bt0090,"OG 03",3.Obergeschoss,0090_d_03.pdf,3508,2479
+g009004,bt0090,"OG 04",4.Obergeschoss,0090_d_04.pdf,3508,2479
+g010400,bt0104,EG,Erdgeschoss,0104_d_00.pdf,3508,2479
+g010401,bt0104,"OG 01",1.Obergeschoss,0104_d_01.pdf,3508,2479
+g010402,bt0104,"OG 02",2.Obergeschoss,0104_d_02.pdf,3508,2479
+g010403,bt0104,"OG 03",3.Obergeschoss,0104_d_03.pdf,3508,2479
+g010404,bt0104,"OG 04",4.Obergeschoss,0104_d_04.pdf,3508,2479
+g011000,bt0110,EG,Erdgeschoss,0122_d_00.pdf,4963,3508
+g011001,bt0110,"OG 01",1.Obergeschoss,0122_d_01.pdf,4963,3508
+g011002,bt0110,"OG 02",2.Obergeschoss,0122_d_02.pdf,4963,3508
+g011003,bt0110,"OG 03",3.Obergeschoss,0122_d_03.pdf,4963,3508
+g011004,bt0110,"OG 04",4.Obergeschoss,0122_d_04.pdf,4963,3508
+g012000,bt0120,EG,Erdgeschoss,0122_d_00.pdf,4963,3508
+g012001,bt0120,"OG 01",1.Obergeschoss,0122_d_01.pdf,4963,3508
+g012002,bt0120,"OG 02",2.Obergeschoss,0122_d_02.pdf,4963,3508
+g012003,bt0120,"OG 03",3.Obergeschoss,0122_d_03.pdf,4963,3508
+g012004,bt0120,"OG 04",4.Obergeschoss,0122_d_04.pdf,4963,3508
+g012100,bt0121,EG,Erdgeschoss,0122_d_00.pdf,4963,3508
+g012300,bt0123,EG,Erdgeschoss,0122_d_00.pdf,4963,3508
+g012101,bt0121,"OG 01",1.Obergeschoss,0122_d_01.pdf,4963,3508
+g012301,bt0123,"OG 01",1.Obergeschoss,0122_d_01.pdf,4963,3508
+g012102,bt0121,"OG 02",2.Obergeschoss,0122_d_02.pdf,4963,3508
+g012103,bt0121,"OG 03",3.Obergeschoss,0122_d_03.pdf,4963,3508
+g012104,bt0121,"OG 04",4.Obergeschoss,0122_d_04.pdf,4963,3508
+g012200,bt0122,EG,Erdgeschoss,0122_d_00.pdf,4963,3508
+g012201,bt0122,"OG 01",1.Obergeschoss,0122_d_01.pdf,4963,3508
+g012202,bt0122,"OG 02",2.Obergeschoss,0122_d_02.pdf,4963,3508
+g012203,bt0122,"OG 03",3.Obergeschoss,0122_d_03.pdf,4963,3508
+g012204,bt0122,"OG 04",4.Obergeschoss,0122_d_04.pdf,4963,3508
+g014700,bt0147,EG,Erdgeschoss,0147_d_00.pdf,3508,2479
+g014701,bt0147,"OG 01",1.Obergeschoss,0147_d_01.pdf,3508,2479
+g014702,bt0147,"OG 02",2.Obergeschoss,0147_d_02.pdf,3508,2479
+g015100,bt0151,EG,Erdgeschoss,0151_d_00.pdf,3508,2479
+g015102,bt0151,"OG 02",2.Obergeschoss,0151_d_02.pdf,3508,2479
+g015103,bt0151,"OG 03",3.Obergeschoss,0151_d_03.pdf,3508,2479
+g015104,bt0151,"OG 04",4.Obergeschoss,0151_d_04.pdf,3508,2479
+g020300,bt0203,EG,Erdgeschoss,0203_d_00.pdf,5263,3719
+g020301,bt0203,"OG 01",1.Obergeschoss,0203_d_01.pdf,5263,3719
+g020302,bt0203,"OG 02",2.Obergeschoss,0203_d_02.pdf,5263,3719
+g020303,bt0203,"OG 03",3.Obergeschoss,0203_d_03.pdf,5263,3719
+g020304,bt0203,"OG 04",4.Obergeschoss,0203_d_04.pdf,5263,3719
+g020305,bt0203,"OG 05",5.Obergeschoss,0203_d_05.pdf,5263,3719
+g0203-1,bt0203,"UG 01",1.Untergeschoss,0203_d_u1.pdf,5263,3719
+g0203-2,bt0203,"UG 02",2.Untergeschoss,0203_d_u2.pdf,5263,3719
+g025001,bt0250,"OG 01",1.Obergeschoss,0250_d_01.pdf,3508,4963
+g025002,bt0250,"OG 02",2.Obergeschoss,0250_d_02.pdf,2479,3508
+g025003,bt0250,"OG 03",3.Obergeschoss,0250_d_03.pdf,3508,4963
+g025100,bt0251,EG,Erdgeschoss,0251_d_00.pdf,2479,3508
+g025101,bt0251,"OG 01",1.Obergeschoss,0251_d_01.pdf,2479,3508
+g025102,bt0251,"OG 02",2.Obergeschoss,0251_d_02.pdf,2479,3508
+g025103,bt0251,"OG 03",3.Obergeschoss,0251_d_03.pdf,2479,3508
+g025104,bt0251,"OG 04",4.Obergeschoss,0251_d_04.pdf,2479,3508
+g025200,bt0252,EG,Erdgeschoss,0252_d_00.pdf,3508,2479
+g025201,bt0252,"OG 01",1.Obergeschoss,0252_d_01.pdf,3508,2479
+g025202,bt0252,"OG 02",2.Obergeschoss,0252_d_02.pdf,3508,2479
+g025203,bt0252,"OG 03",3.Obergeschoss,0252_d_03.pdf,3508,2479
+g027000,bt0270,EG,Erdgeschoss,0270_d_00.pdf,2479,3508
+g027001,bt0270,"OG 01",1.Obergeschoss,0270_d_01.pdf,2479,3508
+g027002,bt0270,"OG 02",2.Obergeschoss,0270_d_02.pdf,2479,3508
+g027003,bt0270,"OG 03",3.Obergeschoss,0270_d_03.pdf,2479,3508
+g027004,bt0270,"OG 04",4.Obergeschoss,0270_d_04.pdf,2479,3508
+g030300,bt0303,EG,Erdgeschoss,0303_d_00.pdf,4963,3508
+g030301,bt0303,"OG 01",1.Obergeschoss,0303_d_01.pdf,4963,3508
+g0303-1,bt0303,"UG 01",1.Untergeschoss,0303_d_u1.pdf,4963,3508
+g030600,bt0306,EG,Erdgeschoss,0306_d_00.pdf,3508,2479
+g030601,bt0306,"OG 01",1.Obergeschoss,0306_d_01.pdf,3508,2479
+g030602,bt0306,"OG 02",2.Obergeschoss,0306_d_02.pdf,3508,2479
+g030603,bt0306,"OG 03",3.Obergeschoss,0306_d_03.pdf,3508,2479
+g031000,bt0310,EG,Erdgeschoss,0310_d_00.pdf,3508,2479
+g031001,bt0310,"OG 01",1.Obergeschoss,0310_d_01.pdf,3508,2479
+g031002,bt0310,"OG 02",2.Obergeschoss,0310_d_02.pdf,3508,2479
+g031003,bt0310,"OG 03",3.Obergeschoss,0310_d_03.pdf,3508,2479
+g031004,bt0310,"OG 04",4.Obergeschoss,0310_d_04.pdf,3508,2479
+g0310-1,bt0310,"UG 01",1.Untergeschoss,0310_d_u1.pdf,3508,2479
+g033400,bt0334,EG,Erdgeschoss,0334_d_00.pdf,3508,2479
+g033401,bt0334,"OG 01",1.Obergeschoss,0334_d_01.pdf,3508,2479
+g034000,bt0340,EG,Erdgeschoss,0340_d_00.pdf,3508,2479
+g034091,bt0340,"EG Z",Zwischengeschoss,0340_d_00z.pdf,3508,2479
+g040700,bt0407,EG,Erdgeschoss,0407_d_00.pdf,4963,3508
+g040701,bt0407,"OG 01",1.Obergeschoss,0407_d_01.pdf,4963,3508
+g040702,bt0407,"OG 02",2.Obergeschoss,0407_d_02.pdf,4963,3508
+g040703,bt0407,"OG 03",3.Obergeschoss,0407_d_03.pdf,4963,3508
+g040704,bt0407,"OG 04",4.Obergeschoss,0407_d_04.pdf,4963,3508
+g040705,bt0407,"OG 05",5.Obergeschoss,0407_d_05.pdf,4963,3508
+g0407-1,bt0407,"UG 01",1.Untergeschoss,0407_d_u1.pdf,4963,3508
+g0407-2,bt0407,"UG 02",2.Untergeschoss,0407_d_u2.pdf,4963,3508
+g042000,bt0420,EG,Erdgeschoss,0420_d_00.pdf,3508,4963
+g042001,bt0420,"OG 01",1.Obergeschoss,0420_d_01.pdf,3508,4963
+g042091,bt0420,"OG 01 Z",1.Zwischengeschoss,0420_d_01z.pdf,3508,4963
+g042002,bt0420,"OG 02",2.Obergeschoss,0420_d_02.pdf,3508,4963
+g042092,bt0420,"OG 02 Z",2.Zwischengeschoss,0420_d_02z.pdf,3508,4963
+g042003,bt0420,"OG 03",3.Obergeschoss,0420_d_03.pdf,3508,4963
+g042004,bt0420,"OG 04",4.Obergeschoss,0420_d_04.pdf,3508,4963
+g0420-1,bt0420,"UG 01",1.Untergeschoss,0420_d_u1.pdf,3508,4963
+g044000,bt0440,EG,Erdgeschoss,0440_d_00.pdf,3508,2479
+g044001,bt0440,"OG 01",1.Obergeschoss,0440_d_01.pdf,3508,2479
+g044002,bt0440,"OG 02",2.Obergeschoss,0440_d_02.pdf,3508,2479
+g044003,bt0440,"OG 03",3.Obergeschoss,0440_d_03.pdf,3508,2479
+g044004,bt0440,"OG 04",4.Obergeschoss,0440_d_04.pdf,3508,2479
+g046000,bt0460,EG,Erdgeschoss,0460_d_00.pdf,3508,2479
+g046001,bt0460,"OG 01",1.Obergeschoss,0460_d_01.pdf,3508,2479
+g046002,bt0460,"OG 02",2.Obergeschoss,0460_d_02.pdf,3508,2479
+g046003,bt0460,"OG 03",3.Obergeschoss,0460_d_03.pdf,3508,2479
+g046004,bt0460,"OG 04",4.Obergeschoss,0460_d_04.pdf,3508,2479
+g055401,bt0554,"OG 01",1.Obergeschoss,0554_d_01.pdf,3508,2479
+g055402,bt0554,"OG 02",2.Obergeschoss,0554_d_02.pdf,3508,2479
+g055403,bt0554,"OG 03",3.Obergeschoss,0554_d_03.pdf,3508,2479
+g055404,bt0554,"OG 04",4.Obergeschoss,0554_d_04.pdf,3508,2479
+g057001,bt0570,"OG 01",1.Obergeschoss,0570_d_01.pdf,3508,2479
+g057005,bt0570,"OG 02",2.Obergeschoss,0570_d_02.pdf,3508,2479
+g057003,bt0570,"OG 03",3.Obergeschoss,0570_d_03.pdf,3508,2479
+g057004,bt0570,"OG 04",4.Obergeschoss,0570_d_04.pdf,3508,2479
+g057500,bt0575,EG,Erdgeschoss,0575_d_00.pdf,3508,2479
+g057501,bt0575,"OG 01",1.Obergeschoss,0575_d_01.pdf,3508,2479
+g057502,bt0575,"OG 02",2.Obergeschoss,0575_d_02.pdf,3508,2479
+g0575-1,bt0575,"UG 01",1.Untergeschoss,0575_d_u1.pdf,3508,2479
+g058000,bt0580,EG,Erdgeschoss,0580_d_00.pdf,3508,2479
+g058001,bt0580,"OG 01",1.Obergeschoss,0580_d_01.pdf,3508,2479
+g058002,bt0580,"OG 02",2.Obergeschoss,0580_d_02.pdf,3508,2479
+g058003,bt0580,"OG 03",3.Obergeschoss,0580_d_03.pdf,3508,2479
+g058004,bt0580,"OG 04",4.Obergeschoss,0580_d_04.pdf,3508,2479
+g058005,bt0580,"OG 05",5.Obergeschoss,0580_d_05.pdf,3508,2479
+g058006,bt0580,"OG 06",6.Obergeschoss,0580_d_06.pdf,3508,2479
+g059001,bt0590,"OG 01",1.Obergeschoss,0590_d_01.pdf,2479,3508
+g059002,bt0590,"OG 02",2.Obergeschoss,0590_d_02.pdf,2479,3508
+g059003,bt0590,"OG 03",3.Obergeschoss,0590_d_03.pdf,2479,3508
+g059004,bt0590,"OG 04",4.Obergeschoss,0590_d_04.pdf,2479,3508
+g059005,bt0590,"OG 05",5.Obergeschoss,0590_d_05.pdf,2479,3508
+g059006,bt0590,"OG 06",6.Obergeschoss,0590_d_06.pdf,2479,3508
+g060000,bt0600,EG,Erdgeschoss,0600_d_00.pdf,4963,3508
+g060001,bt0600,"OG 01",1.Obergeschoss,0600_d_01.pdf,4963,3508
+g060002,bt0600,"OG 02",2.Obergeschoss,0600_d_02.pdf,4963,3508
+g060003,bt0600,"OG 03",3.Obergeschoss,0600_d_03.pdf,4963,3508
+g060004,bt0600,"OG 04",4.Obergeschoss,0600_d_04.pdf,4963,3508
+g0600-1,bt0600,"UG 01",1.Untergeschoss,0600_d_u1.pdf,4963,3508
+g060100,bt0601,EG,Erdgeschoss,0601_d_00.pdf,4963,3508
+g060101,bt0601,"OG 01",1.Obergeschoss,0601_d_01.pdf,4963,3508
+g060102,bt0601,"OG 02",2.Obergeschoss,0601_d_02.pdf,4963,3508
+g060103,bt0601,"OG 03",3.Obergeschoss,0601_d_03.pdf,4963,3508
+g060104,bt0601,"OG 04",4.Obergeschoss,0601_d_04.pdf,4963,3508
+g060105,bt0601,"OG 05",5.Obergeschoss,0601_d_05.pdf,4963,3508
+g0601-1,bt0601,"UG 01",1.Untergeschoss,0601_d_u1.pdf,4963,3508
+g060700,bt0607,EG,Erdgeschoss,0607_d_00.pdf,5263,3719
+g060701,bt0607,"OG 01",1.Obergeschoss,0607_d_01.pdf,7444,5263
+g0607-1,bt0607,"UG 01",1.Untergeschoss,0607_d_u1.pdf,5263,3719
+g060802,bt0608,"OG 02",2.Obergeschoss,0608_d_02.pdf,3508,2479
+g060804,bt0608,"OG 04",4.Obergeschoss,0608_d_04.pdf,3508,2479
+g061000,bt0610,EG,Erdgeschoss,0610_d_00.pdf,3508,2479
+g061001,bt0610,"OG 01",1.Obergeschoss,0610_d_01.pdf,3508,2479
+g061002,bt0610,"OG 02",2.Obergeschoss,0610_d_02.pdf,3508,2479
+g061003,bt0610,"OG 03",3.Obergeschoss,0610_d_03.pdf,3508,2479
+g061004,bt0610,"OG 04",4.Obergeschoss,0610_d_04.pdf,3508,2479
+g062000,bt0620,EG,Erdgeschoss,0620_d_00.pdf,3508,2479
+g062001,bt0620,"OG 01",1.Obergeschoss,0620_d_01.pdf,3508,2479
+g062002,bt0620,"OG 02",2.Obergeschoss,0620_d_02.pdf,3508,2479
+g0620-1,bt0620,"UG 01",1.Untergeschoss,0620_d_u1.pdf,3508,2479
+g063000,bt0630,EG,Erdgeschoss,0630_d_00.pdf,3508,2479
+g063001,bt0630,"OG 01",1.Obergeschoss,0630_d_01.pdf,3508,2479
+g063002,bt0630,"OG 02",2.Obergeschoss,0630_d_02.pdf,3508,2479
+g063100,bt0631,EG,Erdgeschoss,0631_d_00.pdf,3508,2479
+g063101,bt0631,"OG 01",1.Obergeschoss,0631_d_01.pdf,3508,2479
+g063102,bt0631,"OG 02",2.Obergeschoss,0631_d_02.pdf,3508,2479
+g0631-1,bt0631,"UG 01",1.Untergeschoss,0631_d_u1.pdf,3508,2479
+g065000,bt0650,EG,Erdgeschoss,0650_d_00.pdf,3508,2479
+g065001,bt0650,"OG 01",1.Obergeschoss,0650_d_01.pdf,3508,2479
+g065002,bt0650,"OG 02",2.Obergeschoss,0650_d_02.pdf,3508,2479
+g065003,bt0650,"OG 03",3.Obergeschoss,0650_d_03.pdf,3508,2479
+g065004,bt0650,"OG 04",4.Obergeschoss,0650_d_04.pdf,3508,2479
+g0650-1,bt0650,"UG 01",1.Untergeschoss,0650_d_u1.pdf,3508,2479
+g080000,bt0800,EG,Erdgeschoss,0800_d_00.pdf,5263,3719
+g080200,bt0802,EG,Erdgeschoss,0802_d_00.pdf,3508,2479
+g083000,bt0830,EG,Erdgeschoss,0830_d_00.pdf,3508,2479
+g083500,bt0835,EG,Erdgeschoss,0835_d_00.pdf,2479,3508
+g084000,bt0840,EG,Erdgeschoss,0840_d_00.pdf,3508,2479
+g085000,bt0850,EG,Erdgeschoss,0850_d_00.pdf,3508,2479
+g080001,bt0800,"OG 01",1.Obergeschoss,0800_d_01.pdf,5263,3719
+g080201,bt0802,"OG 01",1.Obergeschoss,0802_d_01.pdf,3508,2479
+g083001,bt0830,"OG 01",1.Obergeschoss,0830_d_01.pdf,3508,2479
+g084001,bt0840,"OG 01",1.Obergeschoss,0840_d_01.pdf,3508,2479
+g085001,bt0850,"OG 01",1.Obergeschoss,0850_d_01.pdf,3508,2479
+g085101,bt0851,"OG 01",1.Obergeschoss,0850_d_01.pdf,3508,2479
+g080002,bt0800,"OG 02",2.Obergeschoss,0800_d_02.pdf,5263,3719
+g080202,bt0802,"OG 02",2.Obergeschoss,0802_d_02.pdf,3508,2479
+g085002,bt0850,"OG 02",2.Obergeschoss,0850_d_02.pdf,3508,2479
+g080003,bt0800,"OG 03",3.Obergeschoss,0800_d_03.pdf,5263,3719
+g0800-1,bt0800,"UG 01",1.Untergeschoss,0800_d_u1.pdf,5263,3719
+g0802-1,bt0802,"UG 01",1.Untergeschoss,0802_d_u1.pdf,3508,2479
+g0850-1,bt0850,"UG 01",1.Untergeschoss,0850_d_u1.pdf,3508,2479
+g0851-1,bt0851,"UG 01",1.Untergeschoss,0850_d_u1.pdf,3508,2479
+g080100,bt0801,EG,Erdgeschoss,0800_d_00.pdf,5263,3719
+g080101,bt0801,"OG 01",1.Obergeschoss,0800_d_01.pdf,5263,3719
+g080102,bt0801,"OG 02",2.Obergeschoss,0800_d_02.pdf,5263,3719
+g080103,bt0801,"OG 03",3.Obergeschoss,0800_d_03.pdf,5263,3719
+g080104,bt0801,"OG 04",4.Obergeschoss,0800_d_04.pdf,5263,3719
+g0801-1,bt0801,"UG 01",1.Untergeschoss,0800_d_u1.pdf,5263,3719
+g082000,bt0820,EG,Erdgeschoss,0822_d_00.pdf,2479,3508
+g082090,bt0820,"EG Z",Zwischengeschoss,0822_d_00.pdf,2479,3508
+g082001,bt0820,"OG 01",1.Obergeschoss,0822_d_01.pdf,2479,3508
+g082002,bt0820,"OG 02",2.Obergeschoss,0822_d_02.pdf,2479,3508
+g082003,bt0820,"OG 03",3.Obergeschoss,0822_d_03.pdf,2479,3508
+g082200,bt0822,EG,Erdgeschoss,0822_d_00.pdf,2479,3508
+g082300,bt0823,EG,Erdgeschoss,0822_d_00.pdf,2479,3508
+g082201,bt0822,"OG 01",1.Obergeschoss,0822_d_01.pdf,2479,3508
+g082301,bt0823,"OG 01",1.Obergeschoss,0822_d_01.pdf,2479,3508
+g082202,bt0822,"OG 02",2.Obergeschoss,0822_d_02.pdf,2479,3508
+g082203,bt0822,"OG 03",3.Obergeschoss,0822_d_03.pdf,2479,3508
+g082205,bt0822,"OG 05",5.Obergeschoss,0822_d_05.pdf,2479,3508
+g082400,bt0824,EG,Erdgeschoss,0824_d_00.pdf,2479,3508
+g082500,bt0825,EG,Erdgeschoss,0824_d_00.pdf,2479,3508
+g082401,bt0824,"OG 01",1.Obergeschoss,0824_d_01.pdf,2479,3508
+g082501,bt0825,"OG 01",1.Obergeschoss,0824_d_01.pdf,2479,3508
+g082402,bt0824,"OG 02",2.Obergeschoss,0824_d_02.pdf,2479,3508
+g082403,bt0824,"OG 03",3.Obergeschoss,0824_d_03.pdf,2479,3508
+g082600,bt0826,EG,Erdgeschoss,0826_d_00.pdf,2479,3508
+g082700,bt0827,EG,Erdgeschoss,0826_d_00.pdf,2479,3508
+g082601,bt0826,"OG 01",1.Obergeschoss,0826_d_01.pdf,2479,3508
+g082701,bt0827,"OG 01",1.Obergeschoss,0826_d_01.pdf,2479,3508
+g082602,bt0826,"OG 02",2.Obergeschoss,0826_d_02.pdf,2479,3508
+g082603,bt0826,"OG 03",3.Obergeschoss,0826_d_03.pdf,2479,3508
+g082800,bt0828,EG,Erdgeschoss,0828_d_00.pdf,2479,3508
+g082801,bt0828,"OG 01",1.Obergeschoss,0828_d_01.pdf,2479,3508
+g082802,bt0828,"OG 02",2.Obergeschoss,0828_d_02.pdf,2479,3508
+g100300,bt1003,EG,Erdgeschoss,1001_d_00.pdf,9925,7017
+g100301,bt1003,"OG 01",1.Obergeschoss,1001_d_01.pdf,9925,7017
+g100302,bt1003,"OG 02",2.Obergeschoss,1001_d_02.pdf,9925,7017
+g100303,bt1003,"OG 03",3.Obergeschoss,1001_d_03.pdf,9925,7017
+g100304,bt1003,"OG 04",4.Obergeschoss,1001_d_04.pdf,9925,7017
+g1003-1,bt1003,"UG 01",1.Untergeschoss,1001_d_u1.pdf,9925,7017
+g102000,bt1020,EG,Erdgeschoss,1020_d_00.pdf,2479,3508
+g102001,bt1020,"OG 01",1.Obergeschoss,1020_d_01.pdf,2479,3508
+g102002,bt1020,"OG 02",2.Obergeschoss,1020_d_02.pdf,2479,3508
+g102003,bt1020,"OG 03",3.Obergeschoss,1020_d_03.pdf,2479,3508
+g102004,bt1020,"OG 04",4.Obergeschoss,1020_d_04.pdf,2479,3508
+g102005,bt1020,"OG 05",5.Obergeschoss,1020_d_05.pdf,2479,3508
+g111000,bt1110,EG,Erdgeschoss,1120_d_00.pdf,4963,3508
+g111001,bt1110,"OG 01",1.Obergeschoss,1120_d_01.pdf,4963,3508
+g111002,bt1110,"OG 02",2.Obergeschoss,1120_d_02.pdf,4963,3508
+g111003,bt1110,"OG 03",3.Obergeschoss,1120_d_03.pdf,4963,3508
+g1110-1,bt1110,"UG 01",1.Untergeschoss,1120_d_u1.pdf,4963,3508
+g112200,bt1122,EG,Erdgeschoss,1120_d_00.pdf,4963,3508
+g112201,bt1122,"OG 01",1.Obergeschoss,1120_d_01.pdf,4963,3508
+g112202,bt1122,"OG 02",2.Obergeschoss,1120_d_02.pdf,4963,3508
+g112203,bt1122,"OG 03",3.Obergeschoss,1120_d_03.pdf,4963,3508
+g112204,bt1122,"OG 04",4.Obergeschoss,1120_d_04.pdf,4963,3508
+g112205,bt1122,"OG 05",5.Obergeschoss,1120_d_05.pdf,4963,3508
+g1122-1,bt1122,"UG 01",1.Untergeschoss,1120_d_u1.pdf,4963,3508
+g113002,bt1130,"OG 02",2.Obergeschoss,1130_d_02.pdf,2479,3508
+g150800,bt1508,EG,Erdgeschoss,1508_d_00.pdf,3508,2479
+g150801,bt1508,"OG 01",1.Obergeschoss,1508_d_01.pdf,3508,2479
+g150802,bt1508,"OG 02",2.Obergeschoss,1508_d_02.pdf,3508,2479
+g150803,bt1508,"OG 03",3.Obergeschoss,1508_d_03.pdf,3508,2479
+g1508-1,bt1508,"UG 01",1.Untergeschoss,1508_d_u1.pdf,3508,2479
+g150100,bt1501,EG,Erdgeschoss,1501_d_00.pdf,3508,2479
+g150101,bt1501,"OG 01",1.Obergeschoss,1501_d_01.pdf,3508,2479
+g150102,bt1501,"OG 02",2.Obergeschoss,1501_d_02.pdf,3508,2479
+g1501-1,bt1501,"UG 01",1.Untergeschoss,1501_d_u1.pdf,3508,2479
+g150200,bt1502,EG,Erdgeschoss,1509_d_00.pdf,3508,2479
+g150201,bt1502,"OG 01",1.Obergeschoss,1509_d_01.pdf,3508,2479
+g150202,bt1502,"OG 02",2.Obergeschoss,1509_d_02.pdf,3508,2479
+g150203,bt1502,"OG 03",3.Obergeschoss,1509_d_03.pdf,3508,2479
+g150204,bt1502,"OG 04",4.Obergeschoss,1509_d_04.pdf,3508,2479
+g1502-1,bt1502,"UG 01",1.Untergeschoss,1509_d_u1.pdf,3508,2479
+g1502-2,bt1502,"UG 02",2.Untergeschoss,1509_d_u2.pdf,3508,2479
+g150300,bt1503,EG,Erdgeschoss,1503_d_00.pdf,3508,2479
+g150301,bt1503,"OG 01",1.Obergeschoss,1503_d_01.pdf,3508,2479
+g150302,bt1503,"OG 02",2.Obergeschoss,1503_d_02.pdf,3508,2479
+g150303,bt1503,"OG 03",3.Obergeschoss,1503_d_03.pdf,3508,2479
+g1503-1,bt1503,"UG 01",1.Untergeschoss,1503_d_u1.pdf,3508,2479
+g150400,bt1504,EG,Erdgeschoss,1504_d_00.pdf,3508,2479
+g150401,bt1504,"OG 01",1.Obergeschoss,1504_d_01.pdf,3508,2479
+g150402,bt1504,"OG 02",2.Obergeschoss,1504_d_02.pdf,3508,2479
+g150403,bt1504,"OG 03",3.Obergeschoss,1504_d_03.pdf,3508,2479
+g1504-1,bt1504,"UG 01",1.Untergeschoss,1504_d_u1.pdf,3508,2479
+g150500,bt1505,"EG      (3. Flur)",Erdgeschoss,1505_d_00.pdf,3508,2479
+g150501,bt1505,"OG 01 (4. Flur)",1.Obergeschoss,1505_d_01.pdf,3508,2479
+g150502,bt1505,"OG 02 (5. Flur)",2.Obergeschoss,1505_d_02.pdf,3508,2479
+g150503,bt1505,"OG 03 (6. Flur)",3.Obergeschoss,1505_d_03.pdf,3508,2479
+g150504,bt1505,"OG 04 (7. Flur)",4.Obergeschoss,1505_d_04.pdf,3508,2479
+g150505,bt1505,"OG 05 (8. Flur)",5.Obergeschoss,1505_d_05.pdf,3508,2479
+g150700,bt1507,EG,Erdgeschoss,1507_d_00.pdf,3508,2479
+g150701,bt1507,"OG 01",1.Obergeschoss,1507_d_01.pdf,3508,2479
+g150702,bt1507,"OG 02",2.Obergeschoss,1507_d_02.pdf,3508,2479
+g1507-1,bt1507,"UG 01",1.Untergeschoss,1507_d_u1.pdf,3508,2479
+g150900,bt1509,EG,Erdgeschoss,1509_d_00.pdf,3508,2479
+g150901,bt1509,"OG 01",1.Obergeschoss,1509_d_01.pdf,3508,2479
+g150902,bt1509,"OG 02",2.Obergeschoss,1509_d_02.pdf,3508,2479
+g150903,bt1509,"OG 03",3.Obergeschoss,1509_d_03.pdf,3508,2479
+g150904,bt1509,"OG 04",4.Obergeschoss,1509_d_04.pdf,3508,2479
+g150905,bt1509,"OG 05",5.Obergeschoss,1509_d_05.pdf,3508,2479
+g1509-1,bt1509,"UG 01",1.Untergeschoss,1509_d_u1.pdf,3508,2479
+g1509-2,bt1509,"UG 02",2.Untergeschoss,1509_d_u2.pdf,3508,2479
+g152100,bt1521,EG,Erdgeschoss,1521_d_00.pdf,3508,2479
+g152101,bt1521,"OG 01",1.Obergeschoss,1521_d_01.pdf,3508,2479
+g152102,bt1521,"OG 02",2.Obergeschoss,1521_d_02.pdf,3508,2479
+g152103,bt1521,"OG 03",3.Obergeschoss,1521_d_03.pdf,3508,2479
+g152104,bt1521,"OG 04",4.Obergeschoss,1521_d_04.pdf,3508,2479
+g1521-1,bt1521,"UG 01",1.Untergeschoss,1521_d_u1.pdf,3508,2479
+g154000,bt1540,EG,Erdgeschoss,1540_d_00.pdf,3508,2479
+g154001,bt1540,"OG 01",1.Obergeschoss,1540_d_01.pdf,3508,2479
+g154002,bt1540,"OG 02",2.Obergeschoss,1540_d_02.pdf,3508,2479
+g154003,bt1540,"OG 03",3.Obergeschoss,1540_d_03.pdf,3508,2479
+g154100,bt1541,EG,Erdgeschoss,1540_d_00.pdf,3508,2479
+g154101,bt1541,"OG 01",1.Obergeschoss,1540_d_01.pdf,3508,2479
+g154300,bt1543,EG,Erdgeschoss,1543_d_00.pdf,3508,2479
+g154301,bt1543,"OG 01",1.Obergeschoss,1543_d_01.pdf,3508,2479
+g154302,bt1543,"OG 02",2.Obergeschoss,1543_d_02.pdf,3508,2479
+g164002,bt1640,"OG 02",2.Obergeschoss,1640_d_02.pdf,3508,2479
+g171500,bt1715,EG,Erdgeschoss,1715_d_00.pdf,3508,2479
+g171501,bt1715,"OG 01",1.Obergeschoss,1715_d_01.pdf,3508,2479
+g171502,bt1715,"OG 02",2.Obergeschoss,1715_d_02.pdf,3508,2479
+g171503,bt1715,"OG 03",3.Obergeschoss,1715_d_03.pdf,3508,2479
+g171504,bt1715,"OG 04",4.Obergeschoss,1715_d_04.pdf,3508,2479
+g1715-1,bt1715,"UG 01",1.Untergeschoss,1715_d_u1.pdf,3508,2479
+g1715-2,bt1715,"UG 02",2.Untergeschoss,1715_d_u2.pdf,3508,2479
+g210200,bt2102,EG,Erdgeschoss,2102_d_00.pdf,3719,5263
+g210201,bt2102,"OG 01",1.Obergeschoss,2102_d_01.pdf,3719,5263
+g210202,bt2102,"OG 02",2.Obergeschoss,2102_d_02.pdf,3719,5263
+g210203,bt2102,"OG 03",3.Obergeschoss,2102_d_03.pdf,3719,5263
+g292000,bt2920,EG,Erdgeschoss,2920_d_00.pdf,3508,2479
+g292001,bt2920,"OG 01",1.Obergeschoss,2920_d_01.pdf,3508,2479
+g292002,bt2920,"OG 02",2.Obergeschoss,2920_d_02.pdf,3508,2479
+g292003,bt2920,"OG 03",3.Obergeschoss,2920_d_03.pdf,3508,2479
+g292004,bt2920,"OG 04",4.Obergeschoss,2920_d_04.pdf,3508,2479
+g2920-1,bt2920,"UG 01",1.Untergeschoss,2920_d_u1.pdf,3508,2479
+g292100,bt2921,EG,Erdgeschoss,2921_d_00.pdf,3508,2479
+g292101,bt2921,"OG 01",1.Obergeschoss,2921_d_01.pdf,3508,2479
+g292102,bt2921,"OG 02",2.Obergeschoss,2921_d_02.pdf,3508,2479
+g2921-1,bt2921,"UG 01",1.Untergeschoss,2921_d_u1.pdf,3508,2479
+g295100,bt2951,EG,Erdgeschoss,2951_d_00.pdf,3508,2479
+g295500,bt2955,EG,Erdgeschoss,2955_d_00.pdf,3508,2479
+g295700,bt2957,EG,Erdgeschoss,2957_d_00.pdf,5263,3719
+g295900,bt2959,EG,Erdgeschoss,2959_00_d.pdf,5263,3719
+g296100,bt2961,EG,Erdgeschoss,2961_d_00.pdf,2479,3508
+g296300,bt2963,EG,Erdgeschoss,2963_d_00.pdf,7017,4958
+g296391,bt2963,"EG Z",Zwischengeschoss,2963_d_z0.pdf,7017,4958
+g295101,bt2951,"OG 01",1.Obergeschoss,2951_d_01.pdf,3508,2479
+g295501,bt2955,"OG 01",1.Obergeschoss,2955_d_01.pdf,3508,2479
+g295701,bt2957,"OG 01",1.Obergeschoss,2957_d_01.pdf,5263,3719
+g295901,bt2959,"OG 01",1.Obergeschoss,2959_01_d.pdf,5263,3719
+g296101,bt2961,"OG 01",1.Obergeschoss,2961_d_01.pdf,2479,3508
+g296301,bt2963,"OG 01",1.Obergeschoss,2963_d_01.pdf,7017,4958
+g295102,bt2951,"OG 02",2.Obergeschoss,2951_d_02.pdf,3508,2479
+g295502,bt2955,"OG 02",2.Obergeschoss,2955_d_02.pdf,3508,2479
+g295902,bt2959,"OG 02",2.Obergeschoss,2959_02_d.pdf,5263,3719
+g296102,bt2961,"OG 02",2.Obergeschoss,2961_d_02.pdf,2479,3508
+g296302,bt2963,"OG 02",2.Obergeschoss,2963_d_02.pdf,7017,4958
+g295103,bt2951,"OG 03",3.Obergeschoss,2951_d_03.pdf,3508,2479
+g295503,bt2955,"OG 03",3.Obergeschoss,2955_d_03.pdf,3508,2479
+g295703,bt2957,"OG 03",3.Obergeschoss,2957_d_03.pdf,5263,3719
+g296103,bt2961,"OG 03",3.Obergeschoss,2961_d_03.pdf,2479,3508
+g296303,bt2963,"OG 03",3.Obergeschoss,2963_d_03.pdf,7017,4958
+g295504,bt2955,"OG 04",4.Obergeschoss,2955_d_04.pdf,3508,2479
+g295704,bt2957,"OG 04",4.Obergeschoss,2957_d_04.pdf,5263,3719
+g295904,bt2959,"OG 04",4.Obergeschoss,2959_04_d.pdf,5263,3719
+g296104,bt2961,"OG 04",4.Obergeschoss,2961_d_04.pdf,2479,3508
+g296304,bt2963,"OG 04",4.Obergeschoss,2963_d_04.pdf,7017,4958
+g295505,bt2955,"OG 05",5.Obergeschoss,2955_d_05.pdf,3508,2479
+g295705,bt2957,"OG 05",5.Obergeschoss,2957_d_05.pdf,5263,3719
+g296305,bt2963,"OG 05",5.Obergeschoss,2963_d_05.pdf,7017,4958
+g2955-1,bt2955,"UG 01",1.Untergeschoss,2955_d_u1.pdf,3508,2479
+g2957-1,bt2957,"UG 01",1.Untergeschoss,2957_d_u1.pdf,5263,3719
+g2959-1,bt2959,"UG 01",1.Untergeschoss,2959_u1_d.pdf,5263,3719
+g2961-1,bt2961,"UG 01",1.Untergeschoss,2961_d_u1.pdf,2479,3508
+g2963-1,bt2963,"UG 01",1.Untergeschoss,2963_d_u1.pdf,7017,4958
+g297100,bt2971,EG,Erdgeschoss,2971_d_00.pdf,7444,5263
+g297101,bt2971,"OG 01",1.Obergeschoss,2971_d_01.pdf,7444,5263
+g297102,bt2971,"OG 02",2.Obergeschoss,2971_d_02.pdf,7444,5263
+g297103,bt2971,"OG 03",3.Obergeschoss,2971_d_03.pdf,7444,5263
+g297400,bt2974,EG,Erdgeschoss,2974_d_00.pdf,5263,7444
+g297401,bt2974,"OG 01",1.Obergeschoss,2974_d_01.pdf,5263,7444
+g297402,bt2974,"OG 02",2.Obergeschoss,2974_d_02.pdf,5263,7444
+g297403,bt2974,"OG 03",3.Obergeschoss,2974_d_03.pdf,5263,7444
+g298000,bt2980,EG,Erdgeschoss,2980_d_00.pdf,5263,3719
+g298001,bt2980,"OG 01",1.Obergeschoss,2980_d_01.pdf,5263,3719
+g320400,bt3204,EG,Erdgeschoss,3200_d_00.pdf,9925,7017
+g320401,bt3204,"OG 01",1.Obergeschoss,3200_d_01.pdf,9925,7017
+g320402,bt3204,"OG 02",2.Obergeschoss,3200_d_02.pdf,9925,7017
+g320403,bt3204,"OG 03",3.Obergeschoss,3200_d_03.pdf,9925,7017
+g407000,bt4070,EG,Erdgeschoss,4070_d_00.pdf,4963,3508
+g407001,bt4070,"OG 01",1.Obergeschoss,4070_d_01.pdf,4963,3508
+g492500,bt4925,EG,Erdgeschoss,4925_d_00.pdf,5263,3719
+g492501,bt4925,"OG 01",1.Obergeschoss,4925_d_01.pdf,5263,3719
+g492502,bt4925,"OG 02",2.Obergeschoss,4925_d_02.pdf,5263,3719
+g595000,bt5950,EG,Erdgeschoss,5950_d_00.pdf,3508,2479
+g595001,bt5950,"OG 01",1.Obergeschoss,5950_d_01.pdf,3508,2479
+g595002,bt5950,"OG 02",2.Obergeschoss,5950_d_02.pdf,3508,2479
+g595003,bt5950,"OG 03",3.Obergeschoss,5950_d_03.pdf,3508,2479
+g595004,bt5950,"OG 04",4.Obergeschoss,5950_d_04.pdf,3508,2479
+g595005,bt5950,"OG 05",5.Obergeschoss,5950_d_05.pdf,3508,2479
+g600002,bt6000,"OG 02",2.Obergeschoss,6000_d_02.pdf,3508,2479
+g600003,bt6000,"OG 03",3.Obergeschoss,6000_d_03.pdf,3508,2479
+g650000,bt6500,EG,Erdgeschoss,6500_d_00.pdf,4963,3508
+g650001,bt6500,"OG 01",1.Obergeschoss,6500_d_01.pdf,4963,3508
+g650301,bt6503,"OG 01",1.Obergeschoss,6500_d_01.pdf,4963,3508
+g650002,bt6500,"OG 02",2.Obergeschoss,6500_d_02.pdf,4963,3508
+g650302,bt6503,"OG 02",2.Obergeschoss,6500_d_02.pdf,4963,3508
+g650003,bt6500,"OG 03",3.Obergeschoss,6500_d_03.pdf,3508,2479
+g650004,bt6500,"OG 04",4.Obergeschoss,6500_d_04.pdf,3508,2479
+g6500-1,bt6500,"UG 01",1.Untergeschoss,6500_d_u1.pdf,4963,3508
+g6503-1,bt6503,"UG 01",1.Untergeschoss,6500_d_u1.pdf,4963,3508
+g700000,bt7000,EG,Erdgeschoss,7000_d_00.pdf,3508,2479
+g700001,bt7000,"OG 01",1.Obergeschoss,7000_d_01.pdf,3508,2479
+g7000-1,bt7000,"UG 01",1.Untergeschoss,7000_d_u1.pdf,3508,2479
+g704500,bt7045,EG,Erdgeschoss,7045_d_00.pdf,3508,2479
+g7045-1,bt7045,"UG 01",1.Untergeschoss,7045_d_u1.pdf,3508,2479
+g705500,bt7055,EG,Erdgeschoss,7055_d_00.pdf,3508,2479
+g705591,bt7055,"EG Z",Zwischengeschoss,7055_d_00z.pdf,3508,2479
+g705501,bt7055,"OG 01",1.Obergeschoss,7055_d_01.pdf,3508,2479
+g705502,bt7055,"OG 02",2.Obergeschoss,7055_d_02.pdf,3508,2479
+g7055-1,bt7055,"UG 01",1.Untergeschoss,7055_d_u1.pdf,3508,2479
+g707000,bt7070,EG,Erdgeschoss,7070_d_00.pdf,9925,7017
+g707001,bt7070,"OG 01",1.Obergeschoss,7070_d_01.pdf,9925,7017
+g7070-1,bt7070,"UG 01",1.Untergeschoss,7070_d_u1.pdf,9925,7017
+g992500,bt9925,EG,Erdgeschoss,9925_d_00.pdf,2479,3508
+g992501,bt9925,"OG 01",1.Obergeschoss,9925_d_01.pdf,2479,3508
+g992502,bt9925,"OG 02",2.Obergeschoss,9925_d_02.pdf,2479,3508
+g992503,bt9925,"OG 03",3.Obergeschoss,9925_d_03.pdf,2479,3508
+g992504,bt9925,"OG 04",4.Obergeschoss,9925_d_04.pdf,2479,3508
+g153100,bt1531,EG,Erdgeschoss,1531_d_00.pdf,4963,3508
+g153101,bt1531,"OG 01",1.Obergeschoss,1531_d_01.pdf,4963,3508
+g153102,bt1531,"OG 02",2.Obergeschoss,1531_d_02.pdf,4963,3508
+g153103,bt1531,"OG 03",3.Obergeschoss,1531_d_03.pdf,4963,3508
+g153104,bt1531,"OG 04",4.Obergeschoss,1531_d_04.pdf,4963,3508
+g041000,bt0410,EG,Erdgeschoss,0407_d_00.pdf,4963,3508
+g041001,bt0410,"OG 01",1.Obergeschoss,0407_d_02.pdf,4963,3508
+g041002,bt0410,"OG 02",2.Obergeschoss,0407_d_04.pdf,4963,3508
+g041003,bt0410,"OG 03",3.Obergeschoss,0407_d_05.pdf,4963,3508
+g0410-1,bt0410,"UG 01",1.Untergeschoss,0407_d_u1.pdf,4963,3508
+g154102,bt1541,"OG 02",2.Obergeschoss,1540_d_02.pdf,3508,2479
