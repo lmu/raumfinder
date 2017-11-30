@@ -66,13 +66,12 @@ angular.module('LMURaumfinder', [
 
     }])
     .constant("MAP_DEFAULTS", {
-        "MAPTILES_URL": "https://api.tiles.mapbox.com/v4/maxmediapictures.o2e7pbh8/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWF4bWVkaWFwaWN0dXJlcyIsImEiOiJ2NXRBMGlFIn0.K9dbubXdaU77e0PdLGN7iw",
+        "MAPTILES_URL": "https://api.tiles.mapbox.com/v4/lmu.2ca89227/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibG11IiwiYSI6ImNqYTVhb3J4NGE1cDgyeHBhaTAxOGd4YTcifQ.9ri9Gt948k0LtLuJhrW3uQ",
         "MAP_CREDITS": "© <a href='https://www.mapbox.com/map-feedback/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
 
 
         // Alternative Karten Quelle. 
         // Quelle und Infos: https://carto.com/location-data-services/basemaps/ (Kostenlos bis 75.000 Abrufe/Monat)
-
         // 
         // "MAPTILES_URL": "http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png",
         // "MAP_CREDITS": "<a href='https://www.mapzen.com/rights'>Attribution.</a>. Data &copy;<a href='https://openstreetmap.org/copyright'>OSM</a> contributors."
