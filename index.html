@@ -54,22 +54,21 @@
     <meta name="msapplication-square310x310logo" content="img/mstile-310x310.png">
     <meta name="theme-color" content="#007633">
 
-    <!-- Piwik -->
+    <!-- Matomo -->
     <script type="text/javascript">
-      var _paq = _paq || [];
-      //_paq.push(['trackPageView']);
+      var _paq = window._paq || [];
+      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+      _paq.push(['trackPageView']);
       _paq.push(['enableLinkTracking']);
       (function() {
-        var u="//piwik-test.verwaltung.uni-muenchen.de/piwik/";
-        _paq.push(['setTrackerUrl', u+'piwik.php']);
-        _paq.push(['setSiteId', 29]);
+        var u="https://web-analytics.uni-muenchen.de/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '29']);
         var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
       })();
     </script>
-    <noscript><p><img src="//piwik-test.verwaltung.uni-muenchen.de/piwik/piwik.php?idsite=29" style="border:0;" alt="" /></p></noscript>
-    <!-- End Piwik Code -->
-
+    <!-- End Matomo Code -->
 
 </head>
 
