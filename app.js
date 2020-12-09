@@ -66,7 +66,7 @@ angular.module('LMURaumfinder', [
 
     }])
     .constant("MAP_DEFAULTS", {
-        "MAPTILES_URL": "https://api.tiles.mapbox.com/v4/lmu.2ca89227/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibG11IiwiYSI6ImNqYTVhb3J4NGE1cDgyeHBhaTAxOGd4YTcifQ.9ri9Gt948k0LtLuJhrW3uQ",
+        "MAPTILES_URL": "https://api.tiles.mapbox.com/v4/lmu.2ca89227/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibG11IiwiYSI6ImNraWhuaDNmcTF4NXUyenBvMjRxbHU4aWcifQ.twFgGh6y08lQV6ew-q3Kqg",
         "MAP_CREDITS": "© <a href='https://www.mapbox.com/map-feedback/'>Mapbox</a> © <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>"
 
 
